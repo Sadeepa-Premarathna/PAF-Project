@@ -20,6 +20,15 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String,String>> handleAccessDenied(org.springframework.security.access.AccessDeniedException ex) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("error","access_denied","message","Insufficient permissions"));
     }
+    @ExceptionHandler(org.springframework.web.bind.MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String,String>> handleValidation(
+            org.springframework.web.bind.MethodArgumentNotValidException ex) {
+        String msg = ex.getBindingResult().getFieldErrors().stream()
+                .map(e -> e.getField() + ": " + e.getDefaultMessage())
+                .findFirst().orElse("Validation failed");
+        return ResponseEntity.badRequest().body(Map.of("error","validation_error","message",msg));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String,String>> handleGeneral(Exception ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error","internal_error","message","An unexpected error occurred"));

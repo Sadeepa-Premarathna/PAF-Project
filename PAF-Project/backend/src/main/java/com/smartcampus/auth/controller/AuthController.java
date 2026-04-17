@@ -71,6 +71,9 @@ public class AuthController {
 
     @GetMapping("/me")
     public ResponseEntity<UserResponse> getCurrentUser(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(401).build();
+        }
         AppUser user = (AppUser) authentication.getPrincipal();
         return ResponseEntity.ok(UserResponse.from(user));
     }
