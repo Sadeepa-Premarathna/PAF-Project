@@ -59,4 +59,11 @@ public class UserServiceImpl implements UserService {
     public List<AppUser> findAll() {
         return userRepository.findAll();
     }
+
+    @Override
+    public void deactivateUser(UUID userId) {
+        AppUser user = findById(userId);
+        user.setActive(false);
+        userRepository.save(user);
+    }
 }

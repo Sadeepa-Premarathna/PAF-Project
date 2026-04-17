@@ -13,4 +13,5 @@ public interface UserService {
     AppUser updateRole(UUID userId, Role role);
     List<AppUser> findAllByRole(Role role);
     List<AppUser> findAll();
+    void deactivateUser(UUID userId);
 }
