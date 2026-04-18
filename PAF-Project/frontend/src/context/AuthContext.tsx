@@ -5,6 +5,7 @@ import { authStore } from '../store/authStore';
 
 interface AuthContextValue {
   user: AuthUser | null;
+  token: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   login: () => void;
@@ -30,6 +31,7 @@ function redirectByRole(role: Role, navigate: ReturnType<typeof useNavigate>) {
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
+  const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -44,6 +46,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (res.ok) {
           const data = await res.json();
           authStore.setAccessToken(data.accessToken);
+          setToken(data.accessToken);
 
           const meRes = await fetch(`${API_BASE_URL}/api/auth/me`, {
             headers: { Authorization: `Bearer ${data.accessToken}` },
@@ -90,8 +93,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const setAuth = (userData: AuthUser, token: string) => {
-    authStore.setAccessToken(token);
+  const setAuth = (userData: AuthUser, newToken: string) => {
+    authStore.setAccessToken(newToken);
+    setToken(newToken);
     setUser(userData);
   };
 
@@ -145,6 +149,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   return (
     <AuthContext.Provider value={{
       user,
+      token,
       isAuthenticated: !!user,
       isLoading,
       login,
