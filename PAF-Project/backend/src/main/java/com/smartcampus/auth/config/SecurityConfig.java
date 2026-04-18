@@ -11,7 +11,10 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.nio.file.Paths;
 import java.util.List;
 
 @Configuration
@@ -28,7 +31,7 @@ public class SecurityConfig {
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**", "/actuator/health").permitAll()
+                .requestMatchers("/api/auth/**", "/actuator/health", "/uploads/**").permitAll()
                 .anyRequest().authenticated()
             );
             // JwtAuthFilter will be registered here in Task 3
@@ -49,5 +52,17 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;
+    }
+
+    @Bean
+    public WebMvcConfigurer webMvcConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addResourceHandlers(ResourceHandlerRegistry registry) {
+                String uploadPath = Paths.get("uploads/ticket-images").toAbsolutePath().toUri().toString();
+                registry.addResourceHandler("/uploads/ticket-images/**")
+                        .addResourceLocations(uploadPath);
+            }
+        };
     }
 }

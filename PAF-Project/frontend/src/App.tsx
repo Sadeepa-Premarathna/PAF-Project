@@ -12,6 +12,9 @@ import Home from './pages/Home';
 import AdminDashboard from './pages/AdminDashboard';
 
 import StaffDashboard from './pages/StaffDashboard';
+import TicketsPage from './pages/TicketsPage';
+import CreateTicketPage from './pages/CreateTicketPage';
+import TicketDetailPage from './pages/TicketDetailPage';
 
 export default function App() {
   return (
@@ -45,6 +48,11 @@ export default function App() {
               <StaffDashboard />
             </PrivateRoute>
           } />
+
+          {/* Tickets — all authenticated roles */}
+          <Route path="/tickets" element={<PrivateRoute><TicketsPage /></PrivateRoute>} />
+          <Route path="/tickets/create" element={<PrivateRoute><CreateTicketPage /></PrivateRoute>} />
+          <Route path="/tickets/:id" element={<PrivateRoute><TicketDetailPage /></PrivateRoute>} />
 
           {/* Default redirect */}
           <Route path="/" element={<Home />} />
