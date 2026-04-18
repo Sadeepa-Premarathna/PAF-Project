@@ -90,4 +90,8 @@ public class NotificationService {
     public void markAllAsRead(Long userId) {
         notificationRepository.markAllAsReadByUserId(userId);
     }
+
+    public void deleteAll(Long userId) {
+        notificationRepository.deleteByUserId(userId);
+    }
 }

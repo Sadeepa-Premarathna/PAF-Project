@@ -15,7 +15,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/notifications")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "*")
 @Validated
 public class NotificationController {
 
@@ -61,6 +61,14 @@ public class NotificationController {
     public ResponseEntity<Void> markAllAsRead(
             @RequestParam @NotNull(message = "userId is required") Long userId) {
         notificationService.markAllAsRead(userId);
+        return ResponseEntity.noContent().build();
+    }
+
+    // DELETE /api/notifications?userId=1
+    @DeleteMapping
+    public ResponseEntity<Void> deleteAll(
+            @RequestParam @NotNull(message = "userId is required") Long userId) {
+        notificationService.deleteAll(userId);
         return ResponseEntity.noContent().build();
     }
 }
