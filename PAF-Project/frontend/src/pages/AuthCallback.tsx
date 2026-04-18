@@ -36,7 +36,9 @@ export default function AuthCallback() {
         if (res.ok) {
           const data = await res.json();
           setAuth(data.user, data.accessToken);
-          navigate(data.user.role === 'ADMIN' ? '/admin' : '/dashboard', { replace: true });
+          if (data.user.role === 'ADMIN') navigate('/admin', { replace: true });
+          else if (data.user.role === 'STAFF_MEMBER') navigate('/staff', { replace: true });
+          else navigate('/dashboard', { replace: true });
           return;
         }
         const errBody = await res.json().catch(() => ({}));

@@ -51,7 +51,9 @@ export default function ProfileCompletion() {
       }
       const data = await res.json();
       setAuth(data.user, data.accessToken);
-      navigate(data.user.role === 'ADMIN' ? '/admin' : '/dashboard', { replace: true });
+      if (data.user.role === 'ADMIN') navigate('/admin', { replace: true });
+      else if (data.user.role === 'STAFF_MEMBER') navigate('/staff', { replace: true });
+      else navigate('/dashboard', { replace: true });
     } catch { setErrors({ general: 'Network error. Please try again.' }); }
     finally { setIsSubmitting(false); }
   };

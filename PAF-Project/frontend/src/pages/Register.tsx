@@ -47,7 +47,10 @@ export default function Register() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+    let { name, value } = e.target;
+    if (name === 'name') {
+      value = value.replace(/[^A-Za-z\s]/g, '');
+    }
     setForm(prev => ({ ...prev, [name]: value }));
     if (errors[name as keyof FieldErrors]) setErrors(prev => ({ ...prev, [name]: undefined }));
   };

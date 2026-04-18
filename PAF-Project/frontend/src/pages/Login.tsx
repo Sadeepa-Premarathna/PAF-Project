@@ -15,7 +15,7 @@ function GoogleIcon() {
 }
 
 export default function Login() {
-  const { login, loginWithPassword, isAuthenticated, isLoading } = useAuth();
+  const { login, loginWithPassword, isAuthenticated, isLoading, user } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
@@ -29,8 +29,12 @@ export default function Login() {
   const oauthDetail = searchParams.get('detail');
 
   useEffect(() => {
-    if (!isLoading && isAuthenticated) navigate('/dashboard', { replace: true });
-  }, [isAuthenticated, isLoading, navigate]);
+    if (!isLoading && isAuthenticated && user) {
+      if (user.role === 'ADMIN') navigate('/admin', { replace: true });
+      else if (user.role === 'STAFF_MEMBER') navigate('/staff', { replace: true });
+      else navigate('/dashboard', { replace: true });
+    }
+  }, [isAuthenticated, isLoading, navigate, user]);
 
   const handleGoogleLogin = () => { setIsRedirecting(true); login(); };
 

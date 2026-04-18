@@ -11,6 +11,8 @@ import Home from './pages/Home';
 
 import AdminDashboard from './pages/AdminDashboard';
 
+import StaffDashboard from './pages/StaffDashboard';
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -34,6 +36,13 @@ export default function App() {
           <Route path="/admin/*" element={
             <PrivateRoute requiredRoles={['ADMIN']}>
               <AdminDashboard />
+            </PrivateRoute>
+          } />
+
+          {/* Protected — STAFF_MEMBER only */}
+          <Route path="/staff/*" element={
+            <PrivateRoute requiredRoles={['STAFF_MEMBER']}>
+              <StaffDashboard />
             </PrivateRoute>
           } />
 
