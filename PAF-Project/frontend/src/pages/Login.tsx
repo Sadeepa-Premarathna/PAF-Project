@@ -96,29 +96,7 @@ export default function Login() {
           {/* Character on orange circle */}
           <div className={styles.heroArt}>
             <div className={styles.heroCircle}>
-              <svg viewBox="0 0 180 240" fill="none" xmlns="http://www.w3.org/2000/svg" width="180">
-                <circle cx="90" cy="72" r="30" fill="#f4c89a"/>
-                <ellipse cx="90" cy="55" rx="30" ry="18" fill="#3d2300"/>
-                <ellipse cx="90" cy="155" rx="40" ry="52" fill="#1a5c38"/>
-                <path d="M52 120 Q20 95 28 70" stroke="#f4c89a" strokeWidth="13" strokeLinecap="round" fill="none"/>
-                <rect x="18" y="58" width="26" height="20" rx="3" fill="#fff" stroke="#f97316" strokeWidth="2"/>
-                <line x1="23" y1="65" x2="38" y2="65" stroke="#f97316" strokeWidth="1.5"/>
-                <line x1="23" y1="71" x2="34" y2="71" stroke="#f97316" strokeWidth="1.5"/>
-                <path d="M128 120 Q160 95 152 70" stroke="#f4c89a" strokeWidth="13" strokeLinecap="round" fill="none"/>
-                <rect x="72" y="140" width="56" height="68" rx="10" fill="#c0392b"/>
-                <rect x="80" y="148" width="40" height="30" rx="6" fill="#e74c3c"/>
-                <path d="M82 140 Q68 158 72 182" stroke="#a93226" strokeWidth="6" strokeLinecap="round" fill="none"/>
-                <path d="M118 140 Q132 158 128 182" stroke="#a93226" strokeWidth="6" strokeLinecap="round" fill="none"/>
-                <ellipse cx="100" cy="138" rx="22" ry="8" fill="#f1c40f"/>
-                <rect x="78" y="134" width="44" height="8" rx="4" fill="#f1c40f"/>
-                <rect x="80" y="202" width="16" height="46" rx="8" fill="#2c5f3f"/>
-                <rect x="104" y="202" width="16" height="46" rx="8" fill="#2c5f3f"/>
-                <ellipse cx="88" cy="248" rx="14" ry="7" fill="#1a1a1a"/>
-                <ellipse cx="112" cy="248" rx="14" ry="7" fill="#1a1a1a"/>
-                <rect x="82" y="88" width="16" height="10" rx="5" fill="#1a1a1a" opacity="0.8"/>
-                <rect x="102" y="88" width="16" height="10" rx="5" fill="#1a1a1a" opacity="0.8"/>
-                <line x1="98" y1="93" x2="102" y2="93" stroke="#1a1a1a" strokeWidth="2"/>
-              </svg>
+              <img src="/adventurer-3d.png" alt="Adventurer" className={styles.hero3dImg} />
             </div>
           </div>
 

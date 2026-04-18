@@ -113,43 +113,7 @@ export default function Dashboard() {
           {/* Hero character art */}
           <div className={styles.heroRight}>
             <div className={styles.heroCircle}>
-              <svg viewBox="0 0 200 260" fill="none" xmlns="http://www.w3.org/2000/svg" width="220">
-                {/* Body */}
-                <ellipse cx="100" cy="200" rx="45" ry="55" fill="#1a3a28" />
-                {/* Head */}
-                <circle cx="100" cy="90" r="36" fill="#f4c89a" />
-                {/* Hair */}
-                <ellipse cx="100" cy="65" rx="36" ry="22" fill="#3d2300" />
-                {/* Left arm raised */}
-                <path d="M57 130 Q30 100 40 75" stroke="#f4c89a" strokeWidth="14" strokeLinecap="round" fill="none"/>
-                {/* Map in hand */}
-                <rect x="18" y="60" width="28" height="22" rx="3" fill="#fff" stroke="#f97316" strokeWidth="2"/>
-                <line x1="24" y1="68" x2="40" y2="68" stroke="#f97316" strokeWidth="1.5"/>
-                <line x1="24" y1="74" x2="36" y2="74" stroke="#f97316" strokeWidth="1.5"/>
-                {/* Right arm */}
-                <path d="M143 130 Q165 120 158 145" stroke="#f4c89a" strokeWidth="14" strokeLinecap="round" fill="none"/>
-                {/* Backpack */}
-                <rect x="72" y="140" width="56" height="68" rx="10" fill="#c0392b" />
-                <rect x="80" y="148" width="40" height="30" rx="6" fill="#e74c3c" />
-                <rect x="92" y="158" width="16" height="3" rx="1.5" fill="#c0392b"/>
-                <rect x="98" y="152" width="3" height="16" rx="1.5" fill="#c0392b"/>
-                {/* Straps */}
-                <path d="M82 140 Q68 160 72 185" stroke="#a93226" strokeWidth="6" strokeLinecap="round" fill="none"/>
-                <path d="M118 140 Q132 160 128 185" stroke="#a93226" strokeWidth="6" strokeLinecap="round" fill="none"/>
-                {/* Sleeping mat roll on top */}
-                <ellipse cx="100" cy="138" rx="22" ry="8" fill="#e6b800" />
-                <rect x="78" y="134" width="44" height="8" rx="4" fill="#f1c40f" />
-                {/* Legs */}
-                <rect x="80" y="202" width="16" height="48" rx="8" fill="#2c5f3f" />
-                <rect x="104" y="202" width="16" height="48" rx="8" fill="#2c5f3f" />
-                {/* Boots */}
-                <ellipse cx="88" cy="250" rx="14" ry="8" fill="#1a1a1a" />
-                <ellipse cx="112" cy="250" rx="14" ry="8" fill="#1a1a1a" />
-                {/* Sunglasses */}
-                <rect x="82" y="88" width="16" height="10" rx="5" fill="#1a1a1a" opacity="0.8"/>
-                <rect x="102" y="88" width="16" height="10" rx="5" fill="#1a1a1a" opacity="0.8"/>
-                <line x1="98" y1="93" x2="102" y2="93" stroke="#1a1a1a" strokeWidth="2"/>
-              </svg>
+              <img src="/adventurer-3d.png" alt="Adventurer" className={styles.hero3dImg} />
             </div>
           </div>
         </div>
@@ -202,28 +166,7 @@ export default function Dashboard() {
             {/* Left: illustration */}
             <div className={styles.storyLeft}>
               <div className={styles.storyCircle}>
-                <svg viewBox="0 0 180 240" fill="none" xmlns="http://www.w3.org/2000/svg" width="190">
-                  {/* Running student figure */}
-                  <circle cx="90" cy="72" r="30" fill="#f4c89a" />
-                  <ellipse cx="90" cy="55" rx="30" ry="18" fill="#3d2300" />
-                  <ellipse cx="90" cy="155" rx="40" ry="52" fill="#1a5c38" />
-                  {/* Arms spread joyfully */}
-                  <path d="M52 120 Q20 95 28 70" stroke="#f4c89a" strokeWidth="13" strokeLinecap="round" fill="none"/>
-                  <path d="M128 120 Q160 95 152 70" stroke="#f4c89a" strokeWidth="13" strokeLinecap="round" fill="none"/>
-                  {/* Backpack */}
-                  <rect x="66" y="130" width="48" height="58" rx="10" fill="#c0392b" />
-                  <rect x="74" y="138" width="32" height="26" rx="6" fill="#e74c3c" />
-                  <path d="M74 130 Q62 148 66 170" stroke="#a93226" strokeWidth="5" strokeLinecap="round" fill="none"/>
-                  <path d="M106 130 Q118 148 114 170" stroke="#a93226" strokeWidth="5" strokeLinecap="round" fill="none"/>
-                  {/* Legs */}
-                  <path d="M80 203 Q72 225 68 238" stroke="#1a3d28" strokeWidth="14" strokeLinecap="round" fill="none"/>
-                  <path d="M100 203 Q112 220 118 238" stroke="#1a3d28" strokeWidth="14" strokeLinecap="round" fill="none"/>
-                  {/* Boots */}
-                  <ellipse cx="68" cy="238" rx="12" ry="7" fill="#1a1a1a" />
-                  <ellipse cx="118" cy="238" rx="12" ry="7" fill="#1a1a1a" />
-                  {/* Big smile */}
-                  <path d="M78 78 Q90 90 102 78" stroke="#d4956a" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
-                </svg>
+                <img src="/facility-3d.png" alt="Facility" className={styles.hero3dImg} />
               </div>
             </div>
 

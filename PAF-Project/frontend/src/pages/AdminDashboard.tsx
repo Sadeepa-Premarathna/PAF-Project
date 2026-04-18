@@ -78,17 +78,7 @@ export default function AdminDashboard() {
 
           <div className={styles.heroRight}>
             <div className={styles.heroCircle} style={{ background: '#1a5c38' }}>
-              <svg viewBox="0 0 180 240" fill="none" xmlns="http://www.w3.org/2000/svg" width="180">
-                <circle cx="90" cy="72" r="30" fill="#f4c89a"/>
-                <ellipse cx="90" cy="55" rx="30" ry="18" fill="#1a1a1a"/>
-                <ellipse cx="90" cy="155" rx="40" ry="52" fill="#2c3e50"/>
-                <path d="M52 120 L40 180" stroke="#f4c89a" strokeWidth="13" strokeLinecap="round"/>
-                <path d="M128 120 L140 180" stroke="#f4c89a" strokeWidth="13" strokeLinecap="round"/>
-                <rect x="70" y="80" width="40" height="20" rx="10" fill="#1a1a1a" opacity="0.9"/>
-                {/* Admin badge */}
-                <circle cx="110" cy="140" r="12" fill="#f97316" stroke="#fff" strokeWidth="2"/>
-                <text x="106" y="145" fill="white" fontSize="12" fontWeight="bold">A</text>
-              </svg>
+              <img src="/adventurer-3d.png" alt="Admin" className={styles.hero3dImg} />
             </div>
           </div>
         </div>
