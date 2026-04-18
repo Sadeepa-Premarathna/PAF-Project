@@ -4,37 +4,38 @@
   justify-content: center;
   align-items: center;
   background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  padding: 24px 16px;
 }
 
 .card {
   background: white;
   border-radius: 16px;
-  padding: 48px 40px;
+  padding: 40px 36px;
   width: 100%;
-  max-width: 400px;
+  max-width: 420px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
 }
 
 .logo {
-  font-size: 48px;
-  margin-bottom: 4px;
+  font-size: 40px;
+  margin-bottom: 2px;
 }
 
 .title {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 700;
   color: #1a1a2e;
   margin: 0;
 }
 
 .subtitle {
-  font-size: 14px;
+  font-size: 13px;
   color: #666;
-  margin: 0 0 16px;
+  margin: 0 0 8px;
 }
 
 .errorBanner {
@@ -42,67 +43,9 @@
   background: #fff0f0;
   border: 1px solid #ffcccc;
   border-radius: 8px;
-  padding: 12px 16px;
+  padding: 10px 14px;
   color: #cc0000;
   font-size: 14px;
-  text-align: center;
-}
-
-.googleBtn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  width: 100%;
-  padding: 12px 24px;
-  background: white;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
-  font-size: 15px;
-  font-weight: 500;
-  color: #333;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  margin-top: 8px;
-}
-
-.googleBtn:hover:not(:disabled) {
-  border-color: #4285F4;
-  box-shadow: 0 2px 8px rgba(66, 133, 244, 0.2);
-  background: #f8f9ff;
-}
-
-.googleBtn:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
-.spinner {
-  width: 32px;
-  height: 32px;
-  border: 3px solid #e0e0e0;
-  border-top-color: #4285F4;
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-
-.btnSpinner {
-  width: 16px;
-  height: 16px;
-  border: 2px solid #e0e0e0;
-  border-top-color: #4285F4;
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-.footer {
-  font-size: 12px;
-  color: #999;
-  margin-top: 8px;
   text-align: center;
 }
 
@@ -110,15 +53,21 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 4px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
 }
 
 .input {
   width: 100%;
-  padding: 12px 16px;
+  padding: 11px 14px;
   border: 2px solid #e0e0e0;
   border-radius: 8px;
-  font-size: 15px;
+  font-size: 14px;
   color: #333;
   outline: none;
   transition: border-color 0.2s ease;
@@ -127,6 +76,22 @@
 
 .input:focus {
   border-color: #4285F4;
+}
+
+.inputError {
+  border-color: #cc0000;
+}
+
+.fieldError {
+  font-size: 12px;
+  color: #cc0000;
+  padding-left: 2px;
+}
+
+.hint {
+  font-size: 11px;
+  color: #888;
+  padding-left: 2px;
 }
 
 .submitBtn {
@@ -144,6 +109,7 @@
   color: white;
   cursor: pointer;
   transition: background 0.2s ease;
+  margin-top: 6px;
 }
 
 .submitBtn:hover:not(:disabled) {
@@ -172,18 +138,65 @@
   background: #e0e0e0;
 }
 
-.registerLink {
+.googleBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 11px 24px;
+  background: white;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.googleBtn:hover:not(:disabled) {
+  border-color: #4285F4;
+  box-shadow: 0 2px 8px rgba(66, 133, 244, 0.2);
+  background: #f8f9ff;
+}
+
+.googleBtn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.loginLink {
   font-size: 14px;
   color: #666;
   margin: 4px 0 0;
 }
 
-.registerLink a {
+.loginLink a {
   color: #4285F4;
   text-decoration: none;
   font-weight: 500;
 }
 
-.registerLink a:hover {
+.loginLink a:hover {
   text-decoration: underline;
+}
+
+.btnSpinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  display: inline-block;
+}
+
+.googleBtn .btnSpinner {
+  border-color: #e0e0e0;
+  border-top-color: #4285F4;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }

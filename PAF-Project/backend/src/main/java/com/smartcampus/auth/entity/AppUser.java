@@ -25,8 +25,17 @@ public class AppUser {
 
     private String pictureUrl;
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true, nullable = true)
     private String googleSub;
+
+    @Column(nullable = true)
+    private String passwordHash;
+
+    @Column(unique = true, nullable = true, length = 20)
+    private String studentId;
+
+    @Column(nullable = true, length = 100)
+    private String department;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

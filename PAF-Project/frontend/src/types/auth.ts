@@ -4,8 +4,25 @@ export interface AuthUser {
   id: string;
   email: string;
   name: string;
-  pictureUrl: string;
+  pictureUrl: string | null;
   role: Role;
+  studentId: string | null;
+  department: string | null;
+}
+
+export interface ProfileCompletionData {
+  name: string;
+  email: string;
+  googleSub: string;
+}
+
+export interface RegisterFormData {
+  name: string;
+  studentId: string;
+  department: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
 }
 
 export interface AuthResponse {

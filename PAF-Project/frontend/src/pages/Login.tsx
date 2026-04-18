@@ -1,15 +1,20 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import styles from './Login.module.css';
 
 export default function Login() {
-  const { login, isAuthenticated, isLoading } = useAuth();
+  const { login, loginWithPassword, isAuthenticated, isLoading } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const [isRedirecting, setIsRedirecting] = useState(false);
 
-  const error = searchParams.get('error');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isRedirecting, setIsRedirecting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const oauthError = searchParams.get('error');
 
   // Already logged in — redirect to dashboard
   useEffect(() => {
@@ -18,9 +23,22 @@ export default function Login() {
     }
   }, [isAuthenticated, isLoading, navigate]);
 
-  const handleLogin = () => {
+  const handleGoogleLogin = () => {
     setIsRedirecting(true);
     login();
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setIsSubmitting(true);
+    try {
+      await loginWithPassword(email, password);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Login failed. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (isLoading) {
@@ -43,17 +61,49 @@ export default function Login() {
         <h1 className={styles.title}>Smart Campus</h1>
         <p className={styles.subtitle}>Operations Hub</p>
 
-        {error && (
+        {(error || oauthError) && (
           <div className={styles.errorBanner}>
-            {error === 'oauth_failed'
+            {error
+              ? error
+              : oauthError === 'oauth_failed'
               ? 'Google sign-in was cancelled or failed. Please try again.'
               : 'Authentication failed. Please try again.'}
           </div>
         )}
 
+        <form onSubmit={handleSubmit} className={styles.form}>
+          <input
+            type="email"
+            className={styles.input}
+            placeholder="University email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            required
+            autoComplete="email"
+          />
+          <input
+            type="password"
+            className={styles.input}
+            placeholder="Password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            required
+            autoComplete="current-password"
+          />
+          <button
+            type="submit"
+            className={styles.submitBtn}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? <><div className={styles.btnSpinner} /> Signing in...</> : 'Sign in'}
+          </button>
+        </form>
+
+        <div className={styles.divider}><span>or</span></div>
+
         <button
           className={styles.googleBtn}
-          onClick={handleLogin}
+          onClick={handleGoogleLogin}
           disabled={isRedirecting}
         >
           {isRedirecting ? (
@@ -68,6 +118,10 @@ export default function Login() {
             </>
           )}
         </button>
+
+        <p className={styles.registerLink}>
+          Don't have an account? <Link to="/register">Register</Link>
+        </p>
 
         <p className={styles.footer}>
           University of Smart Campus · Secure Login

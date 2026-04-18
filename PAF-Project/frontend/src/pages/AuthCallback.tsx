@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import type { ProfileCompletionData } from '../types/auth';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL as string;
 const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI as string;
@@ -29,13 +30,23 @@ export default function AuthCallback() {
       credentials: 'include',
       body: JSON.stringify({ code, redirectUri: REDIRECT_URI }),
     })
-      .then(res => {
-        if (!res.ok) throw new Error('Auth failed');
-        return res.json();
-      })
-      .then(data => {
-        setAuth(data.user, data.accessToken);
-        navigate('/dashboard', { replace: true });
+      .then(async res => {
+        if (res.status === 202) {
+          const data: ProfileCompletionData = await res.json();
+          navigate('/complete-profile', { replace: true, state: { profileData: data } });
+          return;
+        }
+        if (res.ok) {
+          const data = await res.json();
+          setAuth(data.user, data.accessToken);
+          if (data.user.role === 'ADMIN') {
+            navigate('/admin', { replace: true });
+          } else {
+            navigate('/dashboard', { replace: true });
+          }
+          return;
+        }
+        navigate('/login?error=auth_failed', { replace: true });
       })
       .catch(() => {
         navigate('/login?error=auth_failed', { replace: true });

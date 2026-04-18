@@ -4,6 +4,8 @@ import PrivateRoute from './components/PrivateRoute';
 import AuthCallback from './pages/AuthCallback';
 import Unauthorized from './pages/Unauthorized';
 import Login from './pages/Login';
+import Register from './pages/Register';
+import ProfileCompletion from './pages/ProfileCompletion';
 
 // Placeholder pages — other modules will fill these in
 function Dashboard() { return <h1>Dashboard</h1>; }
@@ -11,11 +13,13 @@ function AdminPanel() { return <h1>Admin Panel</h1>; }
 
 export default function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
+    <BrowserRouter>
+      <AuthProvider>
         <Routes>
           {/* Public routes */}
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/complete-profile" element={<ProfileCompletion />} />
           <Route path="/auth/callback" element={<AuthCallback />} />
           <Route path="/unauthorized" element={<Unauthorized />} />
 
@@ -34,10 +38,10 @@ export default function App() {
           } />
 
           {/* Default redirect */}
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
