@@ -54,7 +54,12 @@ export default function Register() {
 
   const validate = (): boolean => {
     const newErrors: FieldErrors = {};
-    if (!form.name.trim()) newErrors.name = 'Required';
+    if (!form.name.trim()) {
+      newErrors.name = 'Required';
+    } else if (!/^[A-Za-z\s]+$/.test(form.name)) {
+      newErrors.name = 'Only letters are allowed';
+    }
+    
     if (!form.studentId.trim()) {
       newErrors.studentId = 'Required';
     }
@@ -64,11 +69,9 @@ export default function Register() {
       newErrors.password = 'Required';
     } else {
       const pwdErrors: string[] = [];
-      if (form.password.length < 8) pwdErrors.push('at least 8 characters');
-      if (!/[A-Z]/.test(form.password)) pwdErrors.push('an uppercase letter');
-      if (!/[a-z]/.test(form.password)) pwdErrors.push('a lowercase letter');
+      if (form.password.length < 6) pwdErrors.push('at least 6 characters');
+      if (!/[A-Za-z]/.test(form.password)) pwdErrors.push('a letter');
       if (!/[0-9]/.test(form.password)) pwdErrors.push('a digit');
-      if (!/[!@#$%^&*]/.test(form.password)) pwdErrors.push('a special character (!@#$%^&*)');
       if (pwdErrors.length) newErrors.password = `Must contain: ${pwdErrors.join(', ')}`;
     }
     if (!form.confirmPassword) newErrors.confirmPassword = 'Required';
@@ -185,13 +188,13 @@ export default function Register() {
                   <label className={styles.label}>PASSWORD</label>
                   <div className={styles.inputWrapper}>
                     <input type={showPassword ? 'text' : 'password'} name="password" className={`${styles.input} ${errors.password ? styles.inputError : ''}`}
-                      placeholder="Min 8 chars" value={form.password} onChange={handleChange} />
+                      placeholder="Min 6 chars" value={form.password} onChange={handleChange} />
                     <button type="button" className={styles.eyeBtn} onClick={() => setShowPassword(p => !p)} aria-label={showPassword ? 'Hide password' : 'Show password'}>
                       <EyeIcon open={showPassword} />
                     </button>
                   </div>
                   {errors.password ? <span className={styles.fieldError}>{errors.password}</span>
-                    : <span className={styles.hint}>Min 8 characters</span>}
+                    : <span className={styles.hint}>Min 6 characters, letters & digits</span>}
                 </div>
                 <div className={styles.fieldGroup}>
                   <label className={styles.label}>CONFIRM PASSWORD</label>
