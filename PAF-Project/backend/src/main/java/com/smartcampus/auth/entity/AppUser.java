@@ -25,7 +25,7 @@ public class AppUser {
 
     private String pictureUrl;
 
-    @Column(unique = true, nullable = true)
+    @Column(nullable = true)
     private String googleSub;
 
     @Column(nullable = true)

@@ -38,7 +38,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of(
                 "status", 409,
                 "error", "Conflict",
-                "message", "Email is already registered"));
+                "message", ex.getMessage()));
     }
 
     @ExceptionHandler(InvalidCredentialsException.class)
@@ -81,12 +81,31 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(org.springframework.dao.DataIntegrityViolationException.class)
     public ResponseEntity<Map<String, Object>> handleDataIntegrity(org.springframework.dao.DataIntegrityViolationException ex) {
-        String msg = "A database constraint was violated.";
-        if (ex.getMessage() != null && ex.getMessage().contains("studentId")) {
-            msg = "This Student ID is already registered to another account.";
-        } else if (ex.getMessage() != null && ex.getMessage().contains("googleSub")) {
-            msg = "This Google account is already linked to an existing profile.";
+        String rootMsg = ex.getRootCause() != null ? ex.getRootCause().getMessage() : ex.getMessage();
+        System.out.println("========== DATA INTEGRITY EXCEPTION ==========");
+        System.out.println("rootMsg: " + rootMsg);
+        System.out.println("==============================================");
+        String msg = "Data Integrity Error: " + rootMsg;
+
+        if (rootMsg != null) {
+            String lowerMsg = rootMsg.toLowerCase();
+            boolean isDuplicate = lowerMsg.contains("duplicate entry") || lowerMsg.contains("unique constraint");
+            
+            if (isDuplicate) {
+                if (lowerMsg.contains("student_id") || lowerMsg.contains("studentid") || lowerMsg.contains("student_id_key")) {
+                    msg = "This Student ID is already registered to another account.";
+                } else if (lowerMsg.contains("google_sub") || lowerMsg.contains("googlesub")) {
+                    msg = "This Google account is already linked to an existing profile.";
+                } else if (lowerMsg.contains("email")) {
+                    msg = "This email address is already registered.";
+                } else {
+                    msg = "Database Error: " + rootMsg;
+                }
+            } else {
+                msg = "Database Error: " + rootMsg;
+            }
         }
+
         return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of(
                 "status", 409,
                 "error", "Conflict",

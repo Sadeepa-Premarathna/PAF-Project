@@ -43,10 +43,12 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest req, HttpServletResponse response) {
+        log.info("Register attempt: email={}, studentId={}, googleSub={}", req.getEmail(), req.getStudentId(), req.getGoogleSub());
         // Only validate password strength for non-OAuth registrations
         if (req.getGoogleSub() == null) {
             List<String> passwordErrors = passwordService.validateStrength(req.getPassword());
             if (!passwordErrors.isEmpty()) {
+                log.warn("Password validation failed for email={}: {}", req.getEmail(), passwordErrors);
                 return ResponseEntity.badRequest().body(java.util.Map.of(
                         "status", 400, "error", "Bad Request",
                         "message", "Validation failed", "errors", passwordErrors));
@@ -54,17 +56,29 @@ public class AuthController {
         }
         String studentIdError = studentIdValidator.validate(req.getStudentId());
         if (studentIdError != null) {
+            log.warn("Student ID validation failed: {}", studentIdError);
             return ResponseEntity.badRequest().body(java.util.Map.of(
                     "status", 400, "error", "Bad Request",
                     "message", studentIdError));
         }
         if (userService.existsByEmail(req.getEmail())) {
+            log.warn("Duplicate email: {}", req.getEmail());
             throw new DuplicateEmailException("Email is already registered");
         }
-        AppUser user = req.getGoogleSub() != null
-                ? userService.createOAuthUser(req)
-                : userService.createPasswordUser(req);
-        return ResponseEntity.ok(issueTokens(user, response));
+        if (req.getGoogleSub() != null && userService.findByGoogleSub(req.getGoogleSub()).isPresent()) {
+            log.warn("Duplicate googleSub: {}", req.getGoogleSub());
+            throw new DuplicateEmailException("This Google account is already linked to an existing profile.");
+        }
+        try {
+            AppUser user = req.getGoogleSub() != null
+                    ? userService.createOAuthUser(req)
+                    : userService.createPasswordUser(req);
+            log.info("User created successfully: id={}, email={}", user.getId(), user.getEmail());
+            return ResponseEntity.ok(issueTokens(user, response));
+        } catch (Exception e) {
+            log.error("Failed to create user: {}", e.getMessage(), e);
+            throw e;
+        }
     }
 
     @PostMapping("/login")

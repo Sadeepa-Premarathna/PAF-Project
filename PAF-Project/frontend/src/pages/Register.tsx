@@ -9,6 +9,21 @@ interface FieldErrors {
   email?: string; password?: string; confirmPassword?: string; general?: string;
 }
 
+function EyeIcon({ open }: { open: boolean }) {
+  return open ? (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+      <circle cx="12" cy="12" r="3"/>
+    </svg>
+  ) : (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+      <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+      <line x1="1" y1="1" x2="23" y2="23"/>
+    </svg>
+  );
+}
+
 function GoogleIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
@@ -28,6 +43,8 @@ export default function Register() {
   const [errors, setErrors] = useState<FieldErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isGoogleRedirecting, setIsGoogleRedirecting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -38,10 +55,22 @@ export default function Register() {
   const validate = (): boolean => {
     const newErrors: FieldErrors = {};
     if (!form.name.trim()) newErrors.name = 'Required';
-    if (!form.studentId.trim()) newErrors.studentId = 'Required';
+    if (!form.studentId.trim()) {
+      newErrors.studentId = 'Required';
+    }
     if (!form.department.trim()) newErrors.department = 'Required';
     if (!form.email.trim()) newErrors.email = 'Required';
-    if (!form.password) newErrors.password = 'Required';
+    if (!form.password) {
+      newErrors.password = 'Required';
+    } else {
+      const pwdErrors: string[] = [];
+      if (form.password.length < 8) pwdErrors.push('at least 8 characters');
+      if (!/[A-Z]/.test(form.password)) pwdErrors.push('an uppercase letter');
+      if (!/[a-z]/.test(form.password)) pwdErrors.push('a lowercase letter');
+      if (!/[0-9]/.test(form.password)) pwdErrors.push('a digit');
+      if (!/[!@#$%^&*]/.test(form.password)) pwdErrors.push('a special character (!@#$%^&*)');
+      if (pwdErrors.length) newErrors.password = `Must contain: ${pwdErrors.join(', ')}`;
+    }
     if (!form.confirmPassword) newErrors.confirmPassword = 'Required';
     if (form.password && form.confirmPassword && form.password !== form.confirmPassword)
       newErrors.confirmPassword = 'Must match password';
@@ -56,9 +85,10 @@ export default function Register() {
     try {
       await registerWithPassword(form);
     } catch (err: unknown) {
-      const apiErr = err as Error & { status?: number; errors?: string[] };
-      if (apiErr.status === 409) setErrors({ general: 'Account already exists.' });
-      else if (apiErr.status === 400 && apiErr.errors?.length) setErrors({ general: apiErr.errors.join(' ') });
+      const apiErr = err as Error & { status?: number; errors?: string[]; message?: string };
+      console.error('Registration error:', { status: apiErr.status, message: apiErr.message, errors: apiErr.errors });
+      if ((apiErr.status === 400 || apiErr.status === 409) && apiErr.errors?.length)
+        setErrors({ general: apiErr.errors.join(' ') });
       else setErrors({ general: apiErr.message || 'Registration failed.' });
     } finally { setIsSubmitting(false); }
   };
@@ -153,15 +183,25 @@ export default function Register() {
               <div className={styles.row}>
                 <div className={styles.fieldGroup}>
                   <label className={styles.label}>PASSWORD</label>
-                  <input type="password" name="password" className={`${styles.input} ${errors.password ? styles.inputError : ''}`}
-                    placeholder="Min 8 chars" value={form.password} onChange={handleChange} />
+                  <div className={styles.inputWrapper}>
+                    <input type={showPassword ? 'text' : 'password'} name="password" className={`${styles.input} ${errors.password ? styles.inputError : ''}`}
+                      placeholder="Min 8 chars" value={form.password} onChange={handleChange} />
+                    <button type="button" className={styles.eyeBtn} onClick={() => setShowPassword(p => !p)} aria-label={showPassword ? 'Hide password' : 'Show password'}>
+                      <EyeIcon open={showPassword} />
+                    </button>
+                  </div>
                   {errors.password ? <span className={styles.fieldError}>{errors.password}</span>
                     : <span className={styles.hint}>Min 8 characters</span>}
                 </div>
                 <div className={styles.fieldGroup}>
                   <label className={styles.label}>CONFIRM PASSWORD</label>
-                  <input type="password" name="confirmPassword" className={`${styles.input} ${errors.confirmPassword ? styles.inputError : ''}`}
-                    placeholder="Repeat password" value={form.confirmPassword} onChange={handleChange} />
+                  <div className={styles.inputWrapper}>
+                    <input type={showConfirmPassword ? 'text' : 'password'} name="confirmPassword" className={`${styles.input} ${errors.confirmPassword ? styles.inputError : ''}`}
+                      placeholder="Repeat password" value={form.confirmPassword} onChange={handleChange} />
+                    <button type="button" className={styles.eyeBtn} onClick={() => setShowConfirmPassword(p => !p)} aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}>
+                      <EyeIcon open={showConfirmPassword} />
+                    </button>
+                  </div>
                   {errors.confirmPassword && <span className={styles.fieldError}>{errors.confirmPassword}</span>}
                 </div>
               </div>
