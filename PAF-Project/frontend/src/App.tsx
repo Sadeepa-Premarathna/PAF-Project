@@ -7,6 +7,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import ProfileCompletion from './pages/ProfileCompletion';
 import Dashboard from './pages/Dashboard';
+import Home from './pages/Home';
 
 import AdminDashboard from './pages/AdminDashboard';
 
@@ -37,7 +38,7 @@ export default function App() {
           } />
 
           {/* Default redirect */}
-          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="/" element={<Home />} />
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </AuthProvider>

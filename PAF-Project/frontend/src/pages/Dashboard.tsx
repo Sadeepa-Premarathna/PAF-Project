@@ -83,6 +83,23 @@ export default function Dashboard() {
         <div className={styles.heroLeafTopLeft} />
         <div className={styles.heroLeafBottomRight} />
 
+        {/* ── BACKGROUND ANIMATION ── */}
+        <div className={styles.leafContainer}>
+          {[...Array(12)].map((_, i) => (
+            <div 
+              key={i} 
+              className={styles.leaf} 
+              style={{
+                top: `${Math.random() * 100}%`,
+                left: `${Math.random() * 100}%`,
+                animationDelay: `${Math.random() * 15}s`,
+                width: `${Math.random() * 25 + 15}px`,
+                height: `${Math.random() * 25 + 15}px`
+              }} 
+            />
+          ))}
+        </div>
+
         <div className={styles.heroInner}>
           <div className={styles.heroLeft}>
             <h1 className={styles.heroTitle}>

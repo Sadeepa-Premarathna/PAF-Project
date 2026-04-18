@@ -77,10 +77,26 @@ export default function Login() {
       {/* ── SPLIT BODY ── */}
       <div className={styles.body}>
 
-        {/* LEFT — dark green hero */}
         <div className={styles.leftPane}>
           <div className={styles.heroLeaf1} />
           <div className={styles.heroLeaf2} />
+
+          {/* ── BACKGROUND ANIMATION ── */}
+          <div className={styles.leafContainer}>
+            {[...Array(8)].map((_, i) => (
+              <div 
+                key={i} 
+                className={styles.leaf} 
+                style={{
+                  top: `${Math.random() * 100}%`,
+                  left: `${Math.random() * 100}%`,
+                  animationDelay: `${Math.random() * 10}s`,
+                  width: `${Math.random() * 20 + 20}px`,
+                  height: `${Math.random() * 20 + 20}px`
+                }} 
+              />
+            ))}
+          </div>
 
           <div className={styles.heroContent}>
             <p className={styles.heroEye}>▸ SECURE PORTAL</p>

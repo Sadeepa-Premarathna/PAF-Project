@@ -130,7 +130,7 @@ export default function Register() {
                 <div className={styles.fieldGroup}>
                   <label className={styles.label}>STUDENT ID</label>
                   <input type="text" name="studentId" className={`${styles.input} ${errors.studentId ? styles.inputError : ''}`}
-                    placeholder="AB123456" value={form.studentId} onChange={handleChange} />
+                    placeholder="Enter your Student ID" value={form.studentId} onChange={handleChange} />
                   {errors.studentId && <span className={styles.fieldError}>{errors.studentId}</span>}
                 </div>
               </div>

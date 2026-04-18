@@ -79,6 +79,20 @@ public class GlobalExceptionHandler {
                 "errors", errors));
     }
 
+    @ExceptionHandler(org.springframework.dao.DataIntegrityViolationException.class)
+    public ResponseEntity<Map<String, Object>> handleDataIntegrity(org.springframework.dao.DataIntegrityViolationException ex) {
+        String msg = "A database constraint was violated.";
+        if (ex.getMessage() != null && ex.getMessage().contains("studentId")) {
+            msg = "This Student ID is already registered to another account.";
+        } else if (ex.getMessage() != null && ex.getMessage().contains("googleSub")) {
+            msg = "This Google account is already linked to an existing profile.";
+        }
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of(
+                "status", 409,
+                "error", "Conflict",
+                "message", msg));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleGeneral(Exception ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(

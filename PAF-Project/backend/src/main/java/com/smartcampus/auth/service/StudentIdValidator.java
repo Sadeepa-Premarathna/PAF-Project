@@ -10,9 +10,9 @@ public class StudentIdValidator {
     private static final Pattern STUDENT_ID_PATTERN = Pattern.compile("^[A-Z]{2}[0-9]{6}$");
 
     public String validate(String studentId) {
-        if (studentId != null && STUDENT_ID_PATTERN.matcher(studentId).matches()) {
+        if (studentId != null && !studentId.trim().isEmpty()) {
             return null;
         }
-        return "Student ID must match pattern AA000000 (two uppercase letters followed by six digits)";
+        return "Student ID is required";
     }
 }

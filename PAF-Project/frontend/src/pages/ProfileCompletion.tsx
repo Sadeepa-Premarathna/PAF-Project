@@ -40,13 +40,13 @@ export default function ProfileCompletion() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ name: profileData.name, email: profileData.email, googleSub: profileData.googleSub, studentId, department }),
+        body: JSON.stringify({ name: profileData.name, email: profileData.email, googleSub: profileData.googleSub, studentId: studentId.trim(), department: department.trim() }),
       });
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
-        if (res.status === 409) setErrors({ general: 'An account with this email already exists.' });
+        if (res.status === 409) setErrors({ general: body.message || 'This data is already registered to another account.' });
         else if (res.status === 400) setErrors({ general: body.message || 'Invalid data. Please check your inputs.' });
-        else setErrors({ general: 'Something went wrong. Please try again.' });
+        else setErrors({ general: body.message || 'Something went wrong. Please try again.' });
         return;
       }
       const data = await res.json();
@@ -120,7 +120,8 @@ export default function ProfileCompletion() {
                 <label className={styles.label}>STUDENT ID</label>
                 <input
                   type="text" className={`${styles.input} ${errors.studentId ? styles.inputError : ''}`}
-                  placeholder="e.g. AB123456" value={studentId}
+                  placeholder="Enter your Student ID"
+                  value={studentId}
                   onChange={e => { setStudentId(e.target.value); setErrors(p => ({ ...p, studentId: undefined })); }}
                   autoComplete="off"
                 />
