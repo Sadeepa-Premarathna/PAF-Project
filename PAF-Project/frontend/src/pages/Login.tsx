@@ -16,7 +16,6 @@ export default function Login() {
 
   const oauthError = searchParams.get('error');
 
-  // Already logged in — redirect to dashboard
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
       navigate('/dashboard', { replace: true });
@@ -44,9 +43,9 @@ export default function Login() {
   if (isLoading) {
     return (
       <div className={styles.container}>
-        <div className={styles.card}>
+        <div className={styles.leftPane}>
           <div className={styles.spinner} />
-          <p>Checking session...</p>
+          <p style={{ marginTop: '16px' }}>Preparing the Hub...</p>
         </div>
       </div>
     );
@@ -54,78 +53,94 @@ export default function Login() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.card}>
-        <div className={styles.logo}>
-          <span>🏫</span>
+      {/* Absolute Centered Splitting Text */}
+      <div className={styles.splitTitleContainer}>
+        <div className={styles.titleLeft}>
+          <div className={styles.subtextLeft}>SECURE PORTAL</div>
+          SMA<br/>
+          <span className={styles.titleWord2Left}>OPE</span>
         </div>
-        <h1 className={styles.title}>Smart Campus</h1>
-        <p className={styles.subtitle}>Operations Hub</p>
+        <div className={styles.titleRight}>
+          RT<br/>
+          RATIONS
+        </div>
+      </div>
 
-        {(error || oauthError) && (
-          <div className={styles.errorBanner}>
-            {error
-              ? error
-              : oauthError === 'oauth_failed'
-              ? 'Google sign-in was cancelled or failed. Please try again.'
-              : 'Authentication failed. Please try again.'}
-          </div>
-        )}
+      <div className={styles.leftPane}>
+        <div className={styles.navHeaderLeft}>
+           <span className={styles.logo}>SMART<span className={styles.logoHighlight}>CAMPUS</span></span>
+           <span className={styles.tagline}>YOU CAN MANAGE YOUR LIFE</span>
+        </div>
+        
+        <div className={styles.formContainer}>
+          <p className={styles.formDesc}>
+            There is a moment in the life of any aspiring administrator that it is time to access the primary operations hub to navigate the campus system.
+          </p>
 
-        <form onSubmit={handleSubmit} className={styles.form}>
-          <input
-            type="email"
-            className={styles.input}
-            placeholder="University email"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            required
-            autoComplete="email"
-          />
-          <input
-            type="password"
-            className={styles.input}
-            placeholder="Password"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            required
-            autoComplete="current-password"
-          />
-          <button
-            type="submit"
-            className={styles.submitBtn}
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? <><div className={styles.btnSpinner} /> Signing in...</> : 'Sign in'}
-          </button>
-        </form>
-
-        <div className={styles.divider}><span>or</span></div>
-
-        <button
-          className={styles.googleBtn}
-          onClick={handleGoogleLogin}
-          disabled={isRedirecting}
-        >
-          {isRedirecting ? (
-            <>
-              <div className={styles.btnSpinner} />
-              Redirecting to Google...
-            </>
-          ) : (
-            <>
-              <GoogleIcon />
-              Sign in with Google
-            </>
+          {(error || oauthError) && (
+            <div className={styles.errorBanner}>
+              {error
+                ? error
+                : oauthError === 'oauth_failed'
+                ? 'Google sign-in cancelled.'
+                : 'Authentication failed.'}
+            </div>
           )}
-        </button>
 
-        <p className={styles.registerLink}>
-          Don't have an account? <Link to="/register">Register</Link>
-        </p>
+          <form onSubmit={handleSubmit}>
+            <div className={styles.inputWrapper}>
+              <input
+                type="email"
+                className={styles.input}
+                placeholder="University Email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                required
+                autoComplete="email"
+              />
+            </div>
+            <div className={styles.inputWrapper}>
+              <input
+                type="password"
+                className={styles.input}
+                placeholder="Password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                required
+                autoComplete="current-password"
+              />
+            </div>
+            
+            <div className={styles.actionRow}>
+              <button type="submit" className={styles.submitBtn} disabled={isSubmitting}>
+                {isSubmitting ? <><div className={styles.spinner} /> AUTHENTICATING</> : 'SESSION LOGIN \u2192'} 
+              </button>
+              
+              <button
+                type="button"
+                className={styles.googleIconBtn}
+                onClick={handleGoogleLogin}
+                disabled={isRedirecting}
+              >
+                {isRedirecting ? <div className={styles.spinner} /> : <><GoogleIcon /> Google</>}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
 
-        <p className={styles.footer}>
-          University of Smart Campus · Secure Login
-        </p>
+      <div className={styles.rightPane}>
+        <div className={styles.navHeaderRight}>
+          <Link to="/">HOME</Link>
+          <Link to="/about">ABOUT</Link>
+          <Link to="/services">SERVICES</Link>
+          <Link to="/register">SIGN UP</Link>
+        </div>
+
+        <div className={styles.bottomControls}>
+          <div className={`${styles.arrowBox} ${styles.arrowBoxDark}`}>&larr;</div>
+          <div className={styles.arrowBox}>&rarr;</div>
+        </div>
       </div>
     </div>
   );
@@ -133,7 +148,7 @@ export default function Login() {
 
 function GoogleIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+    <svg width="20" height="20" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
       <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
       <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/>
       <path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>

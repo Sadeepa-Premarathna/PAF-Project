@@ -6,9 +6,9 @@ import Unauthorized from './pages/Unauthorized';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import ProfileCompletion from './pages/ProfileCompletion';
+import Dashboard from './pages/Dashboard';
 
-// Placeholder pages — other modules will fill these in
-function Dashboard() { return <h1>Dashboard</h1>; }
+
 function AdminPanel() { return <h1>Admin Panel</h1>; }
 
 export default function App() {

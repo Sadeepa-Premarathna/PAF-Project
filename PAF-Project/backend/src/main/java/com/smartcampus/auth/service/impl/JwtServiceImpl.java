@@ -36,6 +36,7 @@ public class JwtServiceImpl implements JwtService {
         Date now = new Date();
         Date expiry = new Date(now.getTime() + ACCESS_TOKEN_EXPIRY_MS);
         return Jwts.builder()
+                .setId(java.util.UUID.randomUUID().toString())
                 .setSubject(user.getId().toString())
                 .claim("email", user.getEmail())
                 .claim("roles", List.of("ROLE_" + user.getRole().name()))
@@ -47,6 +48,7 @@ public class JwtServiceImpl implements JwtService {
     public String generateRefreshToken(AppUser user) {
         Date now = new Date();
         return Jwts.builder()
+                .setId(java.util.UUID.randomUUID().toString())
                 .setSubject(user.getId().toString())
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + REFRESH_TOKEN_EXPIRY_MS))
