@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { AuthUser, Role } from '../types/auth';
+import type { AuthUser, Role } from '../types/auth';
 import { authStore } from '../store/authStore';
 
 interface AuthContextValue {
