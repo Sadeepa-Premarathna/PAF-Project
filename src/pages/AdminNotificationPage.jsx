@@ -25,16 +25,16 @@ export default function AdminNotificationPage() {
 
   const validate = () => {
     const e = {};
-    if (!form.userId || isNaN(form.userId) || Number(form.userId) < 1)
-      e.userId = "Valid User ID is required.";
+    if (!form.userId || isNaN(form.userId) || Number(form.userId) < 1 || Number(form.userId) > 20)
+      e.userId = "User ID must be between 1 and 20.";
     if (!form.message.trim())
       e.message = "Message cannot be empty.";
     else if (form.message.trim().length < 5)
       e.message = "Min 5 characters required.";
     else if (form.message.trim().length > 500)
       e.message = "Max 500 characters allowed.";
-    if (form.referenceId && isNaN(form.referenceId))
-      e.referenceId = "Must be a number.";
+    if (form.referenceId && (isNaN(form.referenceId) || Number(form.referenceId) < 1 || Number(form.referenceId) > 20))
+      e.referenceId = "Reference ID must be between 1 and 20.";
     return e;
   };
 
@@ -131,7 +131,7 @@ export default function AdminNotificationPage() {
             <label className="anp-label">User ID</label>
             <input
               className={`anp-input${errors.userId ? " error" : ""}`}
-              name="userId" type="number" placeholder="e.g. 1"
+              name="userId" type="number" min="1" max="20" placeholder="e.g. 1"
               value={form.userId} onChange={handleChange}
             />
             {errors.userId && <p className="anp-field-error">{errors.userId}</p>}
@@ -143,7 +143,7 @@ export default function AdminNotificationPage() {
             </label>
             <input
               className={`anp-input${errors.referenceId ? " error" : ""}`}
-              name="referenceId" type="number" placeholder="Booking / Ticket ID"
+              name="referenceId" type="number" min="1" max="20" placeholder="Booking / Ticket ID"
               value={form.referenceId} onChange={handleChange}
             />
             {errors.referenceId && <p className="anp-field-error">{errors.referenceId}</p>}

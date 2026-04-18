@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import "./UserNotificationPage.css";
 import notificationService from "../services/notificationService";
 
-const CURRENT_USER_ID = 1;
 
 const TYPE_CFG = {
   BOOKING_APPROVED: { label: "Booking Approved", accent: "#10b981", bg: "#f0fdf4", icon: "✓" },
@@ -28,56 +27,83 @@ function timeAgo(d) {
 }
 
 export default function UserNotificationsPage() {
+  const [currentUserId, setCurrentUserId] = useState(1);
   const [notifications, setNotifications] = useState([]);
   const [loading,       setLoading]       = useState(false);
   const [filter,        setFilter]        = useState("ALL");
   const [unreadCount,   setUnreadCount]   = useState(0);
 
-  // Auto-fetch on mount — so when admin navigates here, data loads fresh
-  useEffect(() => { fetchAll(); }, []);
-
-  const fetchAll = async () => {
+  const fetchAll = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await notificationService.getAll(CURRENT_USER_ID);
+      const res = await notificationService.getAll(currentUserId);
       setNotifications(res.data);
-      setUnreadCount(res.data.filter((n) => !n.isRead).length);
+      setUnreadCount(res.data.filter((n) => !n.read).length);
     } catch (err) { console.error(err); }
     finally { setLoading(false); }
-  };
+  }, [currentUserId]);
+
+  // Auto-fetch on mount and when currentUserId changes
+  useEffect(() => { fetchAll(); }, [fetchAll]);
 
   const handleMarkAsRead = async (id) => {
     try {
       await notificationService.markAsRead(id);
-      setNotifications((p) => p.map((n) => n.id === id ? { ...n, isRead: true } : n));
+      setNotifications((p) => p.map((n) => n.id === id ? { ...n, read: true } : n));
       setUnreadCount((c) => Math.max(0, c - 1));
     } catch (err) { console.error(err); }
   };
 
   const handleMarkAllRead = async () => {
     try {
-      await notificationService.markAllAsRead(CURRENT_USER_ID);
-      setNotifications((p) => p.map((n) => ({ ...n, isRead: true })));
+      await notificationService.markAllAsRead(currentUserId);
+      setNotifications((p) => p.map((n) => ({ ...n, read: true })));
+      setUnreadCount(0);
+    } catch (err) { console.error(err); }
+  };
+
+  const handleDeleteAll = async () => {
+    if (!window.confirm("Are you sure you want to delete all notifications for User " + currentUserId + "?")) return;
+    try {
+      await notificationService.deleteAll(currentUserId);
+      setNotifications([]);
       setUnreadCount(0);
     } catch (err) { console.error(err); }
   };
 
   const filtered = notifications.filter((n) => {
     if (filter === "ALL")    return true;
-    if (filter === "UNREAD") return !n.isRead;
+    if (filter === "UNREAD") return !n.read;
     return n.type === filter;
   });
 
   return (
     <div className="unp-page">
       <div className="unp-header">
-        <span className="unp-role-badge">USER</span>
-        <h2 className="unp-heading">
-          My Notifications
-          {unreadCount > 0 && (
-            <span className="unp-unread-badge">{unreadCount}</span>
-          )}
-        </h2>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "15px" }}>
+          <div>
+            <span className="unp-role-badge">USER</span>
+            <h2 className="unp-heading">
+              My Notifications
+              {unreadCount > 0 && (
+                <span className="unp-unread-badge">{unreadCount}</span>
+              )}
+            </h2>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px", background: "#f8fafc", padding: "8px 16px", borderRadius: "8px", border: "1px solid #e2e8f0" }}>
+            <label style={{ fontWeight: 600, color: "#334155", fontSize: "0.9rem" }}>Viewing as User ID:</label>
+            <input 
+              type="number" 
+              min="1" max="20"
+              value={currentUserId}
+              onChange={(e) => {
+                let val = Number(e.target.value);
+                if(val >= 1 && val <= 20) setCurrentUserId(val);
+              }}
+              style={{ padding: "6px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", width: "70px", fontWeight: "bold" }}
+            />
+          </div>
+        </div>
         <p className="unp-sub">
           {unreadCount > 0
             ? `You have ${unreadCount} unread notification${unreadCount > 1 ? "s" : ""}.`
@@ -107,6 +133,15 @@ export default function UserNotificationsPage() {
               ✓ Mark all read
             </button>
           )}
+          {notifications.length > 0 && (
+            <button 
+              className="unp-btn" 
+              onClick={handleDeleteAll} 
+              style={{ background: "#fef2f2", color: "#ef4444", border: "1px solid #fecaca" }}
+            >
+              🗑️ Delete All
+            </button>
+          )}
           <button className="unp-btn unp-btn-outline" onClick={fetchAll}>
             ↻ Refresh
           </button>
@@ -130,7 +165,7 @@ export default function UserNotificationsPage() {
         <div className="unp-notif-list">
           {filtered.map((n) => {
             const cfg = TYPE_CFG[n.type] || { label: n.type, accent: "#6b7280", bg: "#f9fafb", icon: "•" };
-            const unread = !n.isRead;
+            const unread = !n.read;
             return (
               <div
                 key={n.id}

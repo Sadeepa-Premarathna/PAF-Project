@@ -22,6 +22,10 @@ const notificationService = {
   // User — mark all read
   markAllAsRead: (userId) =>
     axios.put(`${BASE}/read-all`, null, { params: { userId } }),
+
+  // User — delete all
+  deleteAll: (userId) =>
+    axios.delete(BASE, { params: { userId } }),
 };
 
 export default notificationService;
