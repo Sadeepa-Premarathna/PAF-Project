@@ -18,12 +18,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import java.util.Arrays;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -81,14 +83,20 @@ public class AuthController {
     @PostMapping("/callback")
     public ResponseEntity<?> handleOAuthCallback(
             @Valid @RequestBody OAuthCallbackRequest request, HttpServletResponse response) {
-        OAuth2UserInfo userInfo = googleOAuthClient.exchangeCodeAndGetUserInfo(request.getCode(), request.getRedirectUri());
-        return userService.findByGoogleSub(userInfo.getSub())
-                .map(user -> {
-                    if (!user.isActive()) throw new AccountDisabledException("Account is deactivated");
-                    return ResponseEntity.ok().body((Object) issueTokens(user, response));
-                })
-                .orElseGet(() -> ResponseEntity.status(202).body(
-                        new ProfileCompletionResponse(userInfo.getName(), userInfo.getEmail(), userInfo.getSub())));
+        log.info("OAuth callback received. redirectUri={}", request.getRedirectUri());
+        try {
+            OAuth2UserInfo userInfo = googleOAuthClient.exchangeCodeAndGetUserInfo(request.getCode(), request.getRedirectUri());
+            return userService.findByGoogleSub(userInfo.getSub())
+                    .map(user -> {
+                        if (!user.isActive()) throw new AccountDisabledException("Account is deactivated");
+                        return ResponseEntity.ok().body((Object) issueTokens(user, response));
+                    })
+                    .orElseGet(() -> ResponseEntity.status(202).body(
+                            new ProfileCompletionResponse(userInfo.getName(), userInfo.getEmail(), userInfo.getSub())));
+        } catch (Exception e) {
+            log.error("OAuth callback error: {}", e.getMessage(), e);
+            return ResponseEntity.status(500).body(java.util.Map.of("error", e.getMessage()));
+        }
     }
 
     @PostMapping("/refresh")

@@ -46,9 +46,13 @@ export default function AuthCallback() {
           }
           return;
         }
-        navigate('/login?error=auth_failed', { replace: true });
+        // Log the actual error from backend for debugging
+        const errBody = await res.json().catch(() => ({}));
+        console.error('[AuthCallback] Backend OAuth error:', errBody);
+        navigate(`/login?error=auth_failed&detail=${encodeURIComponent(errBody?.error ?? 'unknown')}`, { replace: true });
       })
-      .catch(() => {
+      .catch((err) => {
+        console.error('[AuthCallback] Network error:', err);
         navigate('/login?error=auth_failed', { replace: true });
       });
   }, [navigate, setAuth]);

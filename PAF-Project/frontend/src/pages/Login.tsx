@@ -15,6 +15,7 @@ export default function Login() {
   const [error, setError] = useState<string | null>(null);
 
   const oauthError = searchParams.get('error');
+  const oauthDetail = searchParams.get('detail');
 
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
@@ -83,6 +84,8 @@ export default function Login() {
                 ? error
                 : oauthError === 'oauth_failed'
                 ? 'Google sign-in cancelled.'
+                : oauthDetail
+                ? `Authentication failed: ${oauthDetail}`
                 : 'Authentication failed.'}
             </div>
           )}

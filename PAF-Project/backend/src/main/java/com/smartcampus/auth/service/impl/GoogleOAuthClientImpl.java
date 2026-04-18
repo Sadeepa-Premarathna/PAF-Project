@@ -27,6 +27,14 @@ public class GoogleOAuthClientImpl implements GoogleOAuthClient {
 
     private final RestTemplate restTemplate;
 
+    @jakarta.annotation.PostConstruct
+    public void init() {
+        org.slf4j.LoggerFactory.getLogger(GoogleOAuthClientImpl.class)
+            .info("GoogleOAuthClient loaded. client_id={}...{}", 
+                clientId.substring(0, Math.min(20, clientId.length())),
+                clientId.substring(Math.max(0, clientId.length() - 10)));
+    }
+
     @Override
     public OAuth2UserInfo exchangeCodeAndGetUserInfo(String code, String redirectUri) {
         String accessToken = exchangeCode(code, redirectUri);
