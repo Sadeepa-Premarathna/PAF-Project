@@ -1,5 +1,6 @@
 import { useAuth } from '../context/AuthContext';
 import styles from './Dashboard.module.css';
+import { Link } from 'react-router-dom';
 
 const StarIcon = () => (
   <svg width="14" height="14" fill="#f97316" viewBox="0 0 24 24">
@@ -68,7 +69,7 @@ export default function Dashboard() {
         <div className={styles.navLinks}>
           <a href="#facilities" className={styles.navLink}>Facilities</a>
           <a href="#bookings" className={styles.navLink}>Bookings</a>
-          <a href="#tickets" className={styles.navLink}>Tickets</a>
+          <Link to="/tickets" className={styles.navLink}>Tickets</Link>
           <a href="#about" className={styles.navLink}>About</a>
         </div>
         <div className={styles.navActions}>
@@ -234,7 +235,7 @@ export default function Dashboard() {
             </p>
             <div className={styles.ctaBtns}>
               <button className={styles.ctaPrimary}>Explore Facilities <ArrowRight /></button>
-              <button className={styles.ctaSecondary}>Report an Issue</button>
+              <Link to="/tickets/create" className={styles.ctaSecondary} style={{ textDecoration: 'none', textAlign: 'center' }}>Report an Issue</Link>
             </div>
           </div>
 

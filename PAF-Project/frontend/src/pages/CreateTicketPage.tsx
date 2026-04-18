@@ -61,7 +61,7 @@ export default function CreateTicketPage() {
       });
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
-        throw new Error(body.message || 'Failed to create ticket');
+        throw new Error(body.message || body.error || 'Failed to create ticket');
       }
       const ticket = await res.json();
 
@@ -69,11 +69,15 @@ export default function CreateTicketPage() {
       if (images.length > 0) {
         const fd = new FormData();
         images.forEach(img => fd.append('files', img));
-        await fetch(`${API_BASE}/api/tickets/${ticket.id}/images`, {
+        const imgRes = await fetch(`${API_BASE}/api/tickets/${ticket.id}/images`, {
           method: 'POST',
           headers: { Authorization: `Bearer ${token}` },
           body: fd,
         });
+        if (!imgRes.ok) {
+          const imgBody = await imgRes.json().catch(() => ({}));
+          throw new Error(imgBody.message || 'Ticket created, but image upload failed');
+        }
       }
       navigate('/tickets');
     } catch (err: unknown) {

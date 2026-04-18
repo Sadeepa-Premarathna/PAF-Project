@@ -30,6 +30,10 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public TicketResponse createTicket(CreateTicketRequest req, AppUser actor) {
+        // Ensure we are using a managed entity for the actor
+        AppUser creator = userRepo.findById(actor.getId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
         Ticket ticket = Ticket.builder()
                 .title(req.getTitle())
                 .description(req.getDescription())
@@ -38,7 +42,7 @@ public class TicketServiceImpl implements TicketService {
                 .priority(req.getPriority())
                 .preferredContact(req.getPreferredContact())
                 .status(TicketStatus.OPEN)
-                .createdBy(actor)
+                .createdBy(creator)
                 .build();
         return TicketResponse.fromSummary(ticketRepo.save(ticket));
     }

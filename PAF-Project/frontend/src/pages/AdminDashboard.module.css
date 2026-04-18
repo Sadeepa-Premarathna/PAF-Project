@@ -103,6 +103,24 @@
   box-shadow: 0 4px 20px rgba(79, 70, 229, 0.1);
 }
 
+.logoutBtn {
+  background: #fee2e2;
+  color: #991b1b;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+  transition: all 0.2s;
+}
+
+.logoutBtn:hover {
+  background: #fecaca;
+  transform: translateY(-1px);
+}
+
 .profilePic {
   width: 44px;
   height: 44px;

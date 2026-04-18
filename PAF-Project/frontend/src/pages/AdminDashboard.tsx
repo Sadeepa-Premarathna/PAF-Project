@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import styles from './AdminDashboard.module.css';
 import { Link } from 'react-router-dom';
@@ -120,6 +121,7 @@ export default function AdminDashboard() {
               <input type="text" placeholder="Search users..." className={styles.searchBar} style={{ paddingLeft: '44px' }} />
             </div>
             <div className={styles.navIcon} style={{ background: '#fff' }}><BellIcon /></div>
+            <button className={styles.logoutBtn} onClick={logout}>Sign Out</button>
             <div className={styles.profilePic}>
               <img src={user?.pictureUrl || `https://ui-avatars.com/api/?name=${firstName}&background=4f46e5&color=fff`} alt="Profile" style={{ width: '100%', height: '100%' }} />
             </div>
