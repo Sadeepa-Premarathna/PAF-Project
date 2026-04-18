@@ -19,10 +19,7 @@ export default function AuthCallback() {
     const code = params.get('code');
     const error = params.get('error');
 
-    if (error || !code) {
-      navigate('/login?error=oauth_failed', { replace: true });
-      return;
-    }
+    if (error || !code) { navigate('/login?error=oauth_failed', { replace: true }); return; }
 
     fetch(`${API_BASE_URL}/api/auth/callback`, {
       method: 'POST',
@@ -39,14 +36,9 @@ export default function AuthCallback() {
         if (res.ok) {
           const data = await res.json();
           setAuth(data.user, data.accessToken);
-          if (data.user.role === 'ADMIN') {
-            navigate('/admin', { replace: true });
-          } else {
-            navigate('/dashboard', { replace: true });
-          }
+          navigate(data.user.role === 'ADMIN' ? '/admin' : '/dashboard', { replace: true });
           return;
         }
-        // Log the actual error from backend for debugging
         const errBody = await res.json().catch(() => ({}));
         console.error('[AuthCallback] Backend OAuth error:', errBody);
         navigate(`/login?error=auth_failed&detail=${encodeURIComponent(errBody?.error ?? 'unknown')}`, { replace: true });
@@ -58,8 +50,45 @@ export default function AuthCallback() {
   }, [navigate, setAuth]);
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-      <p>Signing you in...</p>
+    <div style={{
+      minHeight: '100vh',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      background: '#0f2618',
+      fontFamily: "'Poppins', sans-serif",
+      color: 'white',
+      gap: '24px',
+    }}>
+      {/* Logo */}
+      <div style={{
+        fontFamily: "'Barlow Condensed', sans-serif",
+        fontWeight: 900,
+        fontSize: '28px',
+        letterSpacing: '3px',
+        marginBottom: '8px',
+      }}>
+        SMART<span style={{ color: '#f97316' }}>CAMPUS</span>
+      </div>
+
+      {/* Spinner */}
+      <div style={{
+        width: '48px', height: '48px',
+        border: '3px solid rgba(249,115,22,0.2)',
+        borderTopColor: '#f97316',
+        borderRadius: '50%',
+        animation: 'spin 0.9s linear infinite',
+      }} />
+
+      <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.5)', letterSpacing: '1px' }}>
+        Signing you in...
+      </p>
+
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@900&family=Poppins:wght@400&display=swap');
+        @keyframes spin { to { transform: rotate(360deg); } }
+      `}</style>
     </div>
   );
 }

@@ -3,6 +3,17 @@ import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import styles from './Login.module.css';
 
+function GoogleIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+      <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
+      <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/>
+      <path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>
+      <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
+    </svg>
+  );
+}
+
 export default function Login() {
   const { login, loginWithPassword, isAuthenticated, isLoading } = useAuth();
   const navigate = useNavigate();
@@ -18,15 +29,10 @@ export default function Login() {
   const oauthDetail = searchParams.get('detail');
 
   useEffect(() => {
-    if (!isLoading && isAuthenticated) {
-      navigate('/dashboard', { replace: true });
-    }
+    if (!isLoading && isAuthenticated) navigate('/dashboard', { replace: true });
   }, [isAuthenticated, isLoading, navigate]);
 
-  const handleGoogleLogin = () => {
-    setIsRedirecting(true);
-    login();
-  };
+  const handleGoogleLogin = () => { setIsRedirecting(true); login(); };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,119 +49,151 @@ export default function Login() {
 
   if (isLoading) {
     return (
-      <div className={styles.container}>
-        <div className={styles.leftPane}>
+      <div className={styles.page}>
+        <div className={styles.loadingScreen}>
           <div className={styles.spinner} />
-          <p style={{ marginTop: '16px' }}>Preparing the Hub...</p>
+          <p>Loading...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className={styles.container}>
-      {/* Absolute Centered Splitting Text */}
-      <div className={styles.splitTitleContainer}>
-        <div className={styles.titleLeft}>
-          <div className={styles.subtextLeft}>SECURE PORTAL</div>
-          SMA<br/>
-          <span className={styles.titleWord2Left}>OPE</span>
+    <div className={styles.page}>
+      {/* ── NAVBAR ── */}
+      <nav className={styles.navbar}>
+        <div className={styles.navLogo}>
+          <span className={styles.navDot}>●</span>
+          SMART<span className={styles.navOrange}>CAMPUS</span>
         </div>
-        <div className={styles.titleRight}>
-          RT<br/>
-          RATIONS
+        <div className={styles.navLinks}>
+          <Link to="/" className={styles.navLink}>Home</Link>
+          <Link to="/about" className={styles.navLink}>About</Link>
+          <Link to="/services" className={styles.navLink}>Services</Link>
         </div>
-      </div>
+        <Link to="/register" className={styles.navRegister}>Register</Link>
+      </nav>
 
-      <div className={styles.leftPane}>
-        <div className={styles.navHeaderLeft}>
-           <span className={styles.logo}>SMART<span className={styles.logoHighlight}>CAMPUS</span></span>
-           <span className={styles.tagline}>YOU CAN MANAGE YOUR LIFE</span>
+      {/* ── SPLIT BODY ── */}
+      <div className={styles.body}>
+
+        {/* LEFT — dark green hero */}
+        <div className={styles.leftPane}>
+          <div className={styles.heroLeaf1} />
+          <div className={styles.heroLeaf2} />
+
+          <div className={styles.heroContent}>
+            <p className={styles.heroEye}>▸ SECURE PORTAL</p>
+            <h1 className={styles.heroTitle}>
+              NAVIGATE<br />YOUR<br />
+              <span className={styles.heroOrange}>CAMPUS</span><br />LIFE
+            </h1>
+            <p className={styles.heroSubtitle}>
+              Access facilities, manage bookings, and stay connected — all in one place built for students.
+            </p>
+          </div>
+
+          {/* Character on orange circle */}
+          <div className={styles.heroArt}>
+            <div className={styles.heroCircle}>
+              <svg viewBox="0 0 180 240" fill="none" xmlns="http://www.w3.org/2000/svg" width="180">
+                <circle cx="90" cy="72" r="30" fill="#f4c89a"/>
+                <ellipse cx="90" cy="55" rx="30" ry="18" fill="#3d2300"/>
+                <ellipse cx="90" cy="155" rx="40" ry="52" fill="#1a5c38"/>
+                <path d="M52 120 Q20 95 28 70" stroke="#f4c89a" strokeWidth="13" strokeLinecap="round" fill="none"/>
+                <rect x="18" y="58" width="26" height="20" rx="3" fill="#fff" stroke="#f97316" strokeWidth="2"/>
+                <line x1="23" y1="65" x2="38" y2="65" stroke="#f97316" strokeWidth="1.5"/>
+                <line x1="23" y1="71" x2="34" y2="71" stroke="#f97316" strokeWidth="1.5"/>
+                <path d="M128 120 Q160 95 152 70" stroke="#f4c89a" strokeWidth="13" strokeLinecap="round" fill="none"/>
+                <rect x="72" y="140" width="56" height="68" rx="10" fill="#c0392b"/>
+                <rect x="80" y="148" width="40" height="30" rx="6" fill="#e74c3c"/>
+                <path d="M82 140 Q68 158 72 182" stroke="#a93226" strokeWidth="6" strokeLinecap="round" fill="none"/>
+                <path d="M118 140 Q132 158 128 182" stroke="#a93226" strokeWidth="6" strokeLinecap="round" fill="none"/>
+                <ellipse cx="100" cy="138" rx="22" ry="8" fill="#f1c40f"/>
+                <rect x="78" y="134" width="44" height="8" rx="4" fill="#f1c40f"/>
+                <rect x="80" y="202" width="16" height="46" rx="8" fill="#2c5f3f"/>
+                <rect x="104" y="202" width="16" height="46" rx="8" fill="#2c5f3f"/>
+                <ellipse cx="88" cy="248" rx="14" ry="7" fill="#1a1a1a"/>
+                <ellipse cx="112" cy="248" rx="14" ry="7" fill="#1a1a1a"/>
+                <rect x="82" y="88" width="16" height="10" rx="5" fill="#1a1a1a" opacity="0.8"/>
+                <rect x="102" y="88" width="16" height="10" rx="5" fill="#1a1a1a" opacity="0.8"/>
+                <line x1="98" y1="93" x2="102" y2="93" stroke="#1a1a1a" strokeWidth="2"/>
+              </svg>
+            </div>
+          </div>
+
+          {/* Bottom stats strip */}
+          <div className={styles.heroStats}>
+            <div className={styles.heroStat}><strong>124+</strong><span>Facilities</span></div>
+            <div className={styles.heroStatDivider} />
+            <div className={styles.heroStat}><strong>16+</strong><span>Departments</span></div>
+            <div className={styles.heroStatDivider} />
+            <div className={styles.heroStat}><strong>20+</strong><span>Years</span></div>
+          </div>
         </div>
-        
-        <div className={styles.formContainer}>
-          <p className={styles.formDesc}>
-            There is a moment in the life of any aspiring administrator that it is time to access the primary operations hub to navigate the campus system.
-          </p>
 
-          {(error || oauthError) && (
-            <div className={styles.errorBanner}>
-              {error
-                ? error
-                : oauthError === 'oauth_failed'
-                ? 'Google sign-in cancelled.'
-                : oauthDetail
-                ? `Authentication failed: ${oauthDetail}`
-                : 'Authentication failed.'}
-            </div>
-          )}
+        {/* RIGHT — white form panel */}
+        <div className={styles.rightPane}>
+          <div className={styles.formBox}>
+            <p className={styles.formEye}>▸ WELCOME BACK</p>
+            <h2 className={styles.formTitle}>SIGN IN TO<br /><span className={styles.formOrange}>YOUR HUB</span></h2>
+            <p className={styles.formDesc}>Enter your university credentials to access the operations platform.</p>
 
-          <form onSubmit={handleSubmit}>
-            <div className={styles.inputWrapper}>
-              <input
-                type="email"
-                className={styles.input}
-                placeholder="University Email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                required
-                autoComplete="email"
-              />
-            </div>
-            <div className={styles.inputWrapper}>
-              <input
-                type="password"
-                className={styles.input}
-                placeholder="Password"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                required
-                autoComplete="current-password"
-              />
-            </div>
-            
-            <div className={styles.actionRow}>
-              <button type="submit" className={styles.submitBtn} disabled={isSubmitting}>
-                {isSubmitting ? <><div className={styles.spinner} /> AUTHENTICATING</> : 'SESSION LOGIN \u2192'} 
+            {(error || oauthError) && (
+              <div className={styles.errorBanner}>
+                {error
+                  ? error
+                  : oauthError === 'oauth_failed'
+                  ? 'Google sign-in was cancelled.'
+                  : oauthDetail
+                  ? `Authentication failed: ${oauthDetail}`
+                  : 'Authentication failed. Please try again.'}
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit} className={styles.form}>
+              <div className={styles.fieldGroup}>
+                <label className={styles.label}>UNIVERSITY EMAIL</label>
+                <input
+                  type="email"
+                  className={styles.input}
+                  placeholder="you@university.edu"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  required
+                  autoComplete="email"
+                />
+              </div>
+              <div className={styles.fieldGroup}>
+                <label className={styles.label}>PASSWORD</label>
+                <input
+                  type="password"
+                  className={styles.input}
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  required
+                  autoComplete="current-password"
+                />
+              </div>
+
+              <button type="submit" className={styles.primaryBtn} disabled={isSubmitting}>
+                {isSubmitting ? <><div className={styles.btnSpinner} /> Signing in...</> : 'Sign In →'}
               </button>
-              
-              <button
-                type="button"
-                className={styles.googleIconBtn}
-                onClick={handleGoogleLogin}
-                disabled={isRedirecting}
-              >
-                {isRedirecting ? <div className={styles.spinner} /> : <><GoogleIcon /> Google</>}
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
+            </form>
 
-      <div className={styles.rightPane}>
-        <div className={styles.navHeaderRight}>
-          <Link to="/">HOME</Link>
-          <Link to="/about">ABOUT</Link>
-          <Link to="/services">SERVICES</Link>
-          <Link to="/register">SIGN UP</Link>
-        </div>
+            <div className={styles.divider}><span>OR</span></div>
 
-        <div className={styles.bottomControls}>
-          <div className={`${styles.arrowBox} ${styles.arrowBoxDark}`}>&larr;</div>
-          <div className={styles.arrowBox}>&rarr;</div>
+            <button className={styles.googleBtn} onClick={handleGoogleLogin} disabled={isRedirecting}>
+              {isRedirecting ? <div className={styles.btnSpinner} /> : <><GoogleIcon /> Continue with Google</>}
+            </button>
+
+            <p className={styles.switchLink}>
+              Don't have an account? <Link to="/register" className={styles.link}>Create one →</Link>
+            </p>
+          </div>
         </div>
       </div>
     </div>
-  );
-}
-
-function GoogleIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
-      <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
-      <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/>
-      <path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>
-      <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
-    </svg>
   );
 }

@@ -8,8 +8,7 @@ import Register from './pages/Register';
 import ProfileCompletion from './pages/ProfileCompletion';
 import Dashboard from './pages/Dashboard';
 
-
-function AdminPanel() { return <h1>Admin Panel</h1>; }
+import AdminDashboard from './pages/AdminDashboard';
 
 export default function App() {
   return (
@@ -33,7 +32,7 @@ export default function App() {
           {/* Protected — ADMIN only */}
           <Route path="/admin/*" element={
             <PrivateRoute requiredRoles={['ADMIN']}>
-              <AdminPanel />
+              <AdminDashboard />
             </PrivateRoute>
           } />
 

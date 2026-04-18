@@ -2,28 +2,28 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import type { RegisterFormData } from '../types/auth';
-import styles from './Register.module.css';
+import styles from './Login.module.css';
 
 interface FieldErrors {
-  name?: string;
-  studentId?: string;
-  department?: string;
-  email?: string;
-  password?: string;
-  confirmPassword?: string;
-  general?: string;
+  name?: string; studentId?: string; department?: string;
+  email?: string; password?: string; confirmPassword?: string; general?: string;
+}
+
+function GoogleIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+      <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
+      <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/>
+      <path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>
+      <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
+    </svg>
+  );
 }
 
 export default function Register() {
   const { login, registerWithPassword } = useAuth();
-
   const [form, setForm] = useState<RegisterFormData>({
-    name: '',
-    studentId: '',
-    department: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
+    name: '', studentId: '', department: '', email: '', password: '', confirmPassword: '',
   });
   const [errors, setErrors] = useState<FieldErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -32,9 +32,7 @@ export default function Register() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setForm(prev => ({ ...prev, [name]: value }));
-    if (errors[name as keyof FieldErrors]) {
-      setErrors(prev => ({ ...prev, [name]: undefined }));
-    }
+    if (errors[name as keyof FieldErrors]) setErrors(prev => ({ ...prev, [name]: undefined }));
   };
 
   const validate = (): boolean => {
@@ -45,9 +43,8 @@ export default function Register() {
     if (!form.email.trim()) newErrors.email = 'Required';
     if (!form.password) newErrors.password = 'Required';
     if (!form.confirmPassword) newErrors.confirmPassword = 'Required';
-    if (form.password && form.confirmPassword && form.password !== form.confirmPassword) {
+    if (form.password && form.confirmPassword && form.password !== form.confirmPassword)
       newErrors.confirmPassword = 'Must match password';
-    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -55,181 +52,153 @@ export default function Register() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
-
-    setIsSubmitting(true);
-    setErrors({});
+    setIsSubmitting(true); setErrors({});
     try {
       await registerWithPassword(form);
     } catch (err: unknown) {
       const apiErr = err as Error & { status?: number; errors?: string[] };
-      if (apiErr.status === 409) {
-        setErrors({ general: 'Account already exists.' });
-      } else if (apiErr.status === 400 && apiErr.errors?.length) {
-        setErrors({ general: apiErr.errors.join(' ') });
-      } else {
-        setErrors({ general: apiErr.message || 'Registration failed.' });
-      }
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleGoogleRegister = () => {
-    setIsGoogleRedirecting(true);
-    login();
+      if (apiErr.status === 409) setErrors({ general: 'Account already exists.' });
+      else if (apiErr.status === 400 && apiErr.errors?.length) setErrors({ general: apiErr.errors.join(' ') });
+      else setErrors({ general: apiErr.message || 'Registration failed.' });
+    } finally { setIsSubmitting(false); }
   };
 
   return (
-    <div className={styles.container}>
-      <div className={styles.splitTitleContainer}>
-        <div className={styles.titleLeft}>
-          <div className={styles.subtextLeft}>NEW MEMBER</div>
-          SMA<br/>
-          <span className={styles.titleWord2Left}>OPE</span>
+    <div className={styles.page}>
+      {/* NAVBAR */}
+      <nav className={styles.navbar}>
+        <div className={styles.navLogo}>
+          <span className={styles.navDot}>●</span>
+          SMART<span className={styles.navOrange}>CAMPUS</span>
         </div>
-        <div className={styles.titleRight}>
-          RT<br/>
-          RATIONS
+        <div className={styles.navLinks}>
+          <Link to="/" className={styles.navLink}>Home</Link>
+          <Link to="/about" className={styles.navLink}>About</Link>
+          <Link to="/services" className={styles.navLink}>Services</Link>
         </div>
-      </div>
+        <Link to="/login" className={styles.navRegister}>Login</Link>
+      </nav>
 
-      <div className={styles.leftPane}>
-        <div className={styles.navHeaderLeft}>
-           <span className={styles.logo}>SMART<span className={styles.logoHighlight}>CAMPUS</span></span>
-           <span className={styles.tagline}>CREATE YOUR FUTURE</span>
+      <div className={styles.body}>
+        {/* LEFT — dark green hero */}
+        <div className={styles.leftPane}>
+          <div className={styles.heroLeaf1} />
+          <div className={styles.heroLeaf2} />
+          <div className={styles.heroContent}>
+            <p className={styles.heroEye}>▸ NEW MEMBER</p>
+            <h1 className={styles.heroTitle}>
+              CREATE<br />YOUR<br />
+              <span className={styles.heroOrange}>CAMPUS</span><br />ACCOUNT
+            </h1>
+            <p className={styles.heroSubtitle}>
+              Join thousands of students already using SmartCampus to manage facilities, bookings, and campus life.
+            </p>
+          </div>
+
+          <div className={styles.heroArt}>
+            <div className={styles.heroCircle}>
+              <svg viewBox="0 0 180 240" fill="none" xmlns="http://www.w3.org/2000/svg" width="180">
+                <circle cx="90" cy="72" r="30" fill="#f4c89a"/>
+                <ellipse cx="90" cy="55" rx="30" ry="18" fill="#3d2300"/>
+                <ellipse cx="90" cy="155" rx="40" ry="52" fill="#1a5c38"/>
+                <path d="M52 120 Q20 95 28 70" stroke="#f4c89a" strokeWidth="13" strokeLinecap="round" fill="none"/>
+                <path d="M128 120 Q160 95 152 70" stroke="#f4c89a" strokeWidth="13" strokeLinecap="round" fill="none"/>
+                <rect x="72" y="140" width="56" height="68" rx="10" fill="#c0392b"/>
+                <rect x="80" y="148" width="40" height="30" rx="6" fill="#e74c3c"/>
+                <path d="M82 140 Q68 158 72 182" stroke="#a93226" strokeWidth="6" strokeLinecap="round" fill="none"/>
+                <path d="M118 140 Q132 158 128 182" stroke="#a93226" strokeWidth="6" strokeLinecap="round" fill="none"/>
+                <ellipse cx="100" cy="138" rx="22" ry="8" fill="#f1c40f"/>
+                <rect x="80" y="202" width="16" height="46" rx="8" fill="#2c5f3f"/>
+                <rect x="104" y="202" width="16" height="46" rx="8" fill="#2c5f3f"/>
+                <ellipse cx="88" cy="248" rx="14" ry="7" fill="#1a1a1a"/>
+                <ellipse cx="112" cy="248" rx="14" ry="7" fill="#1a1a1a"/>
+                <path d="M80 82 Q90 92 100 82" stroke="#d4956a" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
+              </svg>
+            </div>
+          </div>
+
+          <div className={styles.heroStats}>
+            <div className={styles.heroStat}><strong>Free</strong><span>Always</span></div>
+            <div className={styles.heroStatDivider} />
+            <div className={styles.heroStat}><strong>60s</strong><span>To Sign Up</span></div>
+            <div className={styles.heroStatDivider} />
+            <div className={styles.heroStat}><strong>All</strong><span>Facilities</span></div>
+          </div>
         </div>
-        
-        <div className={styles.formContainer}>
-          <p className={styles.formDesc}>
-            Join the platform today to unlock seamless campus management and explore new possibilities.
-          </p>
 
-          {errors.general && (
-            <div className={styles.errorBanner}>{errors.general}</div>
-          )}
+        {/* RIGHT — white form */}
+        <div className={styles.rightPane}>
+          <div className={styles.formBox}>
+            <p className={styles.formEye}>▸ GET STARTED</p>
+            <h2 className={styles.formTitle}>JOIN THE<br /><span className={styles.formOrange}>HUB TODAY</span></h2>
+            <p className={styles.formDesc}>Fill in your details to create your campus account instantly.</p>
 
-          <form onSubmit={handleSubmit} noValidate>
-            <div className={styles.row}>
-              <div className={styles.inputWrapper}>
-                <input
-                  type="text"
-                  name="name"
-                  className={`${styles.input} ${errors.name ? styles.inputError : ''}`}
-                  placeholder="Full name"
-                  value={form.name}
-                  onChange={handleChange}
-                />
-                {errors.name && <span className={styles.fieldError}>{errors.name}</span>}
-              </div>
-              <div className={styles.inputWrapper}>
-                <input
-                  type="text"
-                  name="studentId"
-                  className={`${styles.input} ${errors.studentId ? styles.inputError : ''}`}
-                  placeholder="Student ID"
-                  value={form.studentId}
-                  onChange={handleChange}
-                />
-                {errors.studentId && <span className={styles.fieldError}>{errors.studentId}</span>}
-              </div>
-            </div>
+            {errors.general && <div className={styles.errorBanner}>{errors.general}</div>}
 
-            <div className={styles.row}>
-              <div className={styles.inputWrapper}>
-                <input
-                  type="text"
-                  name="department"
-                  className={`${styles.input} ${errors.department ? styles.inputError : ''}`}
-                  placeholder="Department"
-                  value={form.department}
-                  onChange={handleChange}
-                />
-                {errors.department && <span className={styles.fieldError}>{errors.department}</span>}
+            <form onSubmit={handleSubmit} noValidate className={styles.form}>
+              <div className={styles.row}>
+                <div className={styles.fieldGroup}>
+                  <label className={styles.label}>FULL NAME</label>
+                  <input type="text" name="name" className={`${styles.input} ${errors.name ? styles.inputError : ''}`}
+                    placeholder="Jane Doe" value={form.name} onChange={handleChange} />
+                  {errors.name && <span className={styles.fieldError}>{errors.name}</span>}
+                </div>
+                <div className={styles.fieldGroup}>
+                  <label className={styles.label}>STUDENT ID</label>
+                  <input type="text" name="studentId" className={`${styles.input} ${errors.studentId ? styles.inputError : ''}`}
+                    placeholder="AB123456" value={form.studentId} onChange={handleChange} />
+                  {errors.studentId && <span className={styles.fieldError}>{errors.studentId}</span>}
+                </div>
               </div>
-              <div className={styles.inputWrapper}>
-                <input
-                  type="email"
-                  name="email"
-                  className={`${styles.input} ${errors.email ? styles.inputError : ''}`}
-                  placeholder="Email"
-                  value={form.email}
-                  onChange={handleChange}
-                />
-                {errors.email && <span className={styles.fieldError}>{errors.email}</span>}
-              </div>
-            </div>
 
-            <div className={styles.row}>
-              <div className={styles.inputWrapper}>
-                <input
-                  type="password"
-                  name="password"
-                  className={`${styles.input} ${errors.password ? styles.inputError : ''}`}
-                  placeholder="Password"
-                  value={form.password}
-                  onChange={handleChange}
-                />
-                {errors.password ? (
-                  <span className={styles.fieldError}>{errors.password}</span>
-                ) : (
-                  <span className={styles.hint}>Min 8 chars</span>
-                )}
+              <div className={styles.row}>
+                <div className={styles.fieldGroup}>
+                  <label className={styles.label}>DEPARTMENT</label>
+                  <input type="text" name="department" className={`${styles.input} ${errors.department ? styles.inputError : ''}`}
+                    placeholder="Computer Science" value={form.department} onChange={handleChange} />
+                  {errors.department && <span className={styles.fieldError}>{errors.department}</span>}
+                </div>
+                <div className={styles.fieldGroup}>
+                  <label className={styles.label}>EMAIL</label>
+                  <input type="email" name="email" className={`${styles.input} ${errors.email ? styles.inputError : ''}`}
+                    placeholder="you@uni.edu" value={form.email} onChange={handleChange} />
+                  {errors.email && <span className={styles.fieldError}>{errors.email}</span>}
+                </div>
               </div>
-              <div className={styles.inputWrapper}>
-                <input
-                  type="password"
-                  name="confirmPassword"
-                  className={`${styles.input} ${errors.confirmPassword ? styles.inputError : ''}`}
-                  placeholder="Confirm password"
-                  value={form.confirmPassword}
-                  onChange={handleChange}
-                />
-                {errors.confirmPassword && <span className={styles.fieldError}>{errors.confirmPassword}</span>}
-              </div>
-            </div>
 
-            <div className={styles.actionRow}>
-              <button type="submit" className={styles.submitBtn} disabled={isSubmitting}>
-                {isSubmitting ? <><div className={styles.spinner} /> REGISTERING</> : 'CREATE ACCOUNT \u2192'} 
+              <div className={styles.row}>
+                <div className={styles.fieldGroup}>
+                  <label className={styles.label}>PASSWORD</label>
+                  <input type="password" name="password" className={`${styles.input} ${errors.password ? styles.inputError : ''}`}
+                    placeholder="Min 8 chars" value={form.password} onChange={handleChange} />
+                  {errors.password ? <span className={styles.fieldError}>{errors.password}</span>
+                    : <span className={styles.hint}>Min 8 characters</span>}
+                </div>
+                <div className={styles.fieldGroup}>
+                  <label className={styles.label}>CONFIRM PASSWORD</label>
+                  <input type="password" name="confirmPassword" className={`${styles.input} ${errors.confirmPassword ? styles.inputError : ''}`}
+                    placeholder="Repeat password" value={form.confirmPassword} onChange={handleChange} />
+                  {errors.confirmPassword && <span className={styles.fieldError}>{errors.confirmPassword}</span>}
+                </div>
+              </div>
+
+              <button type="submit" className={styles.primaryBtn} disabled={isSubmitting}>
+                {isSubmitting ? <><div className={styles.btnSpinner} /> Creating account...</> : 'Create Account →'}
               </button>
-              
-              <button
-                type="button"
-                className={styles.googleIconBtn}
-                onClick={handleGoogleRegister}
-                disabled={isGoogleRedirecting}
-              >
-                {isGoogleRedirecting ? <div className={styles.spinner} /> : <><GoogleIcon /> Google</>}
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
+            </form>
 
-      <div className={styles.rightPane}>
-        <div className={styles.navHeaderRight}>
-          <Link to="/">HOME</Link>
-          <Link to="/about">ABOUT</Link>
-          <Link to="/services">SERVICES</Link>
-          <Link to="/login">LOGIN</Link>
-        </div>
+            <div className={styles.divider}><span>OR</span></div>
 
-        <div className={styles.bottomControls}>
-          <div className={`${styles.arrowBox} ${styles.arrowBoxDark}`}>&larr;</div>
-          <div className={styles.arrowBox}>&rarr;</div>
+            <button className={styles.googleBtn} onClick={() => { setIsGoogleRedirecting(true); login(); }} disabled={isGoogleRedirecting}>
+              {isGoogleRedirecting ? <div className={styles.btnSpinner} /> : <><GoogleIcon /> Continue with Google</>}
+            </button>
+
+            <p className={styles.switchLink}>
+              Already have an account? <Link to="/login" className={styles.link}>Sign in →</Link>
+            </p>
+          </div>
         </div>
       </div>
     </div>
-  );
-}
-
-function GoogleIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
-      <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
-      <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/>
-      <path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>
-      <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
-    </svg>
   );
 }
