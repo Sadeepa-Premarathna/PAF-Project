@@ -133,7 +133,7 @@ export default function StaffDashboard() {
                         <div className={styles.facilityTag}>REPORTS</div>
                         <h3 className={styles.facilityName}>Incident Logs</h3>
                         <p className={styles.facilityLoc}>Manage infrastructure issue reports.</p>
-                        <button className={styles.bookBtn} style={{ width: '100%' }}>Manage</button>
+                        <Link to="/tickets" className={styles.bookBtn} style={{ width: '100%', textAlign: 'center', display: 'block', textDecoration: 'none' }}>Manage</Link>
                     </div>
                 </div>
             </div>

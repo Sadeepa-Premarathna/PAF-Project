@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import styles from './AdminDashboard.module.css';
+import { Link } from 'react-router-dom';
 
 const API_BASE_URL = 'http://localhost:8080';
 
@@ -51,6 +51,24 @@ export default function AdminDashboard() {
 
   const [usersList, setUsersList] = useState<AppUser[]>([]);
   const [loadingUsers, setLoadingUsers] = useState(true);
+  const [openTicketsCount, setOpenTicketsCount] = useState(0);
+
+  useEffect(() => {
+    const fetchOpenTickets = async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/tickets/stats/open-count`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setOpenTicketsCount(data.count);
+        }
+      } catch (err) {
+        console.error('Failed to fetch ticket count', err);
+      }
+    };
+    if (token) fetchOpenTickets();
+  }, [token]);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -79,8 +97,8 @@ export default function AdminDashboard() {
         <div className={styles.logo}>A</div>
         
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', flex: 1 }}>
-          <div className={`${styles.navIcon} ${styles.active}`}><UserIcon /></div>
-          <div className={styles.navIcon}><DocIcon /></div>
+          <Link to="/admin" className={`${styles.navIcon} ${styles.active}`}><UserIcon /></Link>
+          <Link to="/tickets" className={styles.navIcon} title="Tickets"><DocIcon /></Link>
           <div className={styles.navIcon}><BellIcon /></div>
         </div>
 
@@ -152,11 +170,13 @@ export default function AdminDashboard() {
               <div className={styles.kpiAccent} style={{ background: '#10b981' }} />
               <div className={styles.kpiTop}>
                 <div className={styles.kpiIconBox}><SettingsIcon /></div>
-                <div className={styles.kpiPerc} style={{ color: '#10b981', borderColor: '#10b981' }}>-2</div>
+                <div className={styles.kpiPerc} style={{ color: '#10b981', borderColor: '#10b981' }}>Live</div>
               </div>
               <div>
-                <div className={styles.kpiValue}>14</div>
-                <div className={styles.kpiLabel}>Pending Issues</div>
+                <Link to="/tickets" style={{ textDecoration: 'none' }}>
+                  <div className={styles.kpiValue}>{openTicketsCount}</div>
+                  <div className={styles.kpiLabel}>Open Tickets</div>
+                </Link>
               </div>
             </div>
           </div>
