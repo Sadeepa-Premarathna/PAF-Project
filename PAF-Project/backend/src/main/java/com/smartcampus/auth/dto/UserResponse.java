@@ -10,9 +10,18 @@ public class UserResponse {
     private String name;
     private String pictureUrl;
     private String role;
+    private String studentId;
+    private String department;
 
     public static UserResponse from(AppUser user) {
-        return UserResponse.builder().id(user.getId()).email(user.getEmail())
-                .name(user.getName()).pictureUrl(user.getPictureUrl()).role(user.getRole().name()).build();
+        return UserResponse.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .name(user.getName())
+                .pictureUrl(user.getPictureUrl())
+                .role(user.getRole().name())
+                .studentId(user.getStudentId())
+                .department(user.getDepartment())
+                .build();
     }
 }

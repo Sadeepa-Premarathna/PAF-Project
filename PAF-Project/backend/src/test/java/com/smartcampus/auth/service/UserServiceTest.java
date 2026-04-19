@@ -84,8 +84,8 @@ class UserServiceTest {
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
         when(userRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
 
-        AppUser result = userService.updateRole(user.getId(), Role.TECHNICIAN);
+        AppUser result = userService.updateRole(user.getId(), Role.STAFF_MEMBER);
 
-        assertThat(result.getRole()).isEqualTo(Role.TECHNICIAN);
+        assertThat(result.getRole()).isEqualTo(Role.STAFF_MEMBER);
     }
 }
