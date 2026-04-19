@@ -17,6 +17,7 @@ import CreateTicketPage from './pages/CreateTicketPage';
 import TicketDetailPage from './pages/TicketDetailPage';
 import BookingsPage from './pages/BookingsPage';
 import AdminBookingsPage from './pages/AdminBookingsPage';
+import ResourcesPage from './pages/ResourcesPage';
 import UserNotificationPage from './pages/UserNotificationPage';
 import AdminNotificationPage from './pages/AdminNotificationPage';
 
@@ -60,6 +61,10 @@ export default function App() {
 
           {/* Bookings — student can view/create */}
           <Route path="/bookings" element={<PrivateRoute><BookingsPage /></PrivateRoute>} />
+
+          {/* Resources — student and admin catalogue */}
+          <Route path="/resources" element={<PrivateRoute><ResourcesPage /></PrivateRoute>} />
+          <Route path="/admin/resources" element={<PrivateRoute requiredRoles={['ADMIN']}><ResourcesPage /></PrivateRoute>} />
 
           {/* Admin Bookings — admin only */}
           <Route path="/admin/bookings" element={<PrivateRoute requiredRoles={['ADMIN']}><AdminBookingsPage /></PrivateRoute>} />

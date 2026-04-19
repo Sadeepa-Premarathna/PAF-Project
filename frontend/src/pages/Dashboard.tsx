@@ -1,6 +1,6 @@
 import { useAuth } from '../context/AuthContext';
 import styles from './Dashboard.module.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const StarIcon = () => (
   <svg width="14" height="14" fill="#f97316" viewBox="0 0 24 24">
@@ -55,6 +55,7 @@ const stats = [
 
 export default function Dashboard() {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const firstName = user?.name?.split(' ')[0] || 'Student';
 
   return (
@@ -67,8 +68,8 @@ export default function Dashboard() {
           SMART<span className={styles.navLogoOrange}>CAMPUS</span>
         </div>
         <div className={styles.navLinks}>
-          <a href="#facilities" className={styles.navLink}>Facilities</a>
-          <a href="#bookings" className={styles.navLink}>Bookings</a>
+          <Link to="/resources" className={styles.navLink}>Facilities</Link>
+          <Link to="/bookings" className={styles.navLink}>Bookings</Link>
           <Link to="/tickets" className={styles.navLink}>Tickets</Link>
           <Link to="/notifications" className={styles.navLink}>Notifications</Link>
           <a href="#about" className={styles.navLink}>About</a>
@@ -114,16 +115,16 @@ export default function Dashboard() {
 
             {/* Search bar row */}
             <div className={styles.heroSearchRow}>
-              <div className={styles.heroField}>
+              <div className={styles.heroField} onClick={() => navigate('/resources')}>
                 <span className={styles.heroFieldLabel}>FACILITY</span>
                 <span className={styles.heroFieldValue}>Lecture Halls, Labs, Courts...</span>
               </div>
               <div className={styles.heroFieldDivider} />
-              <div className={styles.heroField}>
+              <div className={styles.heroField} onClick={() => navigate('/bookings')}>
                 <span className={styles.heroFieldLabel}>DATE</span>
                 <span className={styles.heroFieldValue}>Pick a date</span>
               </div>
-              <button className={styles.heroSearchBtn}>
+              <button className={styles.heroSearchBtn} onClick={() => navigate('/resources')}>
                 <SearchIcon /> Search
               </button>
             </div>
@@ -169,7 +170,7 @@ export default function Dashboard() {
                   <p className={styles.facilityLoc}>{f.location}</p>
                   <div className={styles.facilityFooter}>
                     <span className={styles.facilitySlots}>8 slots open</span>
-                    <button className={styles.bookBtn}>Book</button>
+                    <button className={styles.bookBtn} onClick={() => navigate('/bookings')}>Book</button>
                   </div>
                 </div>
               </div>
@@ -235,7 +236,7 @@ export default function Dashboard() {
               Every resource on campus is available at your fingertips — explore, book, and enjoy your university life to the fullest.
             </p>
             <div className={styles.ctaBtns}>
-              <button className={styles.ctaPrimary}>Explore Facilities <ArrowRight /></button>
+              <button className={styles.ctaPrimary} onClick={() => navigate('/resources')}>Explore Facilities <ArrowRight /></button>
               <Link to="/tickets/create" className={styles.ctaSecondary} style={{ textDecoration: 'none', textAlign: 'center' }}>Report an Issue</Link>
             </div>
           </div>

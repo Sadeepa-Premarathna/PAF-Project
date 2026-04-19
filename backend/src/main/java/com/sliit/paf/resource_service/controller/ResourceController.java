@@ -23,6 +23,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.Objects;
 
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @Validated
 @RequestMapping("/api/v1/resources")
