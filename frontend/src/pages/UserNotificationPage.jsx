@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useCallback } from "react";
 import "./UserNotificationPage.css";
 import notificationService from "../services/notificationService";
-
+import { useAuth } from "../context/AuthContext";
+import { Link } from "react-router-dom";
 
 const TYPE_CFG = {
-  BOOKING_APPROVED: { label: "Booking Approved", accent: "#10b981", bg: "#f0fdf4", icon: "✓" },
-  BOOKING_REJECTED: { label: "Booking Rejected", accent: "#ef4444", bg: "#fef2f2", icon: "✕" },
-  TICKET_UPDATED:   { label: "Ticket Updated",   accent: "#3b82f6", bg: "#eff6ff", icon: "↻" },
-  NEW_COMMENT:      { label: "New Comment",      accent: "#f59e0b", bg: "#fffbeb", icon: "💬" },
+  BOOKING_APPROVED: { label: "Booking Approved", accent: "#f97316", bg: "rgba(249, 115, 22, 0.1)", icon: "📅" },
+  BOOKING_REJECTED: { label: "Booking Rejected", accent: "#ef4444", bg: "rgba(239, 68, 68, 0.1)", icon: "✕" },
+  TICKET_UPDATED:   { label: "Ticket Updated",   accent: "#1a3d2b", bg: "rgba(26, 61, 43, 0.1)", icon: "🎟️" },
+  NEW_COMMENT:      { label: "New Comment",      accent: "#10b981", bg: "rgba(16, 185, 129, 0.1)", icon: "💬" },
 };
 
 const FILTERS = ["ALL","UNREAD","BOOKING_APPROVED","BOOKING_REJECTED","TICKET_UPDATED","NEW_COMMENT"];
@@ -27,13 +28,16 @@ function timeAgo(d) {
 }
 
 export default function UserNotificationsPage() {
-  const [currentUserId, setCurrentUserId] = useState(1);
+  const { user } = useAuth();
+  const currentUserId = user?.id;
+  
   const [notifications, setNotifications] = useState([]);
   const [loading,       setLoading]       = useState(false);
   const [filter,        setFilter]        = useState("ALL");
   const [unreadCount,   setUnreadCount]   = useState(0);
 
   const fetchAll = useCallback(async () => {
+    if (!currentUserId) return;
     setLoading(true);
     try {
       const res = await notificationService.getAll(currentUserId);
@@ -43,7 +47,6 @@ export default function UserNotificationsPage() {
     finally { setLoading(false); }
   }, [currentUserId]);
 
-  // Auto-fetch on mount and when currentUserId changes
   useEffect(() => { fetchAll(); }, [fetchAll]);
 
   const handleMarkAsRead = async (id) => {
@@ -63,7 +66,7 @@ export default function UserNotificationsPage() {
   };
 
   const handleDeleteAll = async () => {
-    if (!window.confirm("Are you sure you want to delete all notifications for User " + currentUserId + "?")) return;
+    if (!window.confirm("Are you sure you want to delete all notifications?")) return;
     try {
       await notificationService.deleteAll(currentUserId);
       setNotifications([]);
@@ -82,32 +85,19 @@ export default function UserNotificationsPage() {
       <div className="unp-header">
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "15px" }}>
           <div>
-            <span className="unp-role-badge">USER</span>
+            <Link to="/dashboard" className="unp-back-link">← Back to Dashboard</Link>
             <h2 className="unp-heading">
-              My Notifications
+              Notification Hub
               {unreadCount > 0 && (
                 <span className="unp-unread-badge">{unreadCount}</span>
               )}
             </h2>
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: "10px", background: "#f8fafc", padding: "8px 16px", borderRadius: "8px", border: "1px solid #e2e8f0" }}>
-            <label style={{ fontWeight: 600, color: "#334155", fontSize: "0.9rem" }}>Viewing as User ID:</label>
-            <input 
-              type="number" 
-              min="1" max="20"
-              value={currentUserId}
-              onChange={(e) => {
-                let val = Number(e.target.value);
-                if(val >= 1 && val <= 20) setCurrentUserId(val);
-              }}
-              style={{ padding: "6px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", width: "70px", fontWeight: "bold" }}
-            />
-          </div>
         </div>
         <p className="unp-sub">
           {unreadCount > 0
             ? `You have ${unreadCount} unread notification${unreadCount > 1 ? "s" : ""}.`
-            : "All caught up!"}
+            : "You're all caught up!"}
         </p>
       </div>
 

@@ -8,6 +8,7 @@ import com.smartcampus.auth.entity.*;
 import com.smartcampus.auth.repository.*;
 import com.smartcampus.auth.service.FileStorageService;
 import com.smartcampus.auth.service.TicketService;
+import com.example.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ public class TicketServiceImpl implements TicketService {
     private final TicketCommentRepository commentRepo;
     private final AppUserRepository userRepo;
     private final FileStorageService fileStorage;
+    private final NotificationService notificationService;
 
     @Override
     public TicketResponse createTicket(CreateTicketRequest req, AppUser actor) {
@@ -99,7 +101,18 @@ public class TicketServiceImpl implements TicketService {
             ticket.setResolutionNote(req.getResolutionNote());
         }
 
-        return TicketResponse.fromSummary(ticketRepo.save(ticket));
+        Ticket savedTicket = ticketRepo.save(ticket);
+        
+        // Notify owner about status change if it happened
+        if (req.getStatus() != null) {
+            notificationService.notifyTicketUpdated(
+                ticket.getCreatedBy().getId().toString(), 
+                ticket.getId().toString(), 
+                req.getStatus().name()
+            );
+        }
+
+        return TicketResponse.fromSummary(savedTicket);
     }
 
     @Override
@@ -152,7 +165,18 @@ public class TicketServiceImpl implements TicketService {
         }
         TicketComment comment = TicketComment.builder()
                 .ticket(ticket).author(actor).content(content.trim()).build();
-        return CommentResponse.from(commentRepo.save(comment));
+        
+        TicketComment savedComment = commentRepo.save(comment);
+
+        // Notify ticket owner about new comment (if commenter is not the owner)
+        if (!ticket.getCreatedBy().getId().equals(actor.getId())) {
+            notificationService.notifyNewComment(
+                ticket.getCreatedBy().getId().toString(), 
+                ticket.getId().toString()
+            );
+        }
+
+        return CommentResponse.from(savedComment);
     }
 
     @Override

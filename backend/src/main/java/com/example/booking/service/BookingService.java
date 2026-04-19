@@ -2,6 +2,9 @@ package com.example.booking.service;
 
 import com.example.booking.model.Booking;
 import com.example.booking.repository.BookingRepository;
+import com.example.notification.dto.NotificationRequestDTO;
+import com.example.notification.model.NotificationType;
+import com.example.notification.service.NotificationService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -12,9 +15,11 @@ import java.util.List;
 public class BookingService {
 
     private final BookingRepository repo;
+    private final NotificationService notificationService;
 
-    public BookingService(BookingRepository r) {
+    public BookingService(BookingRepository r, NotificationService ns) {
         this.repo = r;
+        this.notificationService = ns;
     }
 
     public Booking createBooking(Booking b) {
@@ -65,6 +70,15 @@ public class BookingService {
         if (reason != null && !reason.isEmpty()) {
             b.setRejectionReason(reason);
         }
-        return repo.save(b);
+        Booking saved = repo.save(b);
+
+        // Trigger Notification
+        if ("APPROVED".equals(s)) {
+            notificationService.notifyBookingApproved(b.getUserId(), b.getId());
+        } else if ("REJECTED".equals(s)) {
+            notificationService.notifyBookingRejected(b.getUserId(), b.getId(), reason);
+        }
+
+        return saved;
     }
 }

@@ -38,14 +38,14 @@ public class NotificationController {
     // GET /api/notifications?userId=1
     @GetMapping
     public ResponseEntity<List<NotificationResponseDTO>> getAll(
-            @RequestParam @NotNull(message = "userId is required") Long userId) {
+            @RequestParam @NotNull(message = "userId is required") String userId) {
         return ResponseEntity.ok(notificationService.getAll(userId));
     }
 
     // GET /api/notifications/unread-count?userId=1
     @GetMapping("/unread-count")
     public ResponseEntity<Map<String, Long>> getUnreadCount(
-            @RequestParam @NotNull(message = "userId is required") Long userId) {
+            @RequestParam @NotNull(message = "userId is required") String userId) {
         return ResponseEntity.ok(Map.of("count", notificationService.getUnreadCount(userId)));
     }
 
@@ -59,7 +59,7 @@ public class NotificationController {
     // PUT /api/notifications/read-all?userId=1
     @PutMapping("/read-all")
     public ResponseEntity<Void> markAllAsRead(
-            @RequestParam @NotNull(message = "userId is required") Long userId) {
+            @RequestParam @NotNull(message = "userId is required") String userId) {
         notificationService.markAllAsRead(userId);
         return ResponseEntity.noContent().build();
     }
@@ -67,7 +67,7 @@ public class NotificationController {
     // DELETE /api/notifications?userId=1
     @DeleteMapping
     public ResponseEntity<Void> deleteAll(
-            @RequestParam @NotNull(message = "userId is required") Long userId) {
+            @RequestParam @NotNull(message = "userId is required") String userId) {
         notificationService.deleteAll(userId);
         return ResponseEntity.noContent().build();
     }

@@ -25,16 +25,14 @@ export default function AdminNotificationPage() {
 
   const validate = () => {
     const e = {};
-    if (!form.userId || isNaN(form.userId) || Number(form.userId) < 1 || Number(form.userId) > 20)
-      e.userId = "User ID must be between 1 and 20.";
+    if (!form.userId || form.userId.trim().length === 0)
+      e.userId = "User ID is required.";
     if (!form.message.trim())
       e.message = "Message cannot be empty.";
     else if (form.message.trim().length < 5)
       e.message = "Min 5 characters required.";
     else if (form.message.trim().length > 500)
       e.message = "Max 500 characters allowed.";
-    if (form.referenceId && (isNaN(form.referenceId) || Number(form.referenceId) < 1 || Number(form.referenceId) > 20))
-      e.referenceId = "Reference ID must be between 1 and 20.";
     return e;
   };
 
@@ -52,13 +50,13 @@ export default function AdminNotificationPage() {
     setSending(true); setAlert(null);
     try {
       const res = await notificationService.send({
-        userId:      Number(form.userId),
+        userId:      form.userId.trim(),
         type:        form.type,
         message:     form.message.trim(),
-        referenceId: form.referenceId ? Number(form.referenceId) : null,
+        referenceId: form.referenceId ? form.referenceId.trim() : null,
       });
       setSent((p) => [res.data, ...p].slice(0, 10));
-      setAlert({ type: "success", msg: `Notification sent to User #${form.userId}!` });
+      setAlert({ type: "success", msg: `Notification sent to User ${form.userId}!` });
       setForm(INIT);
       setErrors({});
     } catch (err) {
@@ -73,10 +71,10 @@ export default function AdminNotificationPage() {
     setSending(true); setAlert(null);
     try {
       await notificationService.send({
-        userId:      Number(form.userId),
+        userId:      form.userId.trim(),
         type:        form.type,
         message:     form.message.trim(),
-        referenceId: form.referenceId ? Number(form.referenceId) : null,
+        referenceId: form.referenceId ? form.referenceId.trim() : null,
       });
       // Navigate to user notifications page
       navigate("/notifications");

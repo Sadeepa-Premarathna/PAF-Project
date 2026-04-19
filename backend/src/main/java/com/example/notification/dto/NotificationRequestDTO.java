@@ -8,7 +8,7 @@ import jakarta.validation.constraints.Size;
 public class NotificationRequestDTO {
 
     @NotNull(message = "User ID is required")
-    private Long userId;
+    private String userId;
 
     @NotNull(message = "Notification type is required")
     private NotificationType type;
@@ -17,17 +17,17 @@ public class NotificationRequestDTO {
     @Size(min = 5, max = 500, message = "Message must be between 5 and 500 characters")
     private String message;
 
-    private Long referenceId;
+    private String referenceId;
 
     // ── Getters ──────────────────────────────────────
-    public Long getUserId()           { return userId; }
+    public String getUserId()           { return userId; }
     public NotificationType getType() { return type; }
     public String getMessage()        { return message; }
-    public Long getReferenceId()      { return referenceId; }
+    public String getReferenceId()      { return referenceId; }
 
     // ── Setters ──────────────────────────────────────
-    public void setUserId(Long userId)            { this.userId = userId; }
+    public void setUserId(String userId)            { this.userId = userId; }
     public void setType(NotificationType type)    { this.type = type; }
     public void setMessage(String message)        { this.message = message; }
-    public void setReferenceId(Long referenceId)  { this.referenceId = referenceId; }
+    public void setReferenceId(String referenceId)  { this.referenceId = referenceId; }
 }

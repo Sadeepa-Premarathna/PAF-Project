@@ -17,6 +17,8 @@ import CreateTicketPage from './pages/CreateTicketPage';
 import TicketDetailPage from './pages/TicketDetailPage';
 import BookingsPage from './pages/BookingsPage';
 import AdminBookingsPage from './pages/AdminBookingsPage';
+import UserNotificationPage from './pages/UserNotificationPage';
+import AdminNotificationPage from './pages/AdminNotificationPage';
 
 export default function App() {
   return (
@@ -61,6 +63,10 @@ export default function App() {
 
           {/* Admin Bookings — admin only */}
           <Route path="/admin/bookings" element={<PrivateRoute requiredRoles={['ADMIN']}><AdminBookingsPage /></PrivateRoute>} />
+
+          {/* Notifications */}
+          <Route path="/notifications" element={<PrivateRoute><UserNotificationPage /></PrivateRoute>} />
+          <Route path="/admin/notifications" element={<PrivateRoute requiredRoles={['ADMIN']}><AdminNotificationPage /></PrivateRoute>} />
 
 
           {/* Default redirect */}

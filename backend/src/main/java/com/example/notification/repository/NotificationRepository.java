@@ -12,16 +12,16 @@ import java.util.List;
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
 
-    List<Notification> findByUserIdOrderByCreatedAtDesc(Long userId);
+    List<Notification> findByUserIdOrderByCreatedAtDesc(String userId);
 
-    long countByUserIdAndIsReadFalse(Long userId);
+    long countByUserIdAndIsReadFalse(String userId);
 
     @Modifying
     @Transactional
     @Query("UPDATE Notification n SET n.isRead = true WHERE n.userId = :userId")
-    void markAllAsReadByUserId(Long userId);
+    void markAllAsReadByUserId(String userId);
 
     @Modifying
     @Transactional
-    void deleteByUserId(Long userId);
+    void deleteByUserId(String userId);
 }

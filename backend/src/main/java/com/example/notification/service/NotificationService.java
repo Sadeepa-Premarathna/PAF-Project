@@ -31,25 +31,25 @@ public class NotificationService {
     }
 
     // ── Internal helpers ──────────────────────────────
-    public void notifyBookingApproved(Long userId, Long bookingId) {
+    public void notifyBookingApproved(String userId, Long bookingId) {
         NotificationRequestDTO dto = new NotificationRequestDTO();
         dto.setUserId(userId);
         dto.setType(NotificationType.BOOKING_APPROVED);
         dto.setMessage("Your booking #" + bookingId + " has been approved.");
-        dto.setReferenceId(bookingId);
+        dto.setReferenceId(String.valueOf(bookingId));
         send(dto);
     }
 
-    public void notifyBookingRejected(Long userId, Long bookingId, String reason) {
+    public void notifyBookingRejected(String userId, Long bookingId, String reason) {
         NotificationRequestDTO dto = new NotificationRequestDTO();
         dto.setUserId(userId);
         dto.setType(NotificationType.BOOKING_REJECTED);
         dto.setMessage("Your booking #" + bookingId + " was rejected. Reason: " + reason);
-        dto.setReferenceId(bookingId);
+        dto.setReferenceId(String.valueOf(bookingId));
         send(dto);
     }
 
-    public void notifyTicketUpdated(Long userId, Long ticketId, String newStatus) {
+    public void notifyTicketUpdated(String userId, String ticketId, String newStatus) {
         NotificationRequestDTO dto = new NotificationRequestDTO();
         dto.setUserId(userId);
         dto.setType(NotificationType.TICKET_UPDATED);
@@ -58,7 +58,7 @@ public class NotificationService {
         send(dto);
     }
 
-    public void notifyNewComment(Long userId, Long ticketId) {
+    public void notifyNewComment(String userId, String ticketId) {
         NotificationRequestDTO dto = new NotificationRequestDTO();
         dto.setUserId(userId);
         dto.setType(NotificationType.NEW_COMMENT);
@@ -68,7 +68,7 @@ public class NotificationService {
     }
 
     // ── Queries ───────────────────────────────────────
-    public List<NotificationResponseDTO> getAll(Long userId) {
+    public List<NotificationResponseDTO> getAll(String userId) {
         return notificationRepository
                 .findByUserIdOrderByCreatedAtDesc(userId)
                 .stream()
@@ -76,7 +76,7 @@ public class NotificationService {
                 .collect(Collectors.toList());
     }
 
-    public long getUnreadCount(Long userId) {
+    public long getUnreadCount(String userId) {
         return notificationRepository.countByUserIdAndIsReadFalse(userId);
     }
 
@@ -87,11 +87,11 @@ public class NotificationService {
         return NotificationResponseDTO.from(notificationRepository.save(n));
     }
 
-    public void markAllAsRead(Long userId) {
+    public void markAllAsRead(String userId) {
         notificationRepository.markAllAsReadByUserId(userId);
     }
 
-    public void deleteAll(Long userId) {
+    public void deleteAll(String userId) {
         notificationRepository.deleteByUserId(userId);
     }
 }

@@ -70,6 +70,7 @@ export default function Dashboard() {
           <a href="#facilities" className={styles.navLink}>Facilities</a>
           <a href="#bookings" className={styles.navLink}>Bookings</a>
           <Link to="/tickets" className={styles.navLink}>Tickets</Link>
+          <Link to="/notifications" className={styles.navLink}>Notifications</Link>
           <a href="#about" className={styles.navLink}>About</a>
         </div>
         <div className={styles.navActions}>
