@@ -181,7 +181,7 @@
   border: 1px solid #e2e8f0;
   border-radius: 20px;
   padding: 20px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
 }
 
 .commentInput {
@@ -218,9 +218,18 @@
   background: #f1f5f9;
 }
 
-.sidebar { display: none; } /* User detail view is single column */
+.sidebar {
+  display: none;
+}
+
+/* User detail view is single column */
 
 @media (max-width: 768px) {
-  .page { padding: 20px; }
-  .title { font-size: 20px; }
+  .page {
+    padding: 20px;
+  }
+
+  .title {
+    font-size: 20px;
+  }
 }

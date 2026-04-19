@@ -87,16 +87,16 @@ export default function Dashboard() {
         {/* ── BACKGROUND ANIMATION ── */}
         <div className={styles.leafContainer}>
           {[...Array(12)].map((_, i) => (
-            <div 
-              key={i} 
-              className={styles.leaf} 
+            <div
+              key={i}
+              className={styles.leaf}
               style={{
                 top: `${Math.random() * 100}%`,
                 left: `${Math.random() * 100}%`,
                 animationDelay: `${Math.random() * 15}s`,
                 width: `${Math.random() * 25 + 15}px`,
                 height: `${Math.random() * 25 + 15}px`
-              }} 
+              }}
             />
           ))}
         </div>

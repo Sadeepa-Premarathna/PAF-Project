@@ -15,7 +15,7 @@
   padding: 48px;
   width: 100%;
   max-width: 820px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.06);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.06);
 }
 
 .cardHeader {
@@ -83,7 +83,9 @@
   letter-spacing: 0.3px;
 }
 
-.input, .select, .textarea {
+.input,
+.select,
+.textarea {
   border: 2px solid #e2e8f0;
   border-radius: 12px;
   padding: 12px 16px;
@@ -95,7 +97,9 @@
   background: #f8fafc;
 }
 
-.input:focus, .select:focus, .textarea:focus {
+.input:focus,
+.select:focus,
+.textarea:focus {
   border-color: #4f46e5;
   background: #fff;
 }
@@ -216,6 +220,11 @@
 }
 
 @media (max-width: 600px) {
-  .row { grid-template-columns: 1fr; }
-  .card { padding: 24px; }
+  .row {
+    grid-template-columns: 1fr;
+  }
+
+  .card {
+    padding: 24px;
+  }
 }

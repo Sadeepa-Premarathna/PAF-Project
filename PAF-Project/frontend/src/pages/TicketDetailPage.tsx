@@ -100,13 +100,13 @@ export default function TicketDetailPage() {
     finally { setSaving(false); }
   };
 
-  const handleDeleteComment = async (cid: string) => {
-    if (!confirm('Delete this comment?')) return;
-    await fetch(`${API_BASE}/api/tickets/${id}/comments/${cid}`, {
-      method: 'DELETE', headers: { Authorization: `Bearer ${token}` },
-    });
-    fetchTicket();
-  };
+  // const handleDeleteComment = async (cid: string) => {
+  //   if (!confirm('Delete this comment?')) return;
+  //   await fetch(`${API_BASE}/api/tickets/${id}/comments/${cid}`, {
+  //     method: 'DELETE', headers: { Authorization: `Bearer ${token}` },
+  //   });
+  //   fetchTicket();
+  // };
 
   if (loading) return <div className={styles.page}><div className={styles.loading}>Loading...</div></div>;
   if (!ticket) return <div className={styles.page}><div className={styles.loading}>Ticket not found.</div></div>;
@@ -197,8 +197,8 @@ export default function TicketDetailPage() {
             </div>
 
             <div className={styles.commentBox}>
-              <textarea className={styles.commentInput} 
-                placeholder={isStaff ? "Typing a reply for the user..." : "Ask a question or add details..."} 
+              <textarea className={styles.commentInput}
+                placeholder={isStaff ? "Typing a reply for the user..." : "Ask a question or add details..."}
                 rows={3} value={commentText} onChange={e => setCommentText(e.target.value)} />
               <button className={styles.saveBtn} disabled={saving || !commentText.trim()} onClick={handleAddComment}>
                 {isStaff ? 'Send Reply' : 'Post Comment'}

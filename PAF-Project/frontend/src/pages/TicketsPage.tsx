@@ -79,21 +79,21 @@ export default function TicketsPage() {
                   {t.status.replace('_', ' ')}
                 </span>
                 {isStaff && (
-                   <span className={styles.badge} style={{ background: PRIORITY_COLORS[t.priority] + '22', color: PRIORITY_COLORS[t.priority] }}>
+                  <span className={styles.badge} style={{ background: PRIORITY_COLORS[t.priority] + '22', color: PRIORITY_COLORS[t.priority] }}>
                     {t.priority}
                   </span>
                 )}
               </div>
 
               {!isStaff && (
-                 <span className={styles.badge} style={{ background: PRIORITY_COLORS[t.priority] + '22', color: PRIORITY_COLORS[t.priority], width: 'fit-content', marginBottom: '8px' }}>
+                <span className={styles.badge} style={{ background: PRIORITY_COLORS[t.priority] + '22', color: PRIORITY_COLORS[t.priority], width: 'fit-content', marginBottom: '8px' }}>
                   {t.priority}
                 </span>
               )}
 
               <h3 className={styles.cardTitle}>{t.title}</h3>
               <p className={styles.cardMeta}>📍 {t.resourceLocation}</p>
-              
+
               {isStaff ? (
                 <>
                   <p className={styles.cardMeta}>👤 {t.createdBy?.name}</p>
