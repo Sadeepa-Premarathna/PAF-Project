@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findByResourceIdAndDate(String resourceId, String date);
+    List<Booking> findByUserId(String userId); // Changed from Long to String
 }

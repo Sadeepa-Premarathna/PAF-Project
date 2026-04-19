@@ -15,6 +15,8 @@ import StaffDashboard from './pages/StaffDashboard';
 import TicketsPage from './pages/TicketsPage';
 import CreateTicketPage from './pages/CreateTicketPage';
 import TicketDetailPage from './pages/TicketDetailPage';
+import BookingsPage from './pages/BookingsPage';
+import AdminBookingsPage from './pages/AdminBookingsPage';
 
 export default function App() {
   return (
@@ -53,6 +55,13 @@ export default function App() {
           <Route path="/tickets" element={<PrivateRoute><TicketsPage /></PrivateRoute>} />
           <Route path="/tickets/create" element={<PrivateRoute><CreateTicketPage /></PrivateRoute>} />
           <Route path="/tickets/:id" element={<PrivateRoute><TicketDetailPage /></PrivateRoute>} />
+
+          {/* Bookings — student can view/create */}
+          <Route path="/bookings" element={<PrivateRoute><BookingsPage /></PrivateRoute>} />
+
+          {/* Admin Bookings — admin only */}
+          <Route path="/admin/bookings" element={<PrivateRoute requiredRoles={['ADMIN']}><AdminBookingsPage /></PrivateRoute>} />
+
 
           {/* Default redirect */}
           <Route path="/" element={<Home />} />

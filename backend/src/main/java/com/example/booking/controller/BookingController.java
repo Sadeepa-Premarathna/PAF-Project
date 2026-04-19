@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
-@CrossOrigin
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/api/bookings")
 public class BookingController {
@@ -19,7 +19,7 @@ public class BookingController {
         this.service = s;
     }
 
-    // ✅ CREATE BOOKING (with error handling)
+    // CREATE BOOKING
     @PostMapping
     public ResponseEntity<?> create(@RequestBody Booking b) {
         try {
@@ -30,17 +30,37 @@ public class BookingController {
         }
     }
 
-    // ✅ GET ALL BOOKINGS
+    // GET ALL BOOKINGS (Admin)
     @GetMapping
     public List<Booking> getAll() {
         return service.getAll();
     }
 
-    // ✅ APPROVE / REJECT
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateStatus(@PathVariable Long id, @RequestParam String status) {
+    // GET BOOKINGS BY USER ID
+    @GetMapping("/user/{userId}")
+    public List<Booking> getByUser(@PathVariable String userId) {
+        return service.getByUserId(userId);
+    }
+
+    // APPROVE / REJECT / CANCEL
+    @PutMapping("/{id}/status")
+    public ResponseEntity<?> updateStatus(
+            @PathVariable Long id,
+            @RequestParam String status,
+            @RequestParam(required = false) String reason) {
         try {
-            Booking updated = service.updateStatus(id, status);
+            Booking updated = service.updateStatus(id, status, reason);
+            return ResponseEntity.ok(updated);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    // Keep old endpoint for backward compat
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateStatusLegacy(@PathVariable Long id, @RequestParam String status) {
+        try {
+            Booking updated = service.updateStatus(id, status, null);
             return ResponseEntity.ok(updated);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
