@@ -2,7 +2,6 @@ package com.example.booking.controller;
 
 import com.example.booking.model.Booking;
 import com.example.booking.service.BookingService;
-
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 
@@ -19,29 +18,44 @@ public class BookingController {
         this.service = s;
     }
 
-    // ✅ CREATE BOOKING (with error handling)
     @PostMapping
     public ResponseEntity<?> create(@RequestBody Booking b) {
         try {
-            Booking saved = service.createBooking(b);
-            return ResponseEntity.ok(saved);
+            return ResponseEntity.ok(service.createBooking(b));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-    // ✅ GET ALL BOOKINGS
     @GetMapping
     public List<Booking> getAll() {
         return service.getAll();
     }
 
-    // ✅ APPROVE / REJECT
     @PutMapping("/{id}")
     public ResponseEntity<?> updateStatus(@PathVariable Long id, @RequestParam String status) {
         try {
-            Booking updated = service.updateStatus(id, status);
-            return ResponseEntity.ok(updated);
+            return ResponseEntity.ok(service.updateStatus(id, status));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/{id}/edit")
+    public ResponseEntity<?> editBooking(@PathVariable Long id, @RequestBody Booking b) {
+        try {
+            return ResponseEntity.ok(service.editBooking(id, b));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    // 🔥 ADD DELETE (IMPORTANT)
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        try {
+            service.deleteBooking(id);
+            return ResponseEntity.ok("Deleted successfully");
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
