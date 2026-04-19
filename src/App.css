@@ -14,3 +14,34 @@ th{background:#2c3e50;color:white;padding:10px;}
 td{padding:10px;border-bottom:1px solid #ddd;}
 .status{padding:5px 10px;border-radius:20px;color:white;font-size:12px;}
 .pending{background:orange;} .approved{background:green;} .rejected{background:red;}
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: #f7f7f4;
+}
+
+.layout {
+  min-height: 100vh;
+}
+
+.main-content {
+  display: flex;
+  gap: 2rem;
+  padding: 3rem;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.section-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #555;
+  margin-bottom: 1rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+button {
+  cursor: pointer;
+}
+
