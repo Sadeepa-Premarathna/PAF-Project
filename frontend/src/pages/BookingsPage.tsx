@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import styles from './BookingsPage.module.css';
 
@@ -39,6 +39,8 @@ const STATUS_COLORS: Record<string, string> = {
 export default function BookingsPage() {
   const { user, token } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const preSelectedId = searchParams.get('resourceId');
   const [tab, setTab] = useState<'my' | 'new'>('my');
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [resources, setResources] = useState<Resource[]>([]);
@@ -62,7 +64,23 @@ export default function BookingsPage() {
   useEffect(() => {
     fetchResources();
     fetchMyBookings();
-  }, []);
+
+    // If pre-selected from Resources page
+    if (preSelectedId) {
+      setTab('new');
+      setForm(prev => ({ ...prev, resourceId: preSelectedId }));
+    }
+  }, [preSelectedId]);
+
+  // Update resourceName automatically once resources list is loaded if we have a preSelectedId
+  useEffect(() => {
+    if (preSelectedId && resources.length > 0 && !form.resourceName) {
+      const found = resources.find(r => String(r.id) === preSelectedId);
+      if (found) {
+        setForm(prev => ({ ...prev, resourceName: found.name }));
+      }
+    }
+  }, [resources, preSelectedId, form.resourceName]);
 
   const fetchResources = async () => {
     try {

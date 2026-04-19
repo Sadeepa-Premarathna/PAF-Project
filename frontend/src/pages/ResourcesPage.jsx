@@ -47,8 +47,11 @@ function ResourcesPage() {
   const [alert, setAlert] = useState(null);
 
   useEffect(() => {
-    loadResources(initialFilters);
-  }, []);
+    const timer = setTimeout(() => {
+      loadResources(filters);
+    }, 400); // 400ms debounce for typing
+    return () => clearTimeout(timer);
+  }, [filters]);
 
   const loadResources = async (selectedFilters) => {
     setLoading(true);
@@ -57,13 +60,18 @@ function ResourcesPage() {
     try {
       const params = {};
       if (selectedFilters.type) params.type = selectedFilters.type;
-      if (selectedFilters.capacity) params.capacity = Number(selectedFilters.capacity);
-      if (selectedFilters.location.trim()) params.location = selectedFilters.location.trim();
+      if (selectedFilters.capacity && Number(selectedFilters.capacity) > 0) {
+        params.capacity = Number(selectedFilters.capacity);
+      }
+      if (selectedFilters.location?.trim()) {
+        params.location = selectedFilters.location.trim();
+      }
 
       const data = await getResources(params);
       setResources(data);
     } catch (apiError) {
-      setFetchError(apiError?.response?.data?.message || "Failed to load resources");
+      const msg = apiError?.response?.data?.message || "Failed to load resources";
+      setFetchError(msg);
     } finally {
       setLoading(false);
     }
@@ -269,37 +277,41 @@ function ResourcesPage() {
 
       {/* Filter Section - Always shown */}
       <div className={styles.filterBar}>
-        <select
-          className={styles.select}
-          value={filters.type}
-          onChange={(e) => setFilters({ ...filters, type: e.target.value })}
-        >
-          {RESOURCE_TYPES.map((t) => (
-            <option key={t || "ALL"} value={t}>{t || "ALL TYPES"}</option>
-          ))}
-        </select>
-        <input
-          className={styles.input}
-          type="number"
-          placeholder="Min Capacity"
-          value={filters.capacity}
-          onChange={(e) => setFilters({ ...filters, capacity: e.target.value })}
-        />
-        <input
-          className={styles.input}
-          type="text"
-          placeholder="Search location..."
-          value={filters.location}
-          onChange={(e) => setFilters({ ...filters, location: e.target.value })}
-        />
-        <button className={styles.searchBtn} onClick={() => loadResources(filters)}>Search</button>
-        <button 
-          className={styles.cancelBtn} 
-          style={{ padding: '10px 16px', fontSize: '14px' }}
-          onClick={() => { setFilters(initialFilters); loadResources(initialFilters); }}
-        >
-          Clear
-        </button>
+        <div style={{ display: 'flex', gap: '16px', flex: 1, flexWrap: 'wrap' }}>
+          <select
+            className={styles.select}
+            value={filters.type}
+            onChange={(e) => setFilters({ ...filters, type: e.target.value })}
+          >
+            {RESOURCE_TYPES.map((t) => (
+              <option key={t || "ALL"} value={t}>{t || "ALL TYPES"}</option>
+            ))}
+          </select>
+          <input
+            className={styles.input}
+            type="number"
+            placeholder="Min Capacity"
+            value={filters.capacity}
+            onChange={(e) => setFilters({ ...filters, capacity: e.target.value })}
+          />
+          <input
+            className={styles.input}
+            type="text"
+            placeholder="Search location..."
+            value={filters.location}
+            onChange={(e) => setFilters({ ...filters, location: e.target.value })}
+          />
+        </div>
+        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+          {loading && <div className={styles.spinnerSmall} />}
+          <button 
+            className={styles.cancelBtn} 
+            style={{ padding: '10px 20px', fontSize: '14px', border: '1px solid rgba(255,255,255,0.1)' }}
+            onClick={() => { setFilters(initialFilters); }}
+          >
+            Clear Filters
+          </button>
+        </div>
       </div>
 
       {loading ? (
@@ -349,7 +361,7 @@ function ResourcesPage() {
                   <button 
                     className={styles.primaryBtn} 
                     style={{ width: '100%', fontSize: '14px', padding: '10px' }}
-                    onClick={() => navigate('/bookings')}
+                    onClick={() => navigate(`/bookings?resourceId=${resource.id}`)}
                     disabled={resource.status !== "ACTIVE"}
                   >
                     {resource.status === "ACTIVE" ? "Book Now" : "Unavailable"}
