@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
@@ -17,80 +18,120 @@ public class BookingService {
         this.repo = r;
     }
 
-    // Create booking with full validation
+    // ---------------- CREATE ----------------
     public Booking createBooking(Booking b) {
 
-        // --------------------------
-        // 1️⃣ Input Validation
-        // --------------------------
-        if (b.getResourceId() == null || b.getResourceId().isEmpty()) {
-            throw new RuntimeException("Resource is required!");
-        }
-        if (b.getDate() == null || b.getDate().isEmpty()) {
-            throw new RuntimeException("Date is required!");
-        }
-        if (b.getStartTime() == null || b.getStartTime().isEmpty() ||
-            b.getEndTime() == null || b.getEndTime().isEmpty()) {
-            throw new RuntimeException("Start time and end time are required!");
-        }
+        validateBooking(b);
 
-        // --------------------------
-        // 2️⃣ Time Validation
-        // --------------------------
-        if (b.getStartTime().compareTo(b.getEndTime()) >= 0) {
-            throw new RuntimeException("Invalid time range! Start time must be before end time.");
-        }
+        LocalDate bookingDate = LocalDate.parse(b.getDate());
 
-        // --------------------------
-        // 3️⃣ Past Date Block
-        // --------------------------
-        LocalDate bookingDate = LocalDate.parse(b.getDate(), DateTimeFormatter.ISO_DATE);
-        if (bookingDate.isBefore(LocalDate.now())) {
-            throw new RuntimeException("Cannot book for past date!");
-        }
+        if (bookingDate.isBefore(LocalDate.now()))
+            throw new RuntimeException("Cannot book past dates!");
 
-        // --------------------------
-        // 4️⃣ Conflict Check & Duplicate Booking
-        // --------------------------
-        List<Booking> existing = repo.findByResourceIdAndDate(b.getResourceId(), b.getDate());
-        for (Booking e : existing) {
-            // Time overlap check
-            boolean overlap = b.getStartTime().compareTo(e.getEndTime()) < 0 &&
-                              b.getEndTime().compareTo(e.getStartTime()) > 0;
-            if (overlap) {
-                throw new RuntimeException("Time slot already booked! Please select another time.");
-            }
+        if (bookingDate.isAfter(LocalDate.now().plusDays(7)))
+            throw new RuntimeException("Bookings allowed only within 7 days!");
 
-            // Optional: Duplicate booking for same purpose
-            if (b.getPurpose() != null && b.getPurpose().equalsIgnoreCase(e.getPurpose())) {
-                throw new RuntimeException("Duplicate booking with same purpose!");
-            }
-        }
+        checkConflicts(b, null);
 
-        // --------------------------
-        // 5️⃣ Status Handling
-        // --------------------------
         b.setStatus("PENDING");
-
         return repo.save(b);
     }
 
-    // Get all bookings
+    // ---------------- GET ----------------
     public List<Booking> getAll() {
         return repo.findAll();
     }
 
-    // Update status
+    // ---------------- STATUS ----------------
     public Booking updateStatus(Long id, String status) {
+
         Booking b = repo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
-        // Only allow these status values
-        if (!status.equalsIgnoreCase("APPROVED") &&
-            !status.equalsIgnoreCase("REJECTED") &&
-            !status.equalsIgnoreCase("PENDING")) {
-            throw new RuntimeException("Invalid status value!");
-        }
+
+        if (!status.matches("APPROVED|REJECTED|PENDING"))
+            throw new RuntimeException("Invalid status!");
+
         b.setStatus(status.toUpperCase());
         return repo.save(b);
+    }
+
+    // ---------------- EDIT ----------------
+    public Booking editBooking(Long id, Booking updated) {
+
+        Booking existing = repo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
+
+        if (!"PENDING".equals(existing.getStatus()))
+            throw new RuntimeException("Only PENDING bookings can be edited!");
+
+        validateBooking(updated);
+
+        LocalDate bookingDate = LocalDate.parse(updated.getDate());
+
+        if (bookingDate.isBefore(LocalDate.now()))
+            throw new RuntimeException("Cannot use past date!");
+
+        if (bookingDate.isAfter(LocalDate.now().plusDays(7)))
+            throw new RuntimeException("Only 7 days booking allowed!");
+
+        checkConflicts(updated, id);
+
+        existing.setResourceId(updated.getResourceId());
+        existing.setDate(updated.getDate());
+        existing.setStartTime(updated.getStartTime());
+        existing.setEndTime(updated.getEndTime());
+        existing.setPurpose(updated.getPurpose());
+
+        return repo.save(existing);
+    }
+
+    // ---------------- DELETE (7 DAY RULE) ----------------
+    public void deleteBooking(Long id) {
+
+        Booking b = repo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
+
+        LocalDate bookingDate = LocalDate.parse(b.getDate());
+
+        long days = ChronoUnit.DAYS.between(LocalDate.now(), bookingDate);
+
+        if (days > 7)
+            throw new RuntimeException("You can only delete bookings within 7 days!");
+
+        repo.deleteById(id);
+    }
+
+    // ---------------- VALIDATION ----------------
+    private void validateBooking(Booking b) {
+
+        if (b.getResourceId() == null || b.getResourceId().isEmpty())
+            throw new RuntimeException("Resource required!");
+
+        if (b.getDate() == null || b.getDate().isEmpty())
+            throw new RuntimeException("Date required!");
+
+        if (b.getStartTime() == null || b.getEndTime() == null)
+            throw new RuntimeException("Time required!");
+
+        if (b.getStartTime().compareTo(b.getEndTime()) >= 0)
+            throw new RuntimeException("Invalid time range!");
+    }
+
+    // ---------------- CONFLICT CHECK ----------------
+    private void checkConflicts(Booking b, Long ignoreId) {
+
+        List<Booking> list = repo.findByResourceIdAndDate(b.getResourceId(), b.getDate());
+
+        for (Booking e : list) {
+
+            if (ignoreId != null && e.getId().equals(ignoreId)) continue;
+
+            boolean overlap =
+                    b.getStartTime().compareTo(e.getEndTime()) < 0 &&
+                    b.getEndTime().compareTo(e.getStartTime()) > 0;
+
+            if (overlap)
+                throw new RuntimeException("Time slot already booked!");
+        }
     }
 }
