@@ -105,4 +105,23 @@ public class UserServiceImpl implements UserService {
     public Optional<AppUser> findByGoogleSub(String googleSub) {
         return userRepository.findByGoogleSub(googleSub);
     }
+
+    @Override
+    public AppUser createStaffMember(com.smartcampus.auth.dto.CreateStaffRequest req) {
+        System.out.println("[STAFF CREATION] Email: " + req.getEmail() + " | Permissions: " + req.getPermissions());
+        
+        String hashedPassword = passwordService.hash(req.getPassword());
+        AppUser user = AppUser.builder()
+                .name(req.getName())
+                .email(req.getEmail())
+                .passwordHash(hashedPassword)
+                .role(Role.STAFF_MEMBER)
+                .permissions(req.getPermissions() != null ? req.getPermissions() : new java.util.HashSet<>())
+                .active(true)
+                .build();
+        
+        AppUser savedUser = userRepository.save(user);
+        System.out.println("[STAFF CREATION] Saved User Permissions: " + savedUser.getPermissions());
+        return savedUser;
+    }
 }

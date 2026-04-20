@@ -1,21 +1,22 @@
+import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import styles from './Dashboard.module.css';
 import { Link, useNavigate } from 'react-router-dom';
 
 const StarIcon = () => (
-  <svg width="14" height="14" fill="#f97316" viewBox="0 0 24 24">
+  <svg width="14" height="14" fill="#e11d48" viewBox="0 0 24 24">
     <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
   </svg>
 );
 
 const SearchIcon = () => (
-  <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
   </svg>
 );
 
 const ArrowRight = () => (
-  <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
   </svg>
 );
@@ -26,37 +27,87 @@ const facilities = [
     location: 'Block A, Floor 1',
     rating: 4.8,
     tag: 'EVENT HALL',
-    color: '#1a3d2b',
-    emoji: '🎭',
+    themeClass: styles.cardRed,
+    imagePath: '/assets/auditorium-3d.png',
   },
   {
     name: 'Innovation Lab',
     location: 'Block B, Floor 2',
     rating: 4.5,
     tag: 'LABORATORY',
-    color: '#1c2f1a',
-    emoji: '⚗️',
+    themeClass: styles.cardGreen,
+    imagePath: '/assets/lab-3d.png',
   },
   {
-    name: 'Sports Court',
-    location: 'Campus Ground',
+    name: 'Sports Complex',
+    location: 'Campus South',
     rating: 4.3,
     tag: 'SPORTS',
-    color: '#1a2535',
-    emoji: '🏀',
+    themeClass: styles.cardBlue,
+    imagePath: '/assets/sports-3d.png',
   },
-];
-
-const stats = [
-  { value: '124+', label: 'Campus Facilities', sub: 'Available Now' },
-  { value: '16+', label: 'Departments', sub: 'Connected' },
-  { value: '20+', label: 'Years of Operation', sub: 'Excellence' },
+  {
+    name: 'Library Hub',
+    location: 'Central Block',
+    rating: 4.9,
+    tag: 'STUDY SPACE',
+    themeClass: styles.cardGold,
+    imagePath: '/assets/library-3d.png',
+  },
 ];
 
 export default function Dashboard() {
-  const { user, logout } = useAuth();
+  const { user, token, logout } = useAuth();
   const navigate = useNavigate();
   const firstName = user?.name?.split(' ')[0] || 'Student';
+
+  const [tickets, setTickets] = useState<any[]>([]);
+  const [bookings, setBookings] = useState<any[]>([]);
+  const [events, setEvents] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+
+  const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
+
+  useEffect(() => {
+    if (!token || !user?.id) return;
+
+    const fetchData = async () => {
+      try {
+        const headers = { Authorization: `Bearer ${token}` };
+        
+        // Fetch Tickets
+        const tRes = await fetch(`${API_BASE}/api/tickets`, { headers });
+        const tData = await tRes.json();
+        setTickets(Array.isArray(tData) ? tData.slice(0, 3) : []);
+
+        // Fetch Bookings
+        const bRes = await fetch(`${API_BASE}/api/bookings/user/${user.id}`, { headers });
+        const bData = await bRes.json();
+        setBookings(Array.isArray(bData) ? bData.slice(0, 3) : []);
+
+        // Fetch Events
+        const eRes = await fetch(`${API_BASE}/api/events`, { headers });
+        const eData = await eRes.json();
+        const today = new Date().toISOString().split('T')[0];
+        const upcoming = Array.isArray(eData) 
+          ? eData.filter((e: any) => e.date >= today).sort((a: any, b: any) => a.date.localeCompare(b.date)).slice(0, 3)
+          : [];
+        setEvents(upcoming);
+
+
+      } catch (err) {
+        console.error('Failed to fetch dashboard data:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [token, user?.id]);
+
+  const activeTicketsCount = tickets.filter(t => t.status !== 'CLOSED' && t.status !== 'RESOLVED').length;
+  const pendingBookingsCount = bookings.filter(b => b.status === 'PENDING').length;
 
   return (
     <div className={styles.page}>
@@ -70,71 +121,149 @@ export default function Dashboard() {
         <div className={styles.navLinks}>
           <Link to="/resources" className={styles.navLink}>Facilities</Link>
           <Link to="/bookings" className={styles.navLink}>Bookings</Link>
-          <Link to="/tickets" className={styles.navLink}>Tickets</Link>
-          <Link to="/notifications" className={styles.navLink}>Notifications</Link>
-          <a href="#about" className={styles.navLink}>About</a>
+          <Link to="/calendar" className={styles.navLink}>Calendar</Link>
+          <Link to="/tickets" className={styles.navLink}>Support</Link>
+
+          <Link to="/notifications" className={styles.navLink}>Alerts</Link>
         </div>
         <div className={styles.navActions}>
-          <span className={styles.navUser}>Hi, {firstName}</span>
-          <button className={styles.navLogout} onClick={logout}>Logout</button>
+          <span className={styles.navUser}>Welcome back, <b>{firstName}</b></span>
+          <button className={styles.navLogout} onClick={logout}>Sign Out</button>
         </div>
       </nav>
 
       {/* ══════════ HERO ══════════ */}
       <section className={styles.hero}>
-        {/* Decorative bg leaves */}
-        <div className={styles.heroLeafTopLeft} />
-        <div className={styles.heroLeafBottomRight} />
-
-        {/* ── BACKGROUND ANIMATION ── */}
-        <div className={styles.leafContainer}>
-          {[...Array(12)].map((_, i) => (
-            <div
-              key={i}
-              className={styles.leaf}
-              style={{
-                top: `${Math.random() * 100}%`,
-                left: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 15}s`,
-                width: `${Math.random() * 25 + 15}px`,
-                height: `${Math.random() * 25 + 15}px`
-              }}
-            />
-          ))}
-        </div>
-
         <div className={styles.heroInner}>
           <div className={styles.heroLeft}>
             <h1 className={styles.heroTitle}>
-              NAVIGATE YOUR<br />
-              <span className={styles.heroOrange}>CAMPUS LIFE</span>
+              ELEVATE YOUR<br />
+              <span className={styles.heroAccent}>CAMPUS LIFE</span>
             </h1>
             <p className={styles.heroDesc}>
-              Book facilities, report incidents, and explore every resource your campus has to offer — all from one place designed for students like you.
+              Instant access to campus resources, real-time booking, and seamless support. Your university experience, digitalized and refined.
             </p>
 
-            {/* Search bar row */}
             <div className={styles.heroSearchRow}>
               <div className={styles.heroField} onClick={() => navigate('/resources')}>
-                <span className={styles.heroFieldLabel}>FACILITY</span>
-                <span className={styles.heroFieldValue}>Lecture Halls, Labs, Courts...</span>
+                <span className={styles.heroFieldLabel}>Facility Search</span>
+                <span className={styles.heroFieldValue}>Labs, Halls, Equipments...</span>
               </div>
               <div className={styles.heroFieldDivider} />
               <div className={styles.heroField} onClick={() => navigate('/bookings')}>
-                <span className={styles.heroFieldLabel}>DATE</span>
-                <span className={styles.heroFieldValue}>Pick a date</span>
+                <span className={styles.heroFieldLabel}>Reservations</span>
+                <span className={styles.heroFieldValue}>Check Availability</span>
               </div>
               <button className={styles.heroSearchBtn} onClick={() => navigate('/resources')}>
-                <SearchIcon /> Search
+                <SearchIcon /> Explore
               </button>
             </div>
           </div>
 
-          {/* Hero character art */}
           <div className={styles.heroRight}>
             <div className={styles.heroCircle}>
-              <img src="/adventurer-3d.png" alt="Adventurer" className={styles.hero3dImg} />
+              <img src="/adventurer-3d.png" alt="Mascot" className={styles.hero3dImg} />
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════ BENTO GRID SECTION ══════════ */}
+      <section className={styles.bentoSection}>
+        <div className={styles.sectionInner}>
+          <div className={styles.bentoGrid}>
+            
+            {/* LARGE CARD: ACTIVE TICKETS */}
+            <div className={`${styles.bentoCard} ${styles.cardLarge}`}>
+              <span className={styles.bentoTag}>Support Status</span>
+              <h2 className={styles.bentoTitle}>Active Requests</h2>
+              <p className={styles.bentoDesc}>Track your pending maintenance and support tickets in real-time.</p>
+              
+              <div className={styles.statusList}>
+                {loading ? (
+                  <p>Loading tickets...</p>
+                ) : tickets.length > 0 ? (
+                  tickets.map(t => (
+                    <div key={t.id} className={styles.statusItem} onClick={() => navigate(`/tickets/${t.id}`)}>
+                      <div className={styles.statusIcon}>🛠️</div>
+                      <div className={styles.statusLabel}>
+                        <span className={styles.statusName}>{t.title}</span>
+                        <span className={styles.statusVal}>{new Date(t.createdAt).toLocaleDateString()}</span>
+                      </div>
+                      <span className={styles.statusBadge}>{t.status}</span>
+                    </div>
+                  ))
+                ) : (
+                  <div className={styles.statusItem} style={{ justifyContent: 'center', opacity: 0.5 }}>
+                    No active tickets
+                  </div>
+                )}
+              </div>
+              
+              <button className={styles.bookBtn} style={{ marginTop: '24px', width: '100%' }} onClick={() => navigate('/tickets')}>
+                View All Tickets
+              </button>
+            </div>
+
+            {/* MEDIUM CARD: QUICK STATS */}
+            <div className={`${styles.bentoCard} ${styles.cardMedium}`}>
+              <span className={styles.bentoTag}>Overview</span>
+              <h2 className={styles.bentoTitle}>Your Stats</h2>
+              <div style={{ display: 'flex', gap: '20px', marginTop: '24px' }}>
+                <div style={{ flex: 1, textAlign: 'center', padding: '20px', background: 'rgba(0,0,0,0.02)', borderRadius: '16px', border: '1px solid rgba(0,0,0,0.04)' }}>
+                  <div style={{ fontSize: '32px', fontWeight: 800, color: '#2563eb' }}>{activeTicketsCount}</div>
+                  <div style={{ fontSize: '12px', color: 'rgba(0,0,0,0.45)' }}>Open Tickets</div>
+                </div>
+                <div style={{ flex: 1, textAlign: 'center', padding: '20px', background: 'rgba(0,0,0,0.02)', borderRadius: '16px', border: '1px solid rgba(0,0,0,0.04)' }}>
+                  <div style={{ fontSize: '32px', fontWeight: 800, color: '#f59e0b' }}>{pendingBookingsCount}</div>
+                  <div style={{ fontSize: '12px', color: 'rgba(0,0,0,0.45)' }}>Pending Bookings</div>
+                </div>
+              </div>
+            </div>
+
+            {/* SMALL CARD: RECENT BOOKINGS */}
+            <div className={styles.bentoCard}>
+              <span className={styles.bentoTag}>Upcoming</span>
+              <h2 className={styles.bentoTitle} style={{ fontSize: '24px' }}>Bookings</h2>
+              <div className={styles.statusList} style={{ marginTop: '16px', gap: '8px' }}>
+                {bookings.length > 0 ? (
+                  bookings.slice(0, 2).map(b => (
+                    <div key={b.id} className={styles.statusItem} style={{ padding: '10px' }}>
+                      <div className={styles.statusLabel}>
+                        <span className={styles.statusName} style={{ fontSize: '13px' }}>{b.resourceName}</span>
+                        <span className={styles.statusVal} style={{ fontSize: '11px' }}>{b.date}</span>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <p style={{ fontSize: '12px', opacity: 0.5 }}>No recent bookings</p>
+                )}
+              </div>
+            </div>
+
+            {/* SMALL CARD: EVENTS */}
+            <div className={styles.bentoCard}>
+              <span className={styles.bentoTag}>Calendar</span>
+              <h2 className={styles.bentoTitle} style={{ fontSize: '24px' }}>Upcoming</h2>
+              <div className={styles.statusList} style={{ marginTop: '16px', gap: '8px' }}>
+                {events.length > 0 ? (
+                  events.map(e => (
+                    <div key={e.id} className={styles.statusItem} style={{ padding: '10px' }} onClick={() => navigate('/calendar')}>
+                      <div className={styles.statusLabel}>
+                        <span className={styles.statusName} style={{ fontSize: '13px' }}>{e.title}</span>
+                        <span className={styles.statusVal} style={{ fontSize: '11px' }}>{e.date} • {e.startTime}</span>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <p style={{ fontSize: '12px', opacity: 0.5, cursor: 'pointer' }} onClick={() => navigate('/calendar')}>
+                    No upcoming events. Check calendar.
+                  </p>
+                )}
+              </div>
+            </div>
+
+
           </div>
         </div>
       </section>
@@ -142,35 +271,27 @@ export default function Dashboard() {
       {/* ══════════ FACILITIES SECTION ══════════ */}
       <section className={styles.facilitiesSection} id="facilities">
         <div className={styles.sectionInner}>
-          <div className={styles.sectionTopRow}>
-            <div>
-              <div className={styles.sectionDot}>
-                <span className={styles.dotOrange}>●</span>
-              </div>
-              <h2 className={styles.sectionTitle}>
-                FIND <span className={styles.titleOrange}>POPULAR</span><br />FACILITIES
-              </h2>
-            </div>
-            <div className={styles.arrowBtns}>
-              <button className={styles.arrowBtn}>‹</button>
-              <button className={styles.arrowBtn}>›</button>
-            </div>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>
+              POPULAR <span className={styles.titleDim}>RESOURCES</span>
+            </h2>
           </div>
 
           <div className={styles.facilityGrid}>
             {facilities.map(f => (
-              <div key={f.name} className={styles.facilityCard}>
-                <div className={styles.facilityImg} style={{ background: f.color }}>
-                  <span className={styles.facilityEmoji}>{f.emoji}</span>
+              <div key={f.name} className={`${styles.facilityCard} ${f.themeClass}`}>
+                <div className={styles.facilityImg}>
+                  <div className={styles.facilityEmojiBg} />
+                  <img src={f.imagePath} alt={f.name} className={styles.facilityIcon} />
                   <span className={styles.facilityRating}><StarIcon /> {f.rating}</span>
                 </div>
                 <div className={styles.facilityBody}>
-                  <div className={styles.facilityTag}>{f.tag}</div>
+                  <span className={styles.facilityTag}>{f.tag}</span>
                   <h3 className={styles.facilityName}>{f.name}</h3>
-                  <p className={styles.facilityLoc}>{f.location}</p>
+                  <p className={styles.facilityLoc}>📍 {f.location}</p>
                   <div className={styles.facilityFooter}>
-                    <span className={styles.facilitySlots}>8 slots open</span>
-                    <button className={styles.bookBtn} onClick={() => navigate('/bookings')}>Book</button>
+                    <span className={styles.facilitySlots}>High Availability</span>
+                    <button className={styles.bookBtn} onClick={() => navigate('/bookings')}>Reserve</button>
                   </div>
                 </div>
               </div>
@@ -179,73 +300,22 @@ export default function Dashboard() {
         </div>
       </section>
 
-      {/* ══════════ STORY / STATS SECTION ══════════ */}
-      <section className={styles.storySection}>
-        <div className={styles.sectionInner}>
-          <div className={styles.storyGrid}>
-            {/* Left: illustration */}
-            <div className={styles.storyLeft}>
-              <div className={styles.storyCircle}>
-                <img src="/facility-3d.png" alt="Facility" className={styles.hero3dImg} />
-              </div>
-            </div>
-
-            {/* Right: text + stats */}
-            <div className={styles.storyRight}>
-              <div className={styles.sectionDot}>
-                <span className={styles.dotOrange}>●</span>
-              </div>
-              <h2 className={styles.sectionTitle}>
-                OUR <span className={styles.titleOrange}>CAMPUS</span> WITH<br />
-                STUDENTS
-              </h2>
-              <p className={styles.storyDesc}>
-                SmartCampus is built by students, for students. We provide the infrastructure for a seamless academic experience — from reserving your favourite lab to reporting issues in minutes.
-              </p>
-              <p className={styles.storyDesc}>
-                Don't wait to get started — your campus resources are ready and waiting for you!
-              </p>
-
-              <div className={styles.statsRow}>
-                {stats.map(s => (
-                  <div key={s.label} className={styles.statItem}>
-                    <div className={styles.statValue}>{s.value}</div>
-                    <div className={styles.statLabel}>{s.label}</div>
-                    <div className={styles.statSub}>{s.sub}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* ══════════ CTA BANNER ══════════ */}
       <section className={styles.ctaSection}>
         <div className={styles.sectionInner}>
-          <div className={styles.ctaContent}>
-            <div className={styles.sectionDot}>
-              <span className={styles.dotOrange}>●</span>
-            </div>
+          <div className={styles.ctaGlass}>
             <h2 className={styles.ctaTitle}>
-              START MANAGING YOUR<br />
-              <span className={styles.titleOrange}>CAMPUS EXPERIENCE</span><br />
-              WITH EASE
+              READY TO <span className={styles.heroAccent}>TRANSCEND?</span>
             </h2>
             <p className={styles.ctaDesc}>
-              Every resource on campus is available at your fingertips — explore, book, and enjoy your university life to the fullest.
+              Experience a smarter way to manage your campus tasks. Efficient, transparent, and built for you.
             </p>
             <div className={styles.ctaBtns}>
-              <button className={styles.ctaPrimary} onClick={() => navigate('/resources')}>Explore Facilities <ArrowRight /></button>
-              <Link to="/tickets/create" className={styles.ctaSecondary} style={{ textDecoration: 'none', textAlign: 'center' }}>Report an Issue</Link>
+              <button className={styles.ctaPrimary} onClick={() => navigate('/resources')}>
+                Get Started <ArrowRight />
+              </button>
+              <Link to="/tickets/create" className={styles.ctaSecondary}>Report Issue</Link>
             </div>
-          </div>
-
-          {/* Decorative circles */}
-          <div className={styles.ctaCircles}>
-            <div className={styles.ctaCircle1}>🏛️</div>
-            <div className={styles.ctaCircle2}>🔬</div>
-            <div className={styles.ctaCircle3}>📚</div>
           </div>
         </div>
       </section>

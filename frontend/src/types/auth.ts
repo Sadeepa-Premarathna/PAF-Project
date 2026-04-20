@@ -8,6 +8,7 @@ export interface AuthUser {
   role: Role;
   studentId: string | null;
   department: string | null;
+  permissions: string[] | null;
 }
 
 export interface ProfileCompletionData {

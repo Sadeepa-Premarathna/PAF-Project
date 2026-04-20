@@ -20,4 +20,5 @@ public interface UserService {
     Optional<AppUser> findByEmail(String email);
     boolean existsByEmail(String email);
     Optional<AppUser> findByGoogleSub(String googleSub);
+    AppUser createStaffMember(com.smartcampus.auth.dto.CreateStaffRequest req);
 }

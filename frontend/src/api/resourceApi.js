@@ -5,7 +5,7 @@ const apiClient = axios.create({
   baseURL: (() => {
     const envBase = (typeof process !== "undefined" && process.env?.REACT_APP_API_BASE_URL) ||
                     import.meta.env.VITE_API_BASE_URL ||
-                    "http://localhost:8081";
+                    "http://localhost:8080";
     
     // Ensure the base URL ends with /api/v1
     const base = envBase.endsWith("/") ? envBase.slice(0, -1) : envBase;

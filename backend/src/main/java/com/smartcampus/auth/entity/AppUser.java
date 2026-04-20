@@ -41,6 +41,12 @@ public class AppUser {
     @Column(nullable = false)
     private Role role;
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_permissions", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "permission")
+    @Builder.Default
+    private java.util.Set<String> permissions = new java.util.HashSet<>();
+
     @Builder.Default
     private boolean active = true;
 

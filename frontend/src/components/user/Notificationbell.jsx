@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./NotificationBell.css";
 import notificationService from "../../services/notificationService";
-
-const CURRENT_USER_ID = 1; // Replace with auth user id
-
+import { useAuth } from "../../context/AuthContext";
 const TYPE_CFG = {
   BOOKING_APPROVED: { label: "Booking Approved", accent: "#10b981", bg: "#f0fdf4", icon: "✓" },
   BOOKING_REJECTED: { label: "Booking Rejected", accent: "#ef4444", bg: "#fef2f2", icon: "✕" },
@@ -28,30 +26,46 @@ function timeAgo(d) {
 }
 
 function NotificationBell() {
+  const { user } = useAuth();
+  const CURRENT_USER_ID = user?.id;
+
   const [notifications, setNotifications] = useState([]);
   const [unreadCount,   setUnreadCount]   = useState(0);
   const [open,          setOpen]          = useState(false);
   const [loading,       setLoading]       = useState(false);
   const [filter,        setFilter]        = useState("ALL");
   const [shake,         setShake]         = useState(false);
+  const [toastNotif,    setToastNotif]    = useState(null);
+  
   const panelRef  = useRef(null);
   const prevCount = useRef(0);
 
-  // Poll unread count every 20s
+  // Poll unread count
   useEffect(() => {
+    if (!CURRENT_USER_ID) return;
     fetchUnreadCount();
-    const t = setInterval(fetchUnreadCount, 20000);
+    const t = setInterval(fetchUnreadCount, 5000); // Polling every 5s for snappy toast experience
     return () => clearInterval(t);
-  }, []);
+  }, [CURRENT_USER_ID]);
 
-  // Bell shake on new notification
+  // Bell shake on new notification + Toast Popup
   useEffect(() => {
     if (unreadCount > prevCount.current && prevCount.current !== 0) {
       setShake(true);
       setTimeout(() => setShake(false), 600);
+      
+      if (CURRENT_USER_ID) {
+        notificationService.getAll(CURRENT_USER_ID).then(res => {
+          const latest = res.data[0];
+          if (latest && !latest.isRead) {
+            setToastNotif(latest);
+            setTimeout(() => setToastNotif(null), 5000);
+          }
+        }).catch(err => console.error(err));
+      }
     }
     prevCount.current = unreadCount;
-  }, [unreadCount]);
+  }, [unreadCount, CURRENT_USER_ID]);
 
   // Close on outside click
   useEffect(() => {
@@ -63,6 +77,7 @@ function NotificationBell() {
   }, []);
 
   const fetchUnreadCount = async () => {
+    if (!CURRENT_USER_ID) return;
     try {
       const res = await notificationService.getUnreadCount(CURRENT_USER_ID);
       setUnreadCount(res.data.count);
@@ -70,6 +85,7 @@ function NotificationBell() {
   };
 
   const fetchNotifications = async () => {
+    if (!CURRENT_USER_ID) return;
     setLoading(true);
     try {
       const res = await notificationService.getAll(CURRENT_USER_ID);
@@ -203,6 +219,23 @@ function NotificationBell() {
           )}
         </div>
       )}
+      {/* Toast Popup */}
+      {toastNotif && (() => {
+        const cfg = TYPE_CFG[toastNotif.type] || { label: toastNotif.type, accent: "#6b7280", bg: "#f9fafb", icon: "•" };
+        return (
+          <div className="toast-popup" style={{ backgroundColor: cfg.bg, borderLeft: `4px solid ${cfg.accent}` }}>
+            <div className="toast-icon" style={{ backgroundColor: cfg.accent + "22", color: cfg.accent }}>
+              {cfg.icon}
+            </div>
+            <div className="toast-body">
+              <span className="toast-title" style={{ color: cfg.accent }}>{cfg.label}</span>
+              <p className="toast-msg">{toastNotif.message}</p>
+            </div>
+            <button className="toast-close" onClick={() => setToastNotif(null)}>✕</button>
+          </div>
+        );
+      })()}
+
     </div>
   );
 }

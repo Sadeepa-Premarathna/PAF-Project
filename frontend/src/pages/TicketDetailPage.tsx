@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import userStyles from './TicketDetailPage.user.module.css';
-import staffStyles from './TicketDetailPage.staff.module.css';
+import styles from './TicketDetailPage.module.css';
 
 const API_BASE = 'http://localhost:8080';
 
@@ -39,8 +38,6 @@ export default function TicketDetailPage() {
   const [error, setError] = useState<string | null>(null);
 
   const isStaff = user?.role === 'ADMIN' || user?.role === 'STAFF_MEMBER';
-  const styles = isStaff ? staffStyles : userStyles;
-
   const fetchTicket = () => {
     if (!token || !id) return;
     fetch(`${API_BASE}/api/tickets/${id}`, { headers: { Authorization: `Bearer ${token}` } })
@@ -117,9 +114,9 @@ export default function TicketDetailPage() {
     <div className={styles.page}>
       <button className={styles.backBtn} onClick={() => navigate('/tickets')}>← Back to Tickets</button>
 
-      {error && <div style={{ background: '#fee2e2', color: '#991b1b', padding: '12px', borderRadius: '8px', marginBottom: '20px' }}>{error}</div>}
+      {error && <div className={styles.errorBox}>{error}</div>}
 
-      <div className={styles.layout}>
+      <div className={styles.layout} style={{ gridTemplateColumns: isStaff ? '1fr 340px' : '1fr', maxWidth: isStaff ? '1300px' : '900px' }}>
         {/* ── MAIN CONTENT ── */}
         <div className={styles.main}>
           <div className={styles.titleRow}>
@@ -135,13 +132,13 @@ export default function TicketDetailPage() {
               {STATUS_FLOW.map((s, i) => (
                 <div key={s} className={styles.timelineStep}>
                   <div className={`${styles.timelineDot} ${i <= statusIdx ? styles.timelineDotActive : ''}`}
-                    style={i <= statusIdx ? { background: STATUS_COLORS[ticket.status] } : {}}>
+                    style={i <= statusIdx ? { background: STATUS_COLORS[s], borderColor: STATUS_COLORS[s], boxShadow: `0 0 15px ${STATUS_COLORS[s]}66` } : {}}>
                     {i < statusIdx ? '✓' : i + 1}
                   </div>
                   <span className={`${styles.timelineLabel} ${i <= statusIdx ? styles.timelineLabelActive : ''}`}>{s.replace('_', ' ')}</span>
                   {i < STATUS_FLOW.length - 1 && (
                     <div className={`${styles.timelineLine} ${i < statusIdx ? styles.timelineLineActive : ''}`}
-                      style={i < statusIdx ? { background: STATUS_COLORS[ticket.status] } : {}} />
+                      style={i < statusIdx ? { background: STATUS_COLORS[s] } : {}} />
                   )}
                 </div>
               ))}

@@ -20,11 +20,27 @@ import AdminBookingsPage from './pages/AdminBookingsPage';
 import ResourcesPage from './pages/ResourcesPage';
 import UserNotificationPage from './pages/UserNotificationPage';
 import AdminNotificationPage from './pages/AdminNotificationPage';
+import StaffManagement from './pages/StaffManagement';
+import StaffApprovals from './pages/StaffApprovals';
+import CalendarPage from './pages/CalendarPage';
+import NotificationBell from './components/user/Notificationbell';
+import { useAuth } from './context/AuthContext';
+
+function GlobalNotification() {
+  const { isAuthenticated } = useAuth();
+  if (!isAuthenticated) return null;
+  return (
+    <div style={{ position: 'fixed', bottom: '30px', left: '30px', zIndex: 9999 }}>
+      <NotificationBell />
+    </div>
+  );
+}
 
 export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
+        <GlobalNotification />
         <Routes>
           {/* Public routes */}
           <Route path="/login" element={<Login />} />
@@ -46,11 +62,21 @@ export default function App() {
               <AdminDashboard />
             </PrivateRoute>
           } />
+          <Route path="/admin/staff" element={
+            <PrivateRoute requiredRoles={['ADMIN']}>
+              <StaffManagement />
+            </PrivateRoute>
+          } />
 
           {/* Protected — STAFF_MEMBER only */}
           <Route path="/staff/*" element={
             <PrivateRoute requiredRoles={['STAFF_MEMBER']}>
               <StaffDashboard />
+            </PrivateRoute>
+          } />
+          <Route path="/staff/approvals" element={
+            <PrivateRoute requiredRoles={['STAFF_MEMBER']}>
+              <StaffApprovals />
             </PrivateRoute>
           } />
 
@@ -72,6 +98,10 @@ export default function App() {
           {/* Notifications */}
           <Route path="/notifications" element={<PrivateRoute><UserNotificationPage /></PrivateRoute>} />
           <Route path="/admin/notifications" element={<PrivateRoute requiredRoles={['ADMIN']}><AdminNotificationPage /></PrivateRoute>} />
+
+          {/* Calendar */}
+          <Route path="/calendar" element={<PrivateRoute><CalendarPage /></PrivateRoute>} />
+
 
 
           {/* Default redirect */}

@@ -5,6 +5,7 @@ import com.example.booking.service.BookingService;
 
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
@@ -30,8 +31,9 @@ public class BookingController {
         }
     }
 
-    // GET ALL BOOKINGS (Admin)
+    // GET ALL BOOKINGS (Admin/Staff with permission)
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('STAFF_MEMBER') and principal.permissions.contains('BOOKINGS'))")
     public List<Booking> getAll() {
         return service.getAll();
     }
@@ -44,6 +46,7 @@ public class BookingController {
 
     // APPROVE / REJECT / CANCEL
     @PutMapping("/{id}/status")
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('STAFF_MEMBER') and principal.permissions.contains('BOOKINGS'))")
     public ResponseEntity<?> updateStatus(
             @PathVariable Long id,
             @RequestParam String status,
@@ -58,6 +61,7 @@ public class BookingController {
 
     // Keep old endpoint for backward compat
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('STAFF_MEMBER') and principal.permissions.contains('BOOKINGS'))")
     public ResponseEntity<?> updateStatusLegacy(@PathVariable Long id, @RequestParam String status) {
         try {
             Booking updated = service.updateStatus(id, status, null);

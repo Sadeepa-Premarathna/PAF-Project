@@ -1,0 +1,363 @@
+.page {
+  min-height: 100vh;
+  background: #f8fafc;
+  color: #0f172a;
+  padding: 40px;
+  font-family: 'Inter', sans-serif;
+  padding-top: 20px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
+  padding: 20px 30px;
+  border-radius: 20px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.04);
+}
+
+.backBtn {
+  padding: 10px 24px;
+  background: white;
+  border: 1.5px solid #e2e8f0;
+  color: #1e293b;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.backBtn:hover {
+  transform: translateX(-5px);
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.calendarNav {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.monthTitle {
+  font-size: 36px;
+  font-weight: 900;
+  margin: 0;
+  min-width: 250px;
+  text-align: center;
+  color: #1e293b;
+  text-transform: uppercase;
+  letter-spacing: -1px;
+}
+
+.monthTitle span {
+  color: #64748b;
+  font-weight: 500;
+  margin-left: 8px;
+}
+
+.navBtn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1.5px solid #e2e8f0;
+  background: white;
+  color: #1d4ed8;
+  font-size: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
+}
+
+
+.navBtn:hover {
+  background: #2563eb;
+  color: white;
+  transform: scale(1.1);
+}
+
+.addEventBtn {
+  padding: 12px 24px;
+  background: #1d4ed8;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 15px -3px rgba(29, 78, 216, 0.2);
+}
+
+.addEventBtn:hover {
+  background: #1e40af;
+  transform: translateY(-2px);
+  box-shadow: 0 20px 25px -5px rgba(29, 78, 216, 0.3);
+}
+
+.content {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 32px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.calendarCard {
+  background: white;
+  border-radius: 32px;
+  padding: 40px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+.weekDays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 24px;
+}
+
+.weekDay {
+  text-align: center;
+  font-weight: 700;
+  font-size: 14px;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.daysGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+}
+
+.day {
+  aspect-ratio: 1;
+  border-radius: 16px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid transparent;
+}
+
+.day:hover {
+  background: #f1f5f9;
+  transform: scale(1.05);
+  z-index: 2;
+}
+
+.dayEmpty {
+  aspect-ratio: 1;
+}
+
+.today {
+  background: rgba(37, 99, 235, 0.05);
+  border-color: rgba(37, 99, 235, 0.1);
+}
+
+.today .dayNumber {
+  color: #2563eb;
+  font-weight: 800;
+}
+
+.selected {
+  background: #2563eb !important;
+  color: white !important;
+  box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
+}
+
+.selected .dayNumber {
+  color: white;
+}
+
+.dayNumber {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.eventDots {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.moreDots {
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.detailsPanel {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  border-radius: 32px;
+  padding: 32px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+}
+
+.detailsHeader {
+  margin-bottom: 24px;
+}
+
+.detailsTitle {
+  font-size: 28px;
+  font-weight: 800;
+  margin: 0;
+}
+
+.detailsSubtitle {
+  color: #64748b;
+  margin: 4px 0 0;
+  font-size: 14px;
+}
+
+.eventList {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.eventCard {
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  display: flex;
+  gap: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.03);
+  transition: all 0.3s ease;
+}
+
+.eventCard:hover {
+  transform: translateX(8px);
+  border-color: rgba(37, 99, 235, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.bookingCard {
+  border-left: 4px solid #64748b;
+  background: #f8fafc;
+}
+
+.eventTime {
+  display: flex;
+  flex-direction: column;
+  min-width: 80px;
+}
+
+.time {
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.duration {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.eventInfo {
+  flex: 1;
+}
+
+.eventHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.eventType {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid;
+  width: fit-content;
+}
+
+.eventTitle {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0;
+  color: #1e293b;
+}
+
+.eventDesc {
+  font-size: 13px;
+  color: #475569;
+  line-height: 1.5;
+  margin: 0 0 12px;
+}
+
+.eventMeta {
+  display: flex;
+  gap: 16px;
+  font-size: 12px;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  text-align: center;
+  color: #94a3b8;
+  height: 100%;
+}
+
+.emptyIcon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.2;
+}
+
+.loader {
+  text-align: center;
+  padding: 40px;
+  color: #94a3b8;
+  font-style: italic;
+}
+
+@media (max-width: 1100px) {
+  .content {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .page {
+    padding: 20px;
+  }
+  .header {
+    flex-direction: column;
+    gap: 20px;
+  }
+  .monthTitle {
+    font-size: 24px;
+  }
+}

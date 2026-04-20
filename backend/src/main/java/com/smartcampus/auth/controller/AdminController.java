@@ -35,4 +35,9 @@ public class AdminController {
         userService.deactivateUser(userId);
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/staff")
+    public ResponseEntity<UserResponse> createStaff(@Valid @RequestBody com.smartcampus.auth.dto.CreateStaffRequest request) {
+        return ResponseEntity.ok(UserResponse.from(userService.createStaffMember(request)));
+    }
 }

@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import styles from './CreateTicketPage.module.css';
-
+import { getResources } from '../api/resourceApi';
 const API_BASE = 'http://localhost:8080';
 
 const CATEGORIES = ['ELECTRICAL', 'PLUMBING', 'IT_EQUIPMENT', 'FURNITURE', 'HVAC', 'PROJECTOR', 'SECURITY', 'CLEANING', 'OTHER'];
@@ -24,6 +24,24 @@ export default function CreateTicketPage() {
   const [previews, setPreviews] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const [resources, setResources] = useState<any[]>([]);
+  const [loadingResources, setLoadingResources] = useState(false);
+
+  useEffect(() => {
+    const fetchResources = async () => {
+      setLoadingResources(true);
+      try {
+        const data = await getResources();
+        setResources(data);
+      } catch (err) {
+        console.error("Failed to load resources for ticket creation");
+      } finally {
+        setLoadingResources(false);
+      }
+    };
+    fetchResources();
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -109,7 +127,27 @@ export default function CreateTicketPage() {
           <div className={styles.row}>
             <div className={styles.field}>
               <label className={styles.label}>Location / Resource *</label>
-              <input name="resourceLocation" className={styles.input} placeholder="e.g. Room 301, Lab C" value={form.resourceLocation} onChange={handleChange} required />
+              {loadingResources ? (
+                <select className={styles.select} disabled>
+                  <option>Loading resources...</option>
+                </select>
+              ) : (
+                <select 
+                  name="resourceLocation" 
+                  className={styles.select} 
+                  value={form.resourceLocation} 
+                  onChange={handleChange} 
+                  required
+                >
+                  <option value="">Select a resource...</option>
+                  {resources.map(res => (
+                    <option key={res.id} value={`${res.name} - ${res.location}`}>
+                      {res.name} (📍 {res.location})
+                    </option>
+                  ))}
+                  <option value="Other">Other</option>
+                </select>
+              )}
             </div>
             <div className={styles.field}>
               <label className={styles.label}>Preferred Contact</label>

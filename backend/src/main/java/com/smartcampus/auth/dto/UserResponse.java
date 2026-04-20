@@ -12,6 +12,7 @@ public class UserResponse {
     private String role;
     private String studentId;
     private String department;
+    private java.util.Set<String> permissions;
 
     public static UserResponse from(AppUser user) {
         return UserResponse.builder()
@@ -22,6 +23,7 @@ public class UserResponse {
                 .role(user.getRole().name())
                 .studentId(user.getStudentId())
                 .department(user.getDepartment())
+                .permissions(user.getPermissions())
                 .build();
     }
 }

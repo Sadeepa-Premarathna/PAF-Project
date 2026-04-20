@@ -35,12 +35,19 @@ export default function StaffDashboard() {
         </div>
         <div className={styles.navLinks}>
           <Link to="/staff" className={styles.navLink}>Overview</Link>
-          <Link to="/staff/approvals" className={styles.navLink}>Approvals</Link>
-          <Link to="/staff/facilities" className={styles.navLink}>Facilities</Link>
-          <Link to="/staff/reports" className={styles.navLink}>Reports</Link>
+          {(user?.permissions || []).includes('BOOKINGS') && <Link to="/staff/approvals" className={styles.navLink}>Approvals</Link>}
+          {(user?.permissions || []).includes('RESOURCES') && <Link to="/staff/facilities" className={styles.navLink}>Facilities</Link>}
+          {(user?.permissions || []).includes('TICKETS') && <Link to="/staff/reports" className={styles.navLink}>Reports</Link>}
         </div>
         <div className={styles.navActions}>
-          <span className={styles.navUser}>Member: {firstName}</span>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', marginRight: '15px' }}>
+            <span className={styles.navUser}>Member: {firstName}</span>
+            <div style={{ display: 'flex', gap: '4px' }}>
+               {user?.permissions?.map(p => (
+                 <span key={p} style={{ fontSize: '9px', background: '#f97316', color: 'white', padding: '1px 4px', borderRadius: '4px' }}>{p}</span>
+               ))}
+            </div>
+          </div>
           <button className={styles.navLogout} onClick={logout}>Logout</button>
         </div>
       </nav>
@@ -108,35 +115,45 @@ export default function StaffDashboard() {
         <div className={styles.sectionInner}>
             <div className={styles.sectionDot}><span className={styles.dotOrange}>●</span></div>
             <h2 className={styles.sectionTitle}>STAFF <span className={styles.titleOrange}>WORKFLOWS</span></h2>
-            <div className={styles.facilityGrid} style={{ marginTop: '40px' }}>
-                <div className={styles.facilityCard}>
-                    <div className={styles.facilityImg} style={{ background: '#451a03' }}><span className={styles.facilityEmoji}>📝</span></div>
-                    <div className={styles.facilityBody}>
-                        <div className={styles.facilityTag}>APPROVALS</div>
-                        <h3 className={styles.facilityName}>Pending Requests</h3>
-                        <p className={styles.facilityLoc}>Review and approve student bookings.</p>
-                        <button className={styles.bookBtn} style={{ width: '100%' }}>Review</button>
-                    </div>
+            {(!user?.permissions || user.permissions.length === 0) ? (
+                <p style={{ marginTop: '20px', color: '#94a3b8' }}>You have not been assigned any specific feature permissions yet. Please contact the administrator.</p>
+            ) : (
+                <div className={styles.facilityGrid} style={{ marginTop: '40px' }}>
+                    {user.permissions.includes('BOOKINGS') && (
+                        <div className={styles.facilityCard}>
+                            <div className={styles.facilityImg} style={{ background: '#451a03' }}><span className={styles.facilityEmoji}>📝</span></div>
+                            <div className={styles.facilityBody}>
+                                <div className={styles.facilityTag}>APPROVALS</div>
+                                <h3 className={styles.facilityName}>Pending Requests</h3>
+                                <p className={styles.facilityLoc}>Review and approve student bookings.</p>
+                                <Link to="/staff/approvals" className={styles.bookBtn} style={{ width: '100%', textAlign: 'center', display: 'block', textDecoration: 'none' }}>Review</Link>
+                            </div>
+                        </div>
+                    )}
+                    {user.permissions.includes('RESOURCES') && (
+                        <div className={styles.facilityCard}>
+                            <div className={styles.facilityImg} style={{ background: '#172554' }}><span className={styles.facilityEmoji}>📅</span></div>
+                            <div className={styles.facilityBody}>
+                                <div className={styles.facilityTag}>SCHEDULE</div>
+                                <h3 className={styles.facilityName}>Facility Calendar</h3>
+                                <p className={styles.facilityLoc}>View usage timeline and availability.</p>
+                                <button className={styles.bookBtn} style={{ width: '100%' }}>Calendar</button>
+                            </div>
+                        </div>
+                    )}
+                    {user.permissions.includes('TICKETS') && (
+                        <div className={styles.facilityCard}>
+                            <div className={styles.facilityImg} style={{ background: '#022c22' }}><span className={styles.facilityEmoji}>📊</span></div>
+                            <div className={styles.facilityBody}>
+                                <div className={styles.facilityTag}>REPORTS</div>
+                                <h3 className={styles.facilityName}>Incident Logs</h3>
+                                <p className={styles.facilityLoc}>Manage infrastructure issue reports.</p>
+                                <Link to="/tickets" className={styles.bookBtn} style={{ width: '100%', textAlign: 'center', display: 'block', textDecoration: 'none' }}>Manage</Link>
+                            </div>
+                        </div>
+                    )}
                 </div>
-                <div className={styles.facilityCard}>
-                    <div className={styles.facilityImg} style={{ background: '#172554' }}><span className={styles.facilityEmoji}>📅</span></div>
-                    <div className={styles.facilityBody}>
-                        <div className={styles.facilityTag}>SCHEDULE</div>
-                        <h3 className={styles.facilityName}>Facility Calendar</h3>
-                        <p className={styles.facilityLoc}>View usage timeline and availability.</p>
-                        <button className={styles.bookBtn} style={{ width: '100%' }}>Calendar</button>
-                    </div>
-                </div>
-                <div className={styles.facilityCard}>
-                    <div className={styles.facilityImg} style={{ background: '#022c22' }}><span className={styles.facilityEmoji}>📊</span></div>
-                    <div className={styles.facilityBody}>
-                        <div className={styles.facilityTag}>REPORTS</div>
-                        <h3 className={styles.facilityName}>Incident Logs</h3>
-                        <p className={styles.facilityLoc}>Manage infrastructure issue reports.</p>
-                        <Link to="/tickets" className={styles.bookBtn} style={{ width: '100%', textAlign: 'center', display: 'block', textDecoration: 'none' }}>Manage</Link>
-                    </div>
-                </div>
-            </div>
+            )}
         </div>
       </section>
 
