@@ -54,21 +54,21 @@
 /* Panel */
 .bell-panel {
   position: absolute;
-  right: 0;
-  top: calc(100% + 10px);
+  left: 0;
+  bottom: calc(100% + 10px);
   width: 380px;
   background: #fff;
   border-radius: 16px;
   box-shadow: 0 8px 32px rgba(0,0,0,0.14), 0 2px 8px rgba(0,0,0,0.08);
-  z-index: 1000;
+  z-index: 10000;
   overflow: hidden;
   border: 1px solid #e8edf5;
   animation: panelIn 0.2s ease;
 }
 
 @keyframes panelIn {
-  from { opacity: 0; transform: translateY(-8px) scale(0.97); }
-  to   { opacity: 1; transform: translateY(0)    scale(1); }
+  from { opacity: 0; transform: translateY(8px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)   scale(1); }
 }
 
 /* Panel header */
@@ -237,18 +237,18 @@
 /* Toast Popup */
 .toast-popup {
   position: fixed;
-  bottom: 30px;
-  right: 30px;
+  bottom: 90px;
+  left: 30px;
   width: 320px;
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.97);
   backdrop-filter: blur(20px);
   border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.15), 0 4px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.18), 0 4px 10px rgba(0,0,0,0.1);
   display: flex;
   align-items: flex-start;
   gap: 12px;
   padding: 16px;
-  z-index: 9999;
+  z-index: 99999;
   animation: slideInUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 

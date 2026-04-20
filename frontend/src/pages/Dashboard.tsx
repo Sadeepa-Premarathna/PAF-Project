@@ -4,7 +4,7 @@ import styles from './Dashboard.module.css';
 import { Link, useNavigate } from 'react-router-dom';
 
 const StarIcon = () => (
-  <svg width="14" height="14" fill="#e11d48" viewBox="0 0 24 24">
+  <svg width="14" height="14" fill="#22c55e" viewBox="0 0 24 24">
     <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
   </svg>
 );
@@ -132,38 +132,46 @@ export default function Dashboard() {
         </div>
       </nav>
 
-      {/* ══════════ HERO ══════════ */}
-      <section className={styles.hero}>
-        <div className={styles.heroInner}>
-          <div className={styles.heroLeft}>
-            <h1 className={styles.heroTitle}>
-              ELEVATE YOUR<br />
-              <span className={styles.heroAccent}>CAMPUS LIFE</span>
+      {/* ══════════ NEW FOCUSED HERO ══════════ */}
+      <section className={styles.heroBase}>
+        <div className={styles.heroContainer}>
+          <div className={styles.heroHeader}>
+            <h1 className={styles.heroTitleStyled}>
+              EMPOWERING STUDENTS THROUGH<br />
+              <span className={styles.heroAccentStyled}>SMART SOLUTIONS</span>
             </h1>
-            <p className={styles.heroDesc}>
-              Instant access to campus resources, real-time booking, and seamless support. Your university experience, digitalized and refined.
-            </p>
+          </div>
 
-            <div className={styles.heroSearchRow}>
-              <div className={styles.heroField} onClick={() => navigate('/resources')}>
-                <span className={styles.heroFieldLabel}>Facility Search</span>
-                <span className={styles.heroFieldValue}>Labs, Halls, Equipments...</span>
+          <div className={styles.heroMainContent}>
+            <div className={styles.heroLeftPane}>
+              <p className={styles.heroDescription}>
+                From resource booking to technical support, we deliver innovative tools that elevate your campus life and drive academic growth.
+              </p>
+              <button className={styles.heroPillBtn} onClick={() => navigate('/resources')}>Explore Resources</button>
+            </div>
+
+            <div className={styles.heroCenterPane}>
+              <div className={styles.heroImgContainer}>
+                <img src="/hero-student.png" alt="Student Mascot" className={styles.heroMainImg} />
+                <div className={styles.floatingDeco1}>✨</div>
+                <div className={styles.floatingDeco2}>✨</div>
               </div>
-              <div className={styles.heroFieldDivider} />
-              <div className={styles.heroField} onClick={() => navigate('/bookings')}>
-                <span className={styles.heroFieldLabel}>Reservations</span>
-                <span className={styles.heroFieldValue}>Check Availability</span>
+            </div>
+
+            <div className={styles.heroRightPane}>
+              <div className={styles.heroStatsBadge}>
+                <div className={styles.badgeStars}>
+                  <StarIcon /><StarIcon /><StarIcon /><StarIcon /><StarIcon />
+                </div>
+                <div className={styles.badgeVal}>99.9% Success</div>
+                <div className={styles.badgeLabel}>Student Satisfaction</div>
               </div>
-              <button className={styles.heroSearchBtn} onClick={() => navigate('/resources')}>
-                <SearchIcon /> Explore
-              </button>
             </div>
           </div>
 
-          <div className={styles.heroRight}>
-            <div className={styles.heroCircle}>
-              <img src="/adventurer-3d.png" alt="Mascot" className={styles.hero3dImg} />
-            </div>
+          <div className={styles.heroActionBar}>
+            <button className={styles.actionBtnStart} onClick={() => navigate('/bookings')}>Start Your Booking</button>
+            <button className={styles.actionBtnCollab} onClick={() => navigate('/tickets/create')}>Report An Issue</button>
           </div>
         </div>
       </section>
@@ -208,15 +216,15 @@ export default function Dashboard() {
             {/* MEDIUM CARD: QUICK STATS */}
             <div className={`${styles.bentoCard} ${styles.cardMedium}`}>
               <span className={styles.bentoTag}>Overview</span>
-              <h2 className={styles.bentoTitle}>Your Stats</h2>
+              <h2 className={styles.bentoTitle}>Your <span style={{ color: 'var(--accent)' }}>Stats</span></h2>
               <div style={{ display: 'flex', gap: '20px', marginTop: '24px' }}>
-                <div style={{ flex: 1, textAlign: 'center', padding: '20px', background: 'rgba(0,0,0,0.02)', borderRadius: '16px', border: '1px solid rgba(0,0,0,0.04)' }}>
-                  <div style={{ fontSize: '32px', fontWeight: 800, color: '#2563eb' }}>{activeTicketsCount}</div>
-                  <div style={{ fontSize: '12px', color: 'rgba(0,0,0,0.45)' }}>Open Tickets</div>
+                <div style={{ flex: 1, textAlign: 'center', padding: '20px', background: 'rgba(34,197,94,0.06)', borderRadius: '16px', border: '1px solid rgba(34,197,94,0.15)' }}>
+                  <div style={{ fontSize: '36px', fontWeight: 800, color: '#22c55e', textShadow: '0 0 20px rgba(34,197,94,0.4)' }}>{activeTicketsCount}</div>
+                  <div style={{ fontSize: '12px', color: 'rgba(240,253,244,0.45)', marginTop: '4px' }}>Open Tickets</div>
                 </div>
-                <div style={{ flex: 1, textAlign: 'center', padding: '20px', background: 'rgba(0,0,0,0.02)', borderRadius: '16px', border: '1px solid rgba(0,0,0,0.04)' }}>
-                  <div style={{ fontSize: '32px', fontWeight: 800, color: '#f59e0b' }}>{pendingBookingsCount}</div>
-                  <div style={{ fontSize: '12px', color: 'rgba(0,0,0,0.45)' }}>Pending Bookings</div>
+                <div style={{ flex: 1, textAlign: 'center', padding: '20px', background: 'rgba(34,197,94,0.06)', borderRadius: '16px', border: '1px solid rgba(34,197,94,0.15)' }}>
+                  <div style={{ fontSize: '36px', fontWeight: 800, color: '#fbbf24', textShadow: '0 0 20px rgba(251,191,36,0.3)' }}>{pendingBookingsCount}</div>
+                  <div style={{ fontSize: '12px', color: 'rgba(240,253,244,0.45)', marginTop: '4px' }}>Pending Bookings</div>
                 </div>
               </div>
             </div>

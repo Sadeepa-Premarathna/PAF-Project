@@ -148,20 +148,20 @@ export default function BookingsPage() {
     <div className={styles.page}>
       {/* Header */}
       <div className={styles.header}>
-        <button className={styles.back} onClick={() => navigate('/dashboard')}>← Back</button>
+        <button className={styles.back} onClick={() => navigate('/dashboard')}>← DASHBOARD</button>
         <div>
-          <h1 className={styles.title}>🏛️ Resource Bookings</h1>
-          <p className={styles.subtitle}>Request and manage your resource bookings</p>
+          <h1 className={styles.title}>RESOURCE <span style={{ color: 'var(--accent)' }}>BOOKINGS</span></h1>
+          <p className={styles.subtitle}>Secure your spot in our high-performance campus facilities</p>
         </div>
       </div>
 
       {/* Tabs */}
       <div className={styles.tabs}>
         <button className={`${styles.tab} ${tab === 'my' ? styles.active : ''}`} onClick={() => setTab('my')}>
-          My Bookings
+          MY BOOKINGS
         </button>
         <button className={`${styles.tab} ${tab === 'new' ? styles.active : ''}`} onClick={() => setTab('new')}>
-          + New Booking
+          + NEW BOOKING
         </button>
       </div>
 
@@ -174,7 +174,7 @@ export default function BookingsPage() {
             <div className={styles.empty}>
               <span>📋</span>
               <p>No bookings yet. Create your first booking!</p>
-              <button className={styles.cta} onClick={() => setTab('new')}>+ New Booking</button>
+              <button className={styles.tab} style={{ background: 'var(--accent)', color: '#030703' }} onClick={() => setTab('new')}>+ NEW BOOKING</button>
             </div>
           ) : (
             <div className={styles.grid}>
@@ -182,21 +182,21 @@ export default function BookingsPage() {
                 <div key={b.id} className={styles.card}>
                   <div className={styles.cardHeader}>
                     <span className={styles.resource}>{b.resourceName || `Resource #${b.resourceId}`}</span>
-                    <span className={styles.badge} style={{ background: STATUS_COLORS[b.status] + '22', color: STATUS_COLORS[b.status], border: `1px solid ${STATUS_COLORS[b.status]}` }}>
+                    <span className={styles.badge} style={{ borderColor: STATUS_COLORS[b.status], color: STATUS_COLORS[b.status], background: STATUS_COLORS[b.status] + '12' }}>
                       {b.status}
                     </span>
                   </div>
                   <div className={styles.cardBody}>
-                    <div className={styles.detail}><span>📅</span> {b.date}</div>
-                    <div className={styles.detail}><span>🕐</span> {b.startTime} – {b.endTime}</div>
-                    <div className={styles.detail}><span>📝</span> {b.purpose}</div>
-                    {b.attendees && <div className={styles.detail}><span>👥</span> {b.attendees} attendees</div>}
+                    <div className={styles.detail}><b>DATE:</b> {b.date}</div>
+                    <div className={styles.detail}><b>TIME:</b> {b.startTime} – {b.endTime}</div>
+                    <div className={styles.detail}><b>PURPOSE:</b> {b.purpose}</div>
+                    {b.attendees && <div className={styles.detail}><b>ATTENDEES:</b> {b.attendees}</div>}
                     {b.rejectionReason && (
-                      <div className={styles.rejection}>❌ Reason: {b.rejectionReason}</div>
+                      <div className={styles.rejection}>REASON: {b.rejectionReason}</div>
                     )}
                   </div>
                   {b.status === 'PENDING' && (
-                    <button className={styles.cancelBtn} onClick={() => cancelBooking(b.id)}>Cancel</button>
+                    <button className={styles.cancelBtn} onClick={() => cancelBooking(b.id)}>CANCEL REQUEST</button>
                   )}
                 </div>
               ))}
@@ -209,16 +209,16 @@ export default function BookingsPage() {
       {tab === 'new' && (
         <div className={styles.section}>
           <div className={styles.formCard}>
-            <h2 className={styles.formTitle}>New Booking Request</h2>
+            <h2 className={styles.formTitle}>NEW BOOKING REQUEST</h2>
             {error && <div className={styles.error}>{error}</div>}
             {success && <div className={styles.successMsg}>{success}</div>}
             <form onSubmit={handleSubmit} className={styles.form}>
               <div className={styles.field}>
-                <label>Resource *</label>
+                <label>SELECTED RESOURCE</label>
                 <select value={form.resourceId} onChange={handleResourceChange} required>
                   <option value="">Select a resource...</option>
                   
-                  <optgroup label="💻 Laboratories">
+                  <optgroup label="LABORATORIES">
                     {resources.filter(r => r.status === 'ACTIVE' && r.type === 'LAB').map(r => (
                       <option key={r.id} value={r.id}>
                         {r.name} ({r.location}, Capacity: {r.capacity})
@@ -226,7 +226,7 @@ export default function BookingsPage() {
                     ))}
                   </optgroup>
 
-                  <optgroup label="📚 Library & Study Rooms">
+                  <optgroup label="LIBRARY & STUDY ROOMS">
                     {resources.filter(r => r.status === 'ACTIVE' && r.type === 'MEETING_ROOM').map(r => (
                       <option key={r.id} value={r.id}>
                         {r.name} ({r.location}, Capacity: {r.capacity})
@@ -234,7 +234,7 @@ export default function BookingsPage() {
                     ))}
                   </optgroup>
 
-                  <optgroup label="🏛️ Lecture Halls">
+                  <optgroup label="LECTURE HALLS">
                     {resources.filter(r => r.status === 'ACTIVE' && r.type === 'LECTURE_HALL').map(r => (
                       <option key={r.id} value={r.id}>
                         {r.name} ({r.location}, Capacity: {r.capacity})
@@ -242,7 +242,7 @@ export default function BookingsPage() {
                     ))}
                   </optgroup>
 
-                  <optgroup label="🛠️ Equipment">
+                  <optgroup label="EQUIPMENT">
                     {resources.filter(r => r.status === 'ACTIVE' && r.type === 'EQUIPMENT').map(r => (
                       <option key={r.id} value={r.id}>
                         {r.name} ({r.location})
@@ -252,34 +252,34 @@ export default function BookingsPage() {
                 </select>
               </div>
               <div className={styles.field}>
-                <label>Date *</label>
+                <label>BOOKING DATE</label>
                 <input type="date" min={today} value={form.date}
                   onChange={e => setForm(p => ({ ...p, date: e.target.value }))} required />
               </div>
               <div className={styles.row}>
                 <div className={styles.field}>
-                  <label>Start Time *</label>
+                  <label>START TIME</label>
                   <input type="time" value={form.startTime}
                     onChange={e => setForm(p => ({ ...p, startTime: e.target.value }))} required />
                 </div>
                 <div className={styles.field}>
-                  <label>End Time *</label>
+                  <label>END TIME</label>
                   <input type="time" value={form.endTime}
                     onChange={e => setForm(p => ({ ...p, endTime: e.target.value }))} required />
                 </div>
               </div>
               <div className={styles.field}>
-                <label>Purpose *</label>
+                <label>ADDITIONAL PURPOSE</label>
                 <textarea rows={3} placeholder="Describe the purpose of this booking..."
                   value={form.purpose} onChange={e => setForm(p => ({ ...p, purpose: e.target.value }))} required />
               </div>
               <div className={styles.field}>
-                <label>Expected Attendees</label>
+                <label>EXPECTED ATTENDEES</label>
                 <input type="number" min="1" placeholder="e.g. 20"
                   value={form.attendees} onChange={e => setForm(p => ({ ...p, attendees: e.target.value }))} />
               </div>
               <button type="submit" className={styles.submit} disabled={submitting}>
-                {submitting ? 'Submitting...' : 'Submit Booking Request'}
+                {submitting ? 'PROCESSING...' : 'SUBMIT REQUEST'}
               </button>
             </form>
           </div>

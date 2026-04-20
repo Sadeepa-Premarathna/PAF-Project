@@ -150,61 +150,62 @@ function ResourcesPage() {
 
   return (
     <div className={styles.page}>
-      <div className={styles.leafOverlay} />
       
-      <div className={styles.header}>
-        <button 
-          onClick={() => navigate(-1)} 
-          style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.2)', color: 'white', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', marginBottom: '20px' }}
-        >
-          ← Back
+      {/* ─── HEADER ─── */}
+      <header className={styles.header}>
+        <button onClick={() => navigate(-1)} className={styles.backBtn}>
+          ← BACK TO CONTROL
         </button>
         <h1 className={styles.title}>
-          CAMPUS <span className={styles.orangeText}>RESOURCES</span>
+          CAMPUS <span>RESOURCES</span>
         </h1>
         <p className={styles.subtitle}>
           {isAdmin 
-            ? "Manage the facilities, laboratories, and assets available across the Smart Campus network."
-            : "Explore the facilities, laboratories, and assets available across the Smart Campus network."}
+            ? "Centralized oversight: Modify resource availability, update technical specifications, and manage structural deployment across all campus sectors."
+            : "Authorized access: Secure reservations for state-of-the-art facilities, laboratories, and specialized equipment available on the Smart Camus network."}
         </p>
-      </div>
+      </header>
 
       {alert && (
         <div className={`${styles.alert} ${alert.type === "success" ? styles.alertSuccess : styles.alertError}`}>
-          {alert.message}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            {alert.type === "success" ? "✓" : "⚠"}
+            <span>{alert.message}</span>
+          </div>
         </div>
       )}
 
-      {/* Admin Form Section - Only shown to admins */}
+      {/* ─── ADMIN FORM ─── */}
       {isAdmin && (
         <section className={styles.formCard}>
-          <h2 className={styles.formTitle}>{editingId ? `Edit Resource #${editingId}` : "Register New Resource"}</h2>
+          <div style={{ position: 'absolute', top: '15px', right: '25px', opacity: 0.1, fontSize: '40px', fontWeight: 900, pointerEvents: 'none' }}>01</div>
+          <h2 className={styles.formTitle}>{editingId ? `UPDATE UNIT #${editingId}` : "REGISTER NEW ARCHITECTURE"}</h2>
           <form onSubmit={handleFormSubmit} className={styles.formGrid}>
             <div className={styles.field}>
-              <label>Name</label>
+              <label>RESOURCE IDENTIFIER</label>
               <input
                 className={styles.input}
                 type="text"
-                placeholder="e.g. Innovation Lab"
+                placeholder="e.g. CORE LAB ALPHA"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 required
               />
             </div>
             <div className={styles.field}>
-              <label>Type</label>
+              <label>FUNCTIONAL CLASSIFICATION</label>
               <select
                 className={styles.select}
                 value={formData.type}
                 onChange={(e) => setFormData({ ...formData, type: e.target.value })}
               >
                 {FORM_RESOURCE_TYPES.map((t) => (
-                  <option key={t} value={t}>{t}</option>
+                  <option key={t} value={t} style={{ background: '#080d08' }}>{t.replace('_', ' ')}</option>
                 ))}
               </select>
             </div>
             <div className={styles.field}>
-              <label>Capacity</label>
+              <label>CAPACITY LIMIT (PERSONS)</label>
               <input
                 className={styles.input}
                 type="number"
@@ -215,18 +216,18 @@ function ResourcesPage() {
               />
             </div>
             <div className={styles.field}>
-              <label>Location</label>
+              <label>GEOSPATIAL COORDINATES (LOCATION)</label>
               <input
                 className={styles.input}
                 type="text"
-                placeholder="e.g. Block B, Floor 2"
+                placeholder="e.g. SECTOR 07 / LEVEL 02"
                 value={formData.location}
                 onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                 required
               />
             </div>
             <div className={styles.field}>
-              <label>Available From</label>
+              <label>OPERATIONAL START</label>
               <input
                 className={styles.input}
                 type="time"
@@ -236,7 +237,7 @@ function ResourcesPage() {
               />
             </div>
             <div className={styles.field}>
-              <label>Available To</label>
+              <label>OPERATIONAL TERMINATION</label>
               <input
                 className={styles.input}
                 type="time"
@@ -246,20 +247,20 @@ function ResourcesPage() {
               />
             </div>
             <div className={styles.field}>
-              <label>Status</label>
+              <label>STATUS PROTOCOL</label>
               <select
                 className={styles.select}
                 value={formData.status}
                 onChange={(e) => setFormData({ ...formData, status: e.target.value })}
               >
                 {RESOURCE_STATUSES.map((s) => (
-                  <option key={s} value={s}>{s}</option>
+                  <option key={s} value={s} style={{ background: '#080d08' }}>{s.replace('_', ' ')}</option>
                 ))}
               </select>
             </div>
             <div className={styles.formActions}>
-              <button type="submit" className={styles.primaryBtn} disabled={submitting}>
-                {submitting ? "Saving..." : editingId ? "Update Resource" : "Create Resource"}
+              <button type="submit" className={styles.primaryBtn} disabled={submitting} style={{ width: '220px' }}>
+                {submitting ? "SYNCHRONIZING..." : editingId ? "COMMIT UPDATE" : "INITIALIZE ENTITY"}
               </button>
               {editingId && (
                 <button 
@@ -267,7 +268,7 @@ function ResourcesPage() {
                   className={styles.cancelBtn} 
                   onClick={() => { setEditingId(null); setFormData(initialFormData); }}
                 >
-                  Cancel
+                  ABORT
                 </button>
               )}
             </div>
@@ -275,51 +276,68 @@ function ResourcesPage() {
         </section>
       )}
 
-      {/* Filter Section - Always shown */}
+      {/* ─── FILTERS ─── */}
       <div className={styles.filterBar}>
         <div style={{ display: 'flex', gap: '16px', flex: 1, flexWrap: 'wrap' }}>
-          <select
-            className={styles.select}
-            value={filters.type}
-            onChange={(e) => setFilters({ ...filters, type: e.target.value })}
-          >
-            {RESOURCE_TYPES.map((t) => (
-              <option key={t || "ALL"} value={t}>{t || "ALL TYPES"}</option>
-            ))}
-          </select>
-          <input
-            className={styles.input}
-            type="number"
-            placeholder="Min Capacity"
-            value={filters.capacity}
-            onChange={(e) => setFilters({ ...filters, capacity: e.target.value })}
-          />
+          <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+            <span style={{ position: 'absolute', left: '12px', fontSize: '10px', color: 'var(--accent)', fontWeight: 800 }}>TYPE</span>
+            <select
+              className={styles.select}
+              style={{ paddingLeft: '45px', width: '200px' }}
+              value={filters.type}
+              onChange={(e) => setFilters({ ...filters, type: e.target.value })}
+            >
+              {RESOURCE_TYPES.map((t) => (
+                <option key={t || "ALL"} value={t} style={{ background: '#080d08' }}>{t ? t.replace('_', ' ') : "ALL CLASSES"}</option>
+              ))}
+            </select>
+          </div>
+          <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+            <span style={{ position: 'absolute', left: '12px', fontSize: '10px', color: 'var(--accent)', fontWeight: 800 }}>MIN_CAP</span>
+            <input
+              className={styles.input}
+              style={{ paddingLeft: '65px', width: '130px' }}
+              type="number"
+              placeholder="0"
+              value={filters.capacity}
+              onChange={(e) => setFilters({ ...filters, capacity: e.target.value })}
+            />
+          </div>
           <input
             className={styles.input}
             type="text"
-            placeholder="Search location..."
+            placeholder="Filter location coordinates..."
             value={filters.location}
             onChange={(e) => setFilters({ ...filters, location: e.target.value })}
+            style={{ width: '250px' }}
           />
         </div>
         <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-          {loading && <div className={styles.spinnerSmall} />}
           <button 
             className={styles.cancelBtn} 
-            style={{ padding: '10px 20px', fontSize: '14px', border: '1px solid rgba(255,255,255,0.1)' }}
             onClick={() => { setFilters(initialFilters); }}
+            style={{ fontSize: '12px', padding: '10px 16px' }}
           >
-            Clear Filters
+            RESET FILTERS
           </button>
         </div>
       </div>
 
+      {/* ─── GRID ─── */}
       {loading ? (
-        <p style={{ textAlign: 'center', opacity: 0.6 }}>Loading catalogue...</p>
+        <div className={styles.loading}><div className={styles.spinner} /></div>
       ) : (
         <div className={styles.resourceGrid}>
-          {resources.length === 0 && !fetchError && <p className={styles.subtitle}>No resources found matching your criteria.</p>}
-          {fetchError && <p className={styles.subtitle} style={{ color: '#ef4444' }}>{fetchError}</p>}
+          {resources.length === 0 && !fetchError && (
+             <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '60px', border: '1px dashed var(--border)', borderRadius: '24px' }}>
+                <p className={styles.subtitle}>System unable to locate entities matching current search parameters.</p>
+             </div>
+          )}
+          {fetchError && (
+             <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '60px', border: '1px solid rgba(239, 68, 68, 0.2)', borderRadius: '24px', background: 'rgba(239, 68, 68, 0.05)' }}>
+                <p className={styles.subtitle} style={{ color: '#ef4444' }}>SIGNAL INTERFERENCE: {fetchError}</p>
+             </div>
+          )}
           {resources.map((resource) => (
             <div key={resource.id} className={styles.card}>
               <div className={styles.cardImg}>
@@ -329,17 +347,17 @@ function ResourcesPage() {
                 </span>
               </div>
               <div className={styles.cardBody}>
-                <div className={styles.cardTag}>{resource.type}</div>
+                <div className={styles.cardTag}>{resource.type.replace('_', ' ')}</div>
                 <h3 className={styles.cardName}>{resource.name}</h3>
-                <p className={styles.cardLoc}>📍 {resource.location}</p>
+                <p className={styles.cardLoc}>LOC: {resource.location}</p>
                 
                 <div className={styles.cardStats}>
                   <div className={styles.stat}>
-                    <span className={styles.statLabel}>Capacity</span>
-                    <span className={styles.statValue}>{resource.capacity} People</span>
+                    <span className={styles.statLabel}>CAPACITY</span>
+                    <span className={styles.statValue}>{resource.capacity} PAX</span>
                   </div>
                   <div className={styles.stat}>
-                    <span className={styles.statLabel}>Available</span>
+                    <span className={styles.statLabel}>OPERATING_BLOCK</span>
                     <span className={styles.statValue}>{resource.availableFrom} - {resource.availableTo}</span>
                   </div>
                 </div>
@@ -348,23 +366,23 @@ function ResourcesPage() {
               <div className={styles.cardActions}>
                 {isAdmin ? (
                   <>
-                    <button className={styles.editBtn} onClick={() => handleEdit(resource)}>Edit</button>
+                    <button className={styles.editBtn} onClick={() => handleEdit(resource)}>RECONFIGURE</button>
                     <button 
                       className={styles.deleteBtn} 
                       onClick={() => handleDelete(resource.id)}
                       disabled={deletingId === resource.id}
                     >
-                      {deletingId === resource.id ? "..." : "Delete"}
+                      {deletingId === resource.id ? "DELETING..." : "DISMANTLE"}
                     </button>
                   </>
                 ) : (
                   <button 
                     className={styles.primaryBtn} 
-                    style={{ width: '100%', fontSize: '14px', padding: '10px' }}
+                    style={{ width: '100%' }}
                     onClick={() => navigate(`/bookings?resourceId=${resource.id}`)}
                     disabled={resource.status !== "ACTIVE"}
                   >
-                    {resource.status === "ACTIVE" ? "Book Now" : "Unavailable"}
+                    {resource.status === "ACTIVE" ? "AUTHORIZE ACCESS" : "ENTITY DEACTIVATED"}
                   </button>
                 )}
               </div>
@@ -374,6 +392,7 @@ function ResourcesPage() {
       )}
     </div>
   );
+
 }
 
 export default ResourcesPage;

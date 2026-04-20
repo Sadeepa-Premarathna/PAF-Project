@@ -17,12 +17,16 @@ import CreateTicketPage from './pages/CreateTicketPage';
 import TicketDetailPage from './pages/TicketDetailPage';
 import BookingsPage from './pages/BookingsPage';
 import AdminBookingsPage from './pages/AdminBookingsPage';
+// @ts-ignore
 import ResourcesPage from './pages/ResourcesPage';
+// @ts-ignore
 import UserNotificationPage from './pages/UserNotificationPage';
+// @ts-ignore
 import AdminNotificationPage from './pages/AdminNotificationPage';
 import StaffManagement from './pages/StaffManagement';
 import StaffApprovals from './pages/StaffApprovals';
 import CalendarPage from './pages/CalendarPage';
+// @ts-ignore
 import NotificationBell from './components/user/Notificationbell';
 import { useAuth } from './context/AuthContext';
 

@@ -19,7 +19,9 @@ public interface TicketService {
     void deleteTicket(UUID ticketId, AppUser actor);
     List<String> attachImages(UUID ticketId, List<MultipartFile> files, AppUser actor);
     CommentResponse addComment(UUID ticketId, String content, AppUser actor);
+    List<CommentResponse> getComments(UUID ticketId, AppUser actor);
     CommentResponse editComment(UUID commentId, String content, AppUser actor);
     void deleteComment(UUID commentId, AppUser actor);
+    TicketResponse updateStatus(UUID ticketId, com.smartcampus.auth.entity.TicketStatus status, AppUser actor);
     long countByStatus(com.smartcampus.auth.entity.TicketStatus status);
 }

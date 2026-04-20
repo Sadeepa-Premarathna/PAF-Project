@@ -180,6 +180,38 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<CommentResponse> getComments(UUID ticketId, AppUser actor) {
+        Ticket ticket = findOrThrow(ticketId);
+        // Authorization check matching getTicket
+        if (actor.getRole() == Role.USER && !ticket.getCreatedBy().getId().equals(actor.getId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied");
+        }
+        return ticket.getComments().stream().map(CommentResponse::from).toList();
+    }
+
+    @Override
+    public TicketResponse updateStatus(UUID ticketId, TicketStatus status, AppUser actor) {
+        if (actor.getRole() == Role.USER) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only staff or admin can update status");
+        }
+        Ticket ticket = findOrThrow(ticketId);
+        
+        validateTransition(ticket.getStatus(), status, actor);
+        ticket.setStatus(status);
+        
+        Ticket saved = ticketRepo.save(ticket);
+        
+        notificationService.notifyTicketUpdated(
+            ticket.getCreatedBy().getId().toString(), 
+            ticket.getId().toString(), 
+            status.name()
+        );
+        
+        return TicketResponse.from(saved);
+    }
+
+    @Override
     public CommentResponse editComment(UUID commentId, String content, AppUser actor) {
         TicketComment comment = commentRepo.findById(commentId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Comment not found"));

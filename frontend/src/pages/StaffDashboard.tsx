@@ -1,6 +1,6 @@
 import { useAuth } from '../context/AuthContext';
 import styles from './Dashboard.module.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const SearchIcon = () => (
   <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -22,6 +22,7 @@ const stats = [
 
 export default function StaffDashboard() {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const firstName = user?.name?.split(' ')[0] || 'Staff';
 
   return (
@@ -31,145 +32,143 @@ export default function StaffDashboard() {
         <div className={styles.navLogo}>
           <span className={styles.navLogoDot}>●</span>
           SMART<span className={styles.navLogoOrange}>CAMPUS</span>
-          <span style={{ fontSize: '12px', marginLeft: '10px', color: '#f97316', fontWeight: 600 }}>STAFF</span>
+          <span style={{ fontSize: '12px', marginLeft: '10px', color: 'var(--accent)', fontWeight: 800, letterSpacing: '1px' }}>STAFF</span>
         </div>
         <div className={styles.navLinks}>
           <Link to="/staff" className={styles.navLink}>Overview</Link>
           {(user?.permissions || []).includes('BOOKINGS') && <Link to="/staff/approvals" className={styles.navLink}>Approvals</Link>}
-          {(user?.permissions || []).includes('RESOURCES') && <Link to="/staff/facilities" className={styles.navLink}>Facilities</Link>}
-          {(user?.permissions || []).includes('TICKETS') && <Link to="/staff/reports" className={styles.navLink}>Reports</Link>}
+          {(user?.permissions || []).includes('RESOURCES') && <Link to="/resources" className={styles.navLink}>Facilities</Link>}
+          {(user?.permissions || []).includes('TICKETS') && <Link to="/tickets" className={styles.navLink}>Reports</Link>}
         </div>
         <div className={styles.navActions}>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', marginRight: '15px' }}>
-            <span className={styles.navUser}>Member: {firstName}</span>
-            <div style={{ display: 'flex', gap: '4px' }}>
+            <span className={styles.navUser}>OPERATIVE: <b>{firstName}</b></span>
+            <div style={{ display: 'flex', gap: '4px', marginTop: '2px' }}>
                {user?.permissions?.map(p => (
-                 <span key={p} style={{ fontSize: '9px', background: '#f97316', color: 'white', padding: '1px 4px', borderRadius: '4px' }}>{p}</span>
+                 <span key={p} style={{ fontSize: '9px', background: 'var(--accent-ultra)', color: 'var(--accent)', padding: '2px 6px', borderRadius: '4px', border: '1px solid var(--border)', fontWeight: 700 }}>{p}</span>
                ))}
             </div>
           </div>
-          <button className={styles.navLogout} onClick={logout}>Logout</button>
+          <button className={styles.navLogout} onClick={logout}>Sign Out</button>
         </div>
       </nav>
 
-      {/* ══════════ HERO ══════════ */}
-      <section className={styles.hero} style={{ background: '#1c2834' }}>
-        <div className={styles.heroLeafTopLeft} />
-        <div className={styles.heroInner}>
-          <div className={styles.heroLeft}>
-            <p className={styles.heroEye}>▸ STAFF PORTAL</p>
-            <h1 className={styles.heroTitle}>
-              FACILITY & RESOURCE<br />
-              <span className={styles.heroOrange}>MANAGEMENT</span>
+      {/* ══════════ STAFF HERO ══════════ */}
+      <section className={styles.heroBase}>
+        <div className={styles.heroContainer} style={{ background: '#ffffff' }}>
+          <div className={styles.heroHeader}>
+            <h1 className={styles.heroTitleStyled}>
+              OPERATIONAL EXCELLENCE<br />
+              <span className={styles.heroAccentStyled}>MANAGEMENT HUB</span>
             </h1>
-            <p className={styles.heroDesc}>
-              Review facility requests, handle departmental reports, and approve student submissions efficiently.
-            </p>
-            <div className={styles.heroSearchRow}>
-              <div className={styles.heroField}>
-                <span className={styles.heroFieldLabel}>SEARCH REQUESTS</span>
-                <span className={styles.heroFieldValue}>ID, student name...</span>
+          </div>
+
+          <div className={styles.heroMainContent}>
+            <div className={styles.heroLeftPane}>
+              <p className={styles.heroDescription}>
+                Monitor campus resources, authorize access requests, and maintain the digital infrastructure of SmartCampus in real-time.
+              </p>
+              <button className={styles.heroPillBtn} onClick={() => navigate('/staff/approvals')}>View Pending Tasks</button>
+            </div>
+
+            <div className={styles.heroCenterPane}>
+              <div className={styles.heroImgContainer}>
+                <img src="/staff-mascot.png" alt="Staff Mascot" className={styles.heroMainImg} onError={(e) => e.currentTarget.src='/hero-student.png'} />
+                <div className={styles.floatingDeco1}>⚡</div>
+                <div className={styles.floatingDeco2}>⚙️</div>
               </div>
-              <button className={styles.heroSearchBtn}>
-                <SearchIcon /> Query
-              </button>
+            </div>
+
+            <div className={styles.heroRightPane}>
+              <div className={styles.heroStatsBadge}>
+                <div className={styles.badgeVal}>100%</div>
+                <div className={styles.badgeLabel}>System Uptime</div>
+              </div>
             </div>
           </div>
 
-          <div className={styles.heroRight}>
-            <div className={styles.heroCircle} style={{ background: '#3b82f6' }}>
-              <img src="/adventurer-3d.png" alt="Staff" className={styles.hero3dImg} />
-            </div>
+          <div className={styles.heroActionBar}>
+            <button className={styles.actionBtnStart} onClick={() => navigate('/staff/approvals')}>Process Approvals</button>
+            <button className={styles.actionBtnCollab} onClick={() => navigate('/notifications')}>Broadcast Alert</button>
           </div>
         </div>
       </section>
 
-      {/* ══════════ STAFF STATS ══════════ */}
-      <section className={styles.storySection}>
+      {/* ══════════ STAFF BENTO GRID ══════════ */}
+      <section className={styles.bentoSection}>
         <div className={styles.sectionInner}>
-          <div className={styles.sectionTopRow}>
-            <div>
-              <div className={styles.sectionDot}>
-                <span className={styles.dotOrange}>●</span>
+          <div className={styles.bentoGrid}>
+            
+            {/* LARGE CARD: OPERATIONAL OVERVIEW */}
+            <div className={`${styles.bentoCard} ${styles.cardLarge}`}>
+              <span className={styles.bentoTag}>System Status</span>
+              <h2 className={styles.bentoTitle}>Live Operations</h2>
+              <p className={styles.bentoDesc}>Active monitoring of departmental logs and resource utilization across the campus.</p>
+              
+              <div className={styles.statusList}>
+                {stats.map(s => (
+                  <div key={s.label} className={styles.statusItem}>
+                    <div className={styles.statusIcon}>📊</div>
+                    <div className={styles.statusLabel}>
+                      <span className={styles.statusName}>{s.label}</span>
+                      <span className={styles.statusVal}>{s.sub}</span>
+                    </div>
+                    <span className={styles.statusBadge} style={{ background: 'var(--accent-ultra)', color: 'var(--accent)' }}>{s.value}</span>
+                  </div>
+                ))}
               </div>
-              <h2 className={styles.sectionTitle}>
-                TODAY'S <span className={styles.titleOrange}>OPERATIONS</span><br />OVERVIEW
-              </h2>
+            </div>
+
+            {/* QUICK ACTIONS */}
+            <div className={`${styles.bentoCard} ${styles.cardMedium}`}>
+              <span className={styles.bentoTag}>Quick Access</span>
+              <h2 className={styles.bentoTitle}>Manager <span style={{ color: 'var(--accent)' }}>Workflows</span></h2>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '15px', marginTop: '20px' }}>
+                {user?.permissions?.includes('BOOKINGS') && (
+                  <div onClick={() => navigate('/staff/approvals')} style={{ cursor: 'pointer', textAlign: 'center', padding: '15px', background: 'var(--bg-surface)', borderRadius: '16px', border: '1px solid var(--border)' }}>
+                     <div style={{ fontSize: '24px', marginBottom: '8px' }}>📝</div>
+                     <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-main)' }}>Approvals</div>
+                  </div>
+                )}
+                {user?.permissions?.includes('RESOURCES') && (
+                  <div onClick={() => navigate('/resources')} style={{ cursor: 'pointer', textAlign: 'center', padding: '15px', background: 'var(--bg-surface)', borderRadius: '16px', border: '1px solid var(--border)' }}>
+                     <div style={{ fontSize: '24px', marginBottom: '8px' }}>🏢</div>
+                     <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-main)' }}>Facilities</div>
+                  </div>
+                )}
+                {user?.permissions?.includes('TICKETS') && (
+                  <div onClick={() => navigate('/tickets')} style={{ cursor: 'pointer', textAlign: 'center', padding: '15px', background: 'var(--bg-surface)', borderRadius: '16px', border: '1px solid var(--border)' }}>
+                     <div style={{ fontSize: '24px', marginBottom: '8px' }}>🛠️</div>
+                     <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-main)' }}>Tickets</div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* MESSAGE OF THE DAY */}
+            <div className={styles.bentoCard}>
+              <span className={styles.bentoTag}>Bulletin</span>
+              <h2 className={styles.bentoTitle} style={{ fontSize: '20px' }}>Notice</h2>
+              <p style={{ fontSize: '13px', color: 'var(--text-ghost)', marginTop: '10px' }}>
+                Weekly operations meeting today at 3:00 PM in the Main Block Conference Room.
+              </p>
             </div>
           </div>
-
-          <div className={styles.statsRow} style={{ border: 'none', justifyContent: 'space-between', gap: '20px' }}>
-            {stats.map(s => (
-              <div key={s.label} className={styles.statItem} style={{ background: 'white', padding: '30px', borderRadius: '16px', flex: 1, boxShadow: '0 4px 20px rgba(0,0,0,0.05)' }}>
-                <div className={styles.statValue} style={{ color: '#f97316' }}>{s.value}</div>
-                <div className={styles.statLabel} style={{ fontSize: '14px' }}>{s.label}</div>
-                <div className={styles.statSub}>{s.sub}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════ QUICK ACTIONS ══════════ */}
-      <section className={styles.facilitiesSection}>
-        <div className={styles.sectionInner}>
-            <div className={styles.sectionDot}><span className={styles.dotOrange}>●</span></div>
-            <h2 className={styles.sectionTitle}>STAFF <span className={styles.titleOrange}>WORKFLOWS</span></h2>
-            {(!user?.permissions || user.permissions.length === 0) ? (
-                <p style={{ marginTop: '20px', color: '#94a3b8' }}>You have not been assigned any specific feature permissions yet. Please contact the administrator.</p>
-            ) : (
-                <div className={styles.facilityGrid} style={{ marginTop: '40px' }}>
-                    {user.permissions.includes('BOOKINGS') && (
-                        <div className={styles.facilityCard}>
-                            <div className={styles.facilityImg} style={{ background: '#451a03' }}><span className={styles.facilityEmoji}>📝</span></div>
-                            <div className={styles.facilityBody}>
-                                <div className={styles.facilityTag}>APPROVALS</div>
-                                <h3 className={styles.facilityName}>Pending Requests</h3>
-                                <p className={styles.facilityLoc}>Review and approve student bookings.</p>
-                                <Link to="/staff/approvals" className={styles.bookBtn} style={{ width: '100%', textAlign: 'center', display: 'block', textDecoration: 'none' }}>Review</Link>
-                            </div>
-                        </div>
-                    )}
-                    {user.permissions.includes('RESOURCES') && (
-                        <div className={styles.facilityCard}>
-                            <div className={styles.facilityImg} style={{ background: '#172554' }}><span className={styles.facilityEmoji}>📅</span></div>
-                            <div className={styles.facilityBody}>
-                                <div className={styles.facilityTag}>SCHEDULE</div>
-                                <h3 className={styles.facilityName}>Facility Calendar</h3>
-                                <p className={styles.facilityLoc}>View usage timeline and availability.</p>
-                                <button className={styles.bookBtn} style={{ width: '100%' }}>Calendar</button>
-                            </div>
-                        </div>
-                    )}
-                    {user.permissions.includes('TICKETS') && (
-                        <div className={styles.facilityCard}>
-                            <div className={styles.facilityImg} style={{ background: '#022c22' }}><span className={styles.facilityEmoji}>📊</span></div>
-                            <div className={styles.facilityBody}>
-                                <div className={styles.facilityTag}>REPORTS</div>
-                                <h3 className={styles.facilityName}>Incident Logs</h3>
-                                <p className={styles.facilityLoc}>Manage infrastructure issue reports.</p>
-                                <Link to="/tickets" className={styles.bookBtn} style={{ width: '100%', textAlign: 'center', display: 'block', textDecoration: 'none' }}>Manage</Link>
-                            </div>
-                        </div>
-                    )}
-                </div>
-            )}
         </div>
       </section>
 
       {/* ══════════ CTA ══════════ */}
-      <section className={styles.ctaSection} style={{ background: '#f5f2ee' }}>
+      <section className={styles.ctaSection}>
         <div className={styles.sectionInner}>
-          <div className={styles.ctaContent}>
-            <h2 className={styles.ctaTitle}>TEAM <span className={styles.titleOrange}>MEETING</span> AT 3PM</h2>
-            <p className={styles.ctaDesc}>Please prepare the weekly operations report before the staff sync.</p>
-            <div className={styles.ctaBtns}>
-              <button className={styles.ctaPrimary}>View Agenda <ArrowRight /></button>
-            </div>
+          <div className={styles.ctaGlass}>
+             <h2 className={styles.ctaTitle}>TEAM <span className={styles.heroAccent}>SYNC</span></h2>
+             <p className={styles.ctaDesc}>Prepare the weekly operations report before the synchronization session.</p>
+             <button className={styles.ctaPrimary} style={{ margin: '0 auto' }}>View Agenda <ArrowRight /></button>
           </div>
         </div>
       </section>
 
     </div>
   );
+
 }

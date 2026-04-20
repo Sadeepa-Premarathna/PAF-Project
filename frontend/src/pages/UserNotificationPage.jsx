@@ -1,30 +1,30 @@
 import React, { useState, useEffect, useCallback } from "react";
-import "./UserNotificationPage.css";
+import styles from "./UserNotificationPage.module.css";
 import notificationService from "../services/notificationService";
 import { useAuth } from "../context/AuthContext";
 import { Link } from "react-router-dom";
 
 const TYPE_CFG = {
-  BOOKING_APPROVED: { label: "Booking Approved", accent: "#f97316", bg: "rgba(249, 115, 22, 0.1)", icon: "📅" },
-  BOOKING_REJECTED: { label: "Booking Rejected", accent: "#ef4444", bg: "rgba(239, 68, 68, 0.1)", icon: "✕" },
-  TICKET_UPDATED:   { label: "Ticket Updated",   accent: "#1a3d2b", bg: "rgba(26, 61, 43, 0.1)", icon: "🎟️" },
-  NEW_COMMENT:      { label: "New Comment",      accent: "#10b981", bg: "rgba(16, 185, 129, 0.1)", icon: "💬" },
+  BOOKING_APPROVED: { label: "Booking Authorized", accent: "#22c55e", bg: "rgba(34, 197, 94, 0.1)", icon: "✓" },
+  BOOKING_REJECTED: { label: "Access Refused", accent: "#f87171", bg: "rgba(239, 68, 68, 0.1)", icon: "✕" },
+  TICKET_UPDATED:   { label: "Signal Change",   accent: "#60a5fa", bg: "rgba(96, 165, 250, 0.1)", icon: "⚡" },
+  NEW_COMMENT:      { label: "Neural Update",      accent: "#fbbf24", bg: "rgba(251, 191, 36, 0.1)", icon: "💬" },
 };
 
 const FILTERS = ["ALL","UNREAD","BOOKING_APPROVED","BOOKING_REJECTED","TICKET_UPDATED","NEW_COMMENT"];
 const FILTER_LABELS = {
-  ALL:"All", UNREAD:"Unread", BOOKING_APPROVED:"Approved",
-  BOOKING_REJECTED:"Rejected", TICKET_UPDATED:"Tickets", NEW_COMMENT:"Comments",
+  ALL:"All Logs", UNREAD:"New", BOOKING_APPROVED:"Authorized",
+  BOOKING_REJECTED:"Refused", TICKET_UPDATED:"Signals", NEW_COMMENT:"Comms",
 };
 
 function timeAgo(d) {
   const diff = Date.now() - new Date(d).getTime();
   const m = Math.floor(diff / 60000);
-  if (m < 1)  return "Just now";
-  if (m < 60) return `${m}m ago`;
+  if (m < 1)  return "JUST NOW";
+  if (m < 60) return `${m}M AGO`;
   const h = Math.floor(m / 60);
-  if (h < 24) return `${h}h ago`;
-  return `${Math.floor(h / 24)}d ago`;
+  if (h < 24) return `${h}H AGO`;
+  return `${Math.floor(h / 24)}D AGO`;
 }
 
 export default function UserNotificationsPage() {
@@ -66,7 +66,7 @@ export default function UserNotificationsPage() {
   };
 
   const handleDeleteAll = async () => {
-    if (!window.confirm("Are you sure you want to delete all notifications?")) return;
+    if (!window.confirm("ARE YOU CERTAIN? SYSTEM LOGS WILL BE PERMANENTLY ERASED.")) return;
     try {
       await notificationService.deleteAll(currentUserId);
       setNotifications([]);
@@ -81,102 +81,101 @@ export default function UserNotificationsPage() {
   });
 
   return (
-    <div className="unp-page">
-      <div className="unp-header">
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "15px" }}>
+    <div className={styles.page}>
+      <header className={styles.header}>
+        <Link to="/dashboard" className={styles.backLink}>← BACK TO NEURAL HUB</Link>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", flexWrap: "wrap", gap: "20px" }}>
           <div>
-            <Link to="/dashboard" className="unp-back-link">← Back to Dashboard</Link>
-            <h2 className="unp-heading">
-              Notification Hub
+            <h2 className={styles.heading}>
+              SIGNAL ANALYZER
               {unreadCount > 0 && (
-                <span className="unp-unread-badge">{unreadCount}</span>
+                <span className={styles.unreadBadge}>{unreadCount}</span>
               )}
             </h2>
+            <p className={styles.sub}>
+              {unreadCount > 0
+                ? `DETECTION: ${unreadCount} NEW SIGNAL${unreadCount > 1 ? "S" : ""} RECEIVED.`
+                : "STATUS: SYSTEMS NOMINAL. ALL SIGNALS ANALYZED."}
+            </p>
           </div>
         </div>
-        <p className="unp-sub">
-          {unreadCount > 0
-            ? `You have ${unreadCount} unread notification${unreadCount > 1 ? "s" : ""}.`
-            : "You're all caught up!"}
-        </p>
-      </div>
+      </header>
 
       {/* Toolbar */}
-      <div className="unp-toolbar">
-        <div className="unp-chip-row">
+      <div className={styles.toolbar}>
+        <div className={styles.chipRow}>
           {FILTERS.map((f) => (
             <button
               key={f}
-              className={`unp-chip${filter === f ? " active" : ""}`}
+              className={`${styles.chip} ${filter === f ? styles.active : ""}`}
               onClick={() => setFilter(f)}
             >
               {FILTER_LABELS[f]}
               {f === "UNREAD" && unreadCount > 0 && (
-                <span className="unp-chip-count">{unreadCount}</span>
+                <span className={styles.chipCount}>{unreadCount}</span>
               )}
             </button>
           ))}
         </div>
-        <div style={{ display: "flex", gap: 8 }}>
+        <div className={styles.btnGroup}>
           {unreadCount > 0 && (
-            <button className="unp-btn unp-btn-primary" onClick={handleMarkAllRead}>
-              ✓ Mark all read
+            <button className={`${styles.btn} ${styles.btnPrimary}`} onClick={handleMarkAllRead}>
+              ✓ ANALYZE ALL
             </button>
           )}
           {notifications.length > 0 && (
             <button 
-              className="unp-btn" 
+              className={styles.btn} 
               onClick={handleDeleteAll} 
-              style={{ background: "#fef2f2", color: "#ef4444", border: "1px solid #fecaca" }}
+              style={{ borderColor: "#f87171", color: "#f87171" }}
             >
-              🗑️ Delete All
+              PURGE DATA
             </button>
           )}
-          <button className="unp-btn unp-btn-outline" onClick={fetchAll}>
-            ↻ Refresh
+          <button className={`${styles.btn} ${styles.btnOutline}`} onClick={fetchAll}>
+            ↻ RESET LINK
           </button>
         </div>
       </div>
 
       {/* Notification list */}
       {loading ? (
-        <div className="unp-empty-box">
-          <div className="unp-spinner" />
-          <p className="unp-empty-text">Loading notifications...</p>
+        <div className={styles.emptyBox}>
+          <div className={styles.spinner} />
+          <p className={styles.emptyText}>SYNCHRONIZING SIGNALS...</p>
         </div>
       ) : filtered.length === 0 ? (
-        <div className="unp-empty-box">
-          <div className="unp-empty-icon">🔕</div>
-          <p className="unp-empty-text">
-            No {filter === "ALL" ? "" : FILTER_LABELS[filter].toLowerCase() + " "}notifications found.
+        <div className={styles.emptyBox}>
+          <div className={styles.emptyIcon}>🧬</div>
+          <p className={styles.emptyText}>
+            NO {filter === "ALL" ? "ACTIVE" : FILTER_LABELS[filter].toUpperCase() + " "}SIGNALS DETECTED.
           </p>
         </div>
       ) : (
-        <div className="unp-notif-list">
+        <div className={styles.notifList}>
           {filtered.map((n) => {
-            const cfg = TYPE_CFG[n.type] || { label: n.type, accent: "#6b7280", bg: "#f9fafb", icon: "•" };
+            const cfg = TYPE_CFG[n.type] || { label: n.type, accent: "var(--text-ghost)", bg: "var(--bg-card)", icon: "•" };
             const unread = !n.read;
             return (
               <div
                 key={n.id}
-                className={`unp-notif-card${unread ? " unread" : ""}`}
+                className={`${styles.notifCard} ${unread ? styles.unread : ""}`}
                 style={{
-                  backgroundColor: unread ? cfg.bg : "#fff",
-                  borderLeftColor: unread ? cfg.accent : "#e2e8f0",
+                  borderLeftColor: unread ? cfg.accent : "var(--border)",
                 }}
                 onClick={() => unread && handleMarkAsRead(n.id)}
               >
-                <div className="unp-notif-icon" style={{ background: cfg.accent + "22", color: cfg.accent }}>
+                <div className={styles.notifIcon} style={{ background: `${cfg.accent}22`, color: cfg.accent, border: `1px solid ${cfg.accent}33` }}>
                   {cfg.icon}
                 </div>
-                <div className="unp-notif-body">
-                  <div className="unp-notif-type" style={{ color: cfg.accent }}>{cfg.label}</div>
-                  <p className="unp-notif-msg" style={{ fontWeight: unread ? 500 : 400, color: unread ? "#1e293b" : "#64748b" }}>
+                <div className={styles.notifBody}>
+                  <div className={styles.notifType} style={{ color: cfg.accent }}>{cfg.label}</div>
+                  <p className={styles.notifMsg} style={{ color: unread ? "var(--text-main)" : "var(--text-dim)" }}>
                     {n.message}
                   </p>
-                  <span className="unp-notif-time">{timeAgo(n.createdAt)}</span>
+                  <span className={styles.notifTime}>{timeAgo(n.createdAt)}</span>
                 </div>
-                {unread && <div className="unp-notif-dot" style={{ background: cfg.accent }} />}
+                {unread && <div className={styles.notifDot} style={{ background: cfg.accent, color: cfg.accent }} />}
               </div>
             );
           })}

@@ -113,9 +113,9 @@ export default function AdminDashboard() {
       
       {/* ─── SIDEBAR ─── */}
       <div className={styles.sidebar}>
-        <div className={styles.logo}>A</div>
+        <div className={styles.logo}>SC</div>
         
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', flex: 1 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', flex: 1 }}>
           <Link to="/admin" className={`${styles.navIcon} ${styles.active}`} title="Users"><UserIcon /></Link>
           <Link to="/admin/staff" className={styles.navIcon} title="Manage Staff"><ShieldIcon /></Link>
           <Link to="/admin/resources" className={styles.navIcon} title="Manage Resources"><GridIcon /></Link>
@@ -124,7 +124,7 @@ export default function AdminDashboard() {
           <Link to="/admin/notifications" className={styles.navIcon} title="Notifications"><BellIcon /></Link>
         </div>
 
-        <div className={styles.navIcon} onClick={logout} title="Logout"><SettingsIcon /></div>
+        <div className={styles.navIcon} onClick={logout} title="Logout" style={{ marginTop: 'auto' }}><SettingsIcon /></div>
       </div>
 
       {/* ─── MAIN CONTENT ─── */}
@@ -133,72 +133,71 @@ export default function AdminDashboard() {
         {/* HEADER */}
         <header className={styles.header}>
           <div>
-            <h1 className={styles.greeting}>Good Morning {firstName}</h1>
-            <p className={styles.subGreeting}>Your daily administrative overview</p>
+            <h1 className={styles.greeting}>SYSTEM CONTROL</h1>
+            <p className={styles.subGreeting}>Administrative oversight & operational metrics</p>
           </div>
           <div className={styles.headerRight}>
             <div style={{ position: 'relative' }}>
-              <div style={{ position: 'absolute', left: '16px', top: '12px', color: '#94a3b8' }}><SearchIcon /></div>
-              <input type="text" placeholder="Search users..." className={styles.searchBar} style={{ paddingLeft: '44px' }} />
+              <div style={{ position: 'absolute', left: '16px', top: '12px', color: 'var(--accent)' }}><SearchIcon /></div>
+              <input type="text" placeholder="Search directory..." className={styles.searchBar} style={{ paddingLeft: '44px' }} />
             </div>
-            <div className={styles.navIcon} style={{ background: '#fff' }}><BellIcon /></div>
             <button className={styles.logoutBtn} onClick={logout}>Sign Out</button>
             <div className={styles.profilePic}>
-              <img src={user?.pictureUrl || `https://ui-avatars.com/api/?name=${firstName}&background=4f46e5&color=fff`} alt="Profile" style={{ width: '100%', height: '100%' }} />
+              <img src={user?.pictureUrl || `https://ui-avatars.com/api/?name=${firstName}&background=22c55e&color=080d08`} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
           </div>
         </header>
 
         {/* METRICS ROW */}
         <div>
-          <h2 className={styles.sectionTitle}>System Metrics</h2>
+          <h2 className={styles.sectionTitle}>Real-time Metrics</h2>
           <div className={styles.kpiGrid}>
             <div className={styles.kpiCard}>
-              <div className={styles.kpiAccent} style={{ background: '#4f46e5' }} />
+              <div className={styles.kpiAccent} />
               <div className={styles.kpiTop}>
                 <div className={styles.kpiIconBox}><UserIcon /></div>
-                <div className={styles.kpiPerc} style={{ color: '#4f46e5', borderColor: '#4f46e5' }}>+12</div>
+                <div className={styles.kpiPerc}>LIVE</div>
               </div>
               <div>
                 <div className={styles.kpiValue}>{usersList.length}</div>
-                <div className={styles.kpiLabel}>Total Users</div>
+                <div className={styles.kpiLabel}>Total Registered</div>
               </div>
             </div>
 
             <div className={styles.kpiCard}>
-              <div className={styles.kpiAccent} style={{ background: '#0ea5e9' }} />
+              <div className={styles.kpiAccent} />
               <div className={styles.kpiTop}>
                 <div className={styles.kpiIconBox}><DocIcon /></div>
-                <div className={styles.kpiPerc} style={{ color: '#0ea5e9', borderColor: '#0ea5e9' }}>5%</div>
+                <div className={styles.kpiPerc}>+5%</div>
               </div>
               <div>
-                <div className={styles.kpiValue}>1,240</div>
-                <div className={styles.kpiLabel}>System Requests</div>
+                <div className={styles.kpiValue}>1.2K</div>
+                <div className={styles.kpiLabel}>API Traffic</div>
               </div>
             </div>
 
             <div className={styles.kpiCard}>
-              <div className={styles.kpiAccent} style={{ background: '#8b5cf6' }} />
+              <div className={styles.kpiAccent} />
               <div className={styles.kpiTop}>
                 <div className={styles.kpiIconBox}><BellIcon /></div>
-                <div className={styles.kpiPerc} style={{ color: '#8b5cf6', borderColor: '#8b5cf6' }}>0%</div>
+                <div className={styles.kpiPerc}>99%</div>
               </div>
               <div>
-                <div className={styles.kpiValue}>99.9%</div>
-                <div className={styles.kpiLabel}>System Uptime</div>
+                <div className={styles.kpiValue}>0.8ms</div>
+                <div className={styles.kpiLabel}>Latency Avg</div>
               </div>
             </div>
 
             <div className={styles.kpiCard}>
-              <div className={styles.kpiAccent} style={{ background: '#10b981' }} />
+              <div className={styles.kpiAccent} />
               <div className={styles.kpiTop}>
                 <div className={styles.kpiIconBox}><SettingsIcon /></div>
-                <div className={styles.kpiPerc} style={{ color: '#10b981', borderColor: '#10b981' }}>Live</div>
+                <div className={styles.kpiPerc}>ACTIVE</div>
               </div>
               <div>
                 <Link to="/tickets" style={{ textDecoration: 'none' }}>
                   <div className={styles.kpiValue}>{openTicketsCount}</div>
-                  <div className={styles.kpiLabel}>Open Tickets</div>
+                  <div className={styles.kpiLabel}>Critical Alerts</div>
                 </Link>
               </div>
             </div>
@@ -209,37 +208,36 @@ export default function AdminDashboard() {
         <div className={styles.bottomSplit}>
           
           <div className={styles.tallCard}>
-            <div style={{ position: 'absolute', top: '16px', right: '16px' }}>⋮</div>
             <div className={styles.arcContainer}>
               <div className={styles.arc}></div>
-              <div className={styles.arcText}>100%</div>
+              <div className={styles.arcText}>100</div>
             </div>
             <div style={{ marginTop: '20px' }}>
-              <div className={styles.kpiIconBox} style={{ background: 'rgba(255,255,255,0.2)', color: '#fff', margin: '0 auto 16px' }}><DocIcon /></div>
+              <div className={styles.kpiIconBox} style={{ background: 'var(--accent-ultra)', border: '1px solid var(--accent)', color: 'var(--accent)', margin: '0 auto 16px' }}><ShieldIcon /></div>
             </div>
-            <div className={styles.tallCardLabel}>System Health</div>
-            <div className={styles.tallCardValue}>Optimal</div>
-            <div className={styles.tallCardSub}>All services running correctly</div>
+            <div className={styles.tallCardLabel}>Core Infrastructure</div>
+            <div className={styles.tallCardValue}>STABLE</div>
+            <div className={styles.tallCardSub}>All nodes operating nominally</div>
           </div>
 
           <div className={styles.tableSection}>
             <div className={styles.tableHeader}>
-              <h2 className={styles.sectionTitle} style={{ margin: 0 }}>User Directory</h2>
-              <div style={{ color: '#64748b', cursor: 'pointer', fontWeight: 600 }}>⋮</div>
+              <h2 className={styles.sectionTitle} style={{ margin: 0 }}>Identity Directory</h2>
+              <div style={{ color: 'var(--text-ghost)', cursor: 'pointer', fontWeight: 600 }}>FILTER ▾</div>
             </div>
 
             <div className={styles.tableContainer}>
               {loadingUsers ? (
-                <div style={{ textAlign: 'center', padding: '40px', color: '#64748b' }}>Loading directory...</div>
+                <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-ghost)' }}>Synchronizing directory...</div>
               ) : usersList.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '40px', color: '#64748b' }}>No users found.</div>
+                <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-ghost)' }}>No records found.</div>
               ) : (
                 <table>
                   <thead>
                     <tr>
-                      <th>USER</th>
+                      <th>IDENTITY</th>
                       <th>ROLE</th>
-                      <th>ID & DEPT</th>
+                      <th>CREDENTIALS</th>
                       <th>STATUS</th>
                     </tr>
                   </thead>
@@ -252,26 +250,27 @@ export default function AdminDashboard() {
                               {u.name?.charAt(0)?.toUpperCase()}
                             </div>
                             <div>
-                              <div style={{ fontWeight: 700, color: '#0f172a' }}>{u.name}</div>
-                              <div style={{ fontSize: '12px', color: '#64748b' }}>{u.email}</div>
+                              <div style={{ fontWeight: 700, color: 'var(--text-main)' }}>{u.name}</div>
+                              <div style={{ fontSize: '12px', color: 'var(--text-ghost)' }}>{u.email}</div>
                             </div>
                           </div>
                         </td>
                         <td>
                           <span className={styles.roleTag} style={{ 
-                            background: u.role === 'ADMIN' ? '#fee2e2' : u.role === 'STAFF_MEMBER' ? '#e0e7ff' : '#f1f5f9', 
-                            color: u.role === 'ADMIN' ? '#991b1b' : u.role === 'STAFF_MEMBER' ? '#3730a3' : '#334155' 
+                            background: u.role === 'ADMIN' ? 'rgba(239, 68, 68, 0.1)' : u.role === 'STAFF_MEMBER' ? 'rgba(34, 197, 94, 0.1)' : 'rgba(255, 255, 255, 0.05)', 
+                            color: u.role === 'ADMIN' ? '#f87171' : u.role === 'STAFF_MEMBER' ? '#22c55e' : 'var(--text-ghost)',
+                            border: `1px solid ${u.role === 'ADMIN' ? 'rgba(239, 68, 68, 0.2)' : u.role === 'STAFF_MEMBER' ? 'rgba(34, 197, 94, 0.2)' : 'rgba(255, 255, 255, 0.1)'}`
                           }}>
                             {u.role.replace('_', ' ')}
                           </span>
                         </td>
                         <td>
-                          <div style={{ fontWeight: 600, color: '#334155' }}>{u.studentId}</div>
-                          <div style={{ fontSize: '12px', color: '#64748b' }}>{u.department}</div>
+                          <div style={{ fontWeight: 700, color: 'var(--text-main)', fontSize: '13px' }}>{u.studentId}</div>
+                          <div style={{ fontSize: '11px', color: 'var(--text-dim)', textTransform: 'uppercase' }}>{u.department}</div>
                         </td>
                         <td>
-                          <span style={{ fontWeight: 600, color: u.active ? '#15803d' : '#ef4444' }}>
-                            {u.active ? 'Active' : 'Disabled'}
+                          <span style={{ fontWeight: 800, color: u.active ? 'var(--accent)' : '#ef4444', fontSize: '12px' }}>
+                            {u.active ? 'ENABLED' : 'REVOKED'}
                           </span>
                         </td>
                       </tr>
@@ -287,4 +286,5 @@ export default function AdminDashboard() {
       </div>
     </div>
   );
+
 }

@@ -173,9 +173,17 @@ export default function Register() {
 
               <div className={styles.row}>
                 <div className={styles.fieldGroup}>
-                  <label className={styles.label}>DEPARTMENT</label>
-                  <input type="text" name="department" className={`${styles.input} ${errors.department ? styles.inputError : ''}`}
-                    placeholder="Computer Science" value={form.department} onChange={handleChange} />
+                  <label className={styles.label}>FACULTY / DEPARTMENT</label>
+                  <select name="department" className={`${styles.input} ${errors.department ? styles.inputError : ''}`}
+                    value={form.department} onChange={handleChange as any}>
+                    <option value="" disabled>Select your faculty</option>
+                    <option value="Faculty of Computing">Faculty of Computing</option>
+                    <option value="Faculty of Engineering">Faculty of Engineering</option>
+                    <option value="Faculty of Business">Faculty of Business</option>
+                    <option value="Faculty of Humanities & Sciences">Faculty of Humanities & Sciences</option>
+                    <option value="School of Architecture">School of Architecture</option>
+                    <option value="Other">Other</option>
+                  </select>
                   {errors.department && <span className={styles.fieldError}>{errors.department}</span>}
                 </div>
                 <div className={styles.fieldGroup}>

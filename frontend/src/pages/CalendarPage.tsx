@@ -19,12 +19,12 @@ interface CalendarEvent {
 }
 
 const EVENT_TYPE_COLORS: Record<string, string> = {
-  Workshop: '#3b82f6',
-  Seminar: '#8b5cf6',
-  Sports: '#ef4444',
-  Social: '#f59e0b',
-  Technical: '#10b981',
-  Booking: '#64748b',
+  Workshop: '#22c55e', // Neon Green
+  Seminar: '#4ade80',  // Mint
+  Sports: '#16a34a',   // Forest Green
+  Social: '#86efac',   // Pale Green
+  Technical: '#22c55e',
+  Booking: '#4ade80',
   Holiday: '#ef4444',
 };
 
@@ -125,7 +125,7 @@ export default function CalendarPage() {
     <div className={styles.page}>
       {/* Header */}
       <div className={styles.header}>
-        <button className={styles.backBtn} onClick={() => navigate('/dashboard')}>← Dashboard</button>
+        <button className={styles.backBtn} onClick={() => navigate('/dashboard')}>← DASHBOARD</button>
         <div className={styles.calendarNav}>
           <button className={styles.navBtn} onClick={prevMonth}>‹</button>
           <h1 className={styles.monthTitle}>{monthName} <span>{year}</span></h1>
@@ -133,7 +133,7 @@ export default function CalendarPage() {
         </div>
         <div className={styles.headerActions}>
           {(user?.role === 'ADMIN' || user?.role === 'STAFF_MEMBER') && (
-            <button className={styles.addEventBtn}>+ Add Event</button>
+            <button className={styles.addEventBtn}>+ ADD EVENT</button>
           )}
         </div>
       </div>
@@ -142,7 +142,7 @@ export default function CalendarPage() {
         {/* Calendar Grid */}
         <div className={styles.calendarCard}>
           <div className={styles.weekDays}>
-            {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+            {['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'].map(day => (
               <div key={day} className={styles.weekDay}>{day}</div>
             ))}
           </div>
@@ -155,34 +155,34 @@ export default function CalendarPage() {
         <div className={styles.detailsPanel}>
           <div className={styles.detailsHeader}>
             <h2 className={styles.detailsTitle}>
-              {selectedDay} {monthName}
+              {selectedDay} {monthName.toUpperCase()}
             </h2>
             <p className={styles.detailsSubtitle}>
-              {selectedEvents.length} {selectedEvents.length === 1 ? 'Event' : 'Events'} Scheduled
+              {selectedEvents.length} {selectedEvents.length === 1 ? 'EVENT' : 'EVENTS'} SCHEDULED
             </p>
           </div>
 
           <div className={styles.eventList}>
             {loading ? (
-              <div className={styles.loader}>Loading events...</div>
+              <div className={styles.loader}>INITIALIZING SYSTEM...</div>
             ) : selectedEvents.length > 0 ? (
               selectedEvents.map(event => (
                 <div key={event.id} className={`${styles.eventCard} ${event.isBooking ? styles.bookingCard : ''}`}>
                   <div className={styles.eventTime}>
                     <span className={styles.time}>{event.startTime}</span>
-                    <span className={styles.duration}>to {event.endTime}</span>
+                    <span className={styles.duration}>UNTIL {event.endTime}</span>
                   </div>
                   <div className={styles.eventInfo}>
                     <div className={styles.eventHeader}>
                       <span className={styles.eventType} style={{ color: EVENT_TYPE_COLORS[event.type], borderColor: EVENT_TYPE_COLORS[event.type] }}>
-                        {event.type}
+                        {event.type.toUpperCase()}
                       </span>
                       <h3 className={styles.eventTitle}>{event.title}</h3>
                     </div>
                     <p className={styles.eventDesc}>{event.description}</p>
                     <div className={styles.eventMeta}>
-                      <span>📍 {event.location}</span>
-                      {event.organizer && <span>👤 {event.organizer}</span>}
+                      <span>LOCATION: {event.location}</span>
+                      {event.organizer && <span>BY: {event.organizer}</span>}
                     </div>
                   </div>
                 </div>
@@ -190,7 +190,7 @@ export default function CalendarPage() {
             ) : (
               <div className={styles.emptyState}>
                 <span className={styles.emptyIcon}>🗓️</span>
-                <p>No events or bookings for this day.</p>
+                <p>NO EVENTS SCHEDULED FOR THIS DATE</p>
               </div>
             )}
           </div>

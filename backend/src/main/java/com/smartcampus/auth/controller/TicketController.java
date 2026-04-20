@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -67,6 +66,13 @@ public class TicketController {
         return ResponseEntity.ok(Map.of("imageUrls", urls));
     }
 
+    @GetMapping("/{id}/comments")
+    public ResponseEntity<List<CommentResponse>> getComments(
+            @PathVariable UUID id,
+            @AuthenticationPrincipal AppUser actor) {
+        return ResponseEntity.ok(ticketService.getComments(id, actor));
+    }
+
     @PostMapping("/{id}/comments")
     public ResponseEntity<CommentResponse> addComment(
             @PathVariable UUID id,
@@ -74,6 +80,14 @@ public class TicketController {
             @AuthenticationPrincipal AppUser actor) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ticketService.addComment(id, body.get("content"), actor));
+    }
+
+    @PutMapping("/{id}/status")
+    public ResponseEntity<TicketResponse> updateStatus(
+            @PathVariable UUID id,
+            @RequestParam TicketStatus status,
+            @AuthenticationPrincipal AppUser actor) {
+        return ResponseEntity.ok(ticketService.updateStatus(id, status, actor));
     }
 
     @PutMapping("/{id}/comments/{cid}")

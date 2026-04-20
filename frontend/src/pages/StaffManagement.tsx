@@ -23,6 +23,24 @@ const ShieldIcon = () => (
     </svg>
 );
 
+const BellIcon = () => (
+  <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+  </svg>
+);
+
+const GridIcon = () => (
+  <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+  </svg>
+);
+
+const CalendarIcon = () => (
+  <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+  </svg>
+);
+
 const BackIcon = () => (
     <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -132,10 +150,13 @@ export default function StaffManagement() {
       
       {/* ─── SIDEBAR ─── */}
       <div className={styles.sidebar}>
-        <div className={styles.logo}>A</div>
+        <div className={styles.logo}>SC</div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', flex: 1 }}>
           <Link to="/admin" className={styles.navIcon} title="Dashboard"><UserIcon /></Link>
           <Link to="/admin/staff" className={`${styles.navIcon} ${styles.active}`} title="Staff Management"><ShieldIcon /></Link>
+          <Link to="/admin/resources" className={styles.navIcon} title="Resources"><GridIcon /></Link>
+          <Link to="/admin/bookings" className={styles.navIcon} title="Bookings"><CalendarIcon /></Link>
+          <Link to="/admin/notifications" className={styles.navIcon} title="Notifications"><BellIcon /></Link>
         </div>
       </div>
 
@@ -143,60 +164,60 @@ export default function StaffManagement() {
         
         <header className={styles.header}>
           <div>
-            <h1 className={styles.greeting}>Staff Management</h1>
-            <p className={styles.subGreeting}>Manage roles and access for campus staff</p>
+            <h1 className={styles.greeting}>STAFF DIRECTORY</h1>
+            <p className={styles.subGreeting}>Access control & permission management</p>
           </div>
           <div className={styles.headerRight}>
-             <Link to="/admin" className={styles.logoutBtn} style={{ background: '#f1f5f9', color: '#475569', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <BackIcon /> Back
+             <Link to="/admin" className={styles.logoutBtn} style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <BackIcon /> BACK
              </Link>
-             <button className={styles.logoutBtn} onClick={() => setShowForm(!showForm)}>
-                {showForm ? 'Cancel' : 'Add New Staff'}
+             <button className={styles.logoutBtn} onClick={() => setShowForm(!showForm)} style={{ background: 'var(--accent)', color: '#080d08' }}>
+                {showForm ? 'CANCEL' : 'REGISTER STAFF'}
              </button>
           </div>
         </header>
 
         {showForm && (
-          <section className={styles.tableSection} style={{ marginBottom: '30px', animation: 'slideDown 0.3s ease-out' }}>
+          <section className={styles.tableSection} style={{ marginBottom: '30px', animation: 'slideDown 0.3s ease-out', border: '1px solid var(--accent)' }}>
             <div className={styles.tableHeader}>
-               <h2 className={styles.sectionTitle}>Create Staff Account</h2>
+               <h2 className={styles.sectionTitle}>Personnel Enrollment</h2>
             </div>
-            <form onSubmit={handleCreateStaff} style={{ padding: '24px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+            <form onSubmit={handleCreateStaff} style={{ padding: '0 24px 24px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    <label style={{ fontSize: '14px', fontWeight: 600, color: '#475569' }}>Full Name</label>
+                    <label style={{ fontSize: '11px', fontWeight: 800, color: 'var(--text-ghost)', textTransform: 'uppercase', letterSpacing: '1px' }}>Full Name</label>
                     <input 
                         type="text" 
                         className={styles.searchBar} 
-                        style={{ width: '100%', color: '#0f172a', border: '1px solid #cbd5e1' }}
+                        style={{ width: '100%' }}
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         required
                     />
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    <label style={{ fontSize: '14px', fontWeight: 600, color: '#475569' }}>Email Address</label>
+                    <label style={{ fontSize: '11px', fontWeight: 800, color: 'var(--text-ghost)', textTransform: 'uppercase', letterSpacing: '1px' }}>Email Address</label>
                     <input 
                         type="email" 
                         className={styles.searchBar} 
-                        style={{ width: '100%', color: '#0f172a', border: '1px solid #cbd5e1' }}
+                        style={{ width: '100%' }}
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
                     />
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    <label style={{ fontSize: '14px', fontWeight: 600, color: '#475569' }}>Password</label>
+                    <label style={{ fontSize: '11px', fontWeight: 800, color: 'var(--text-ghost)', textTransform: 'uppercase', letterSpacing: '1px' }}>Security Access Key (Password)</label>
                     <input 
                         type="password" 
                         className={styles.searchBar} 
-                        style={{ width: '100%', color: '#0f172a', border: '1px solid #cbd5e1' }}
+                        style={{ width: '100%' }}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
                     />
                 </div>
                 <div style={{ gridColumn: 'span 2' }}>
-                    <label style={{ fontSize: '14px', fontWeight: 600, color: '#475569', display: 'block', marginBottom: '12px' }}>Feature Access Permissions</label>
+                    <label style={{ fontSize: '11px', fontWeight: 800, color: 'var(--text-ghost)', textTransform: 'uppercase', letterSpacing: '1px', display: 'block', marginBottom: '12px' }}>System Domain Access</label>
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
                         {permissionsList.map(p => (
                             <div 
@@ -204,15 +225,17 @@ export default function StaffManagement() {
                                 onClick={() => togglePermission(p.id)}
                                 style={{ 
                                     padding: '10px 16px',
-                                    borderRadius: '8px',
-                                    border: '1px solid',
-                                    borderColor: selectedPermissions.includes(p.id) ? '#4f46e5' : '#e2e8f0',
-                                    background: selectedPermissions.includes(p.id) ? '#eef2ff' : '#fff',
-                                    color: selectedPermissions.includes(p.id) ? '#4f46e5' : '#475569',
+                                    borderRadius: '12px',
+                                    border: '1.5px solid',
+                                    borderColor: selectedPermissions.includes(p.id) ? 'var(--accent)' : 'var(--border)',
+                                    background: selectedPermissions.includes(p.id) ? 'var(--accent-ultra)' : 'var(--bg-surface)',
+                                    color: selectedPermissions.includes(p.id) ? 'var(--accent)' : 'var(--text-ghost)',
                                     cursor: 'pointer',
-                                    fontWeight: 600,
-                                    fontSize: '13px',
-                                    transition: 'all 0.2s'
+                                    fontWeight: 700,
+                                    fontSize: '12px',
+                                    transition: 'all 0.2s',
+                                    textTransform: 'uppercase',
+                                    letterSpacing: '0.5px'
                                 }}
                             >
                                 {p.label} {selectedPermissions.includes(p.id) && '✓'}
@@ -221,11 +244,11 @@ export default function StaffManagement() {
                     </div>
                 </div>
 
-                {error && <div style={{ gridColumn: 'span 2', color: '#ef4444', fontSize: '14px' }}>{error}</div>}
-                {success && <div style={{ gridColumn: 'span 2', color: '#10b981', fontSize: '14px' }}>{success}</div>}
+                {error && <div style={{ gridColumn: 'span 2', color: '#f87171', fontSize: '13px', fontWeight: 600 }}>⚠ {error}</div>}
+                {success && <div style={{ gridColumn: 'span 2', color: 'var(--accent)', fontSize: '13px', fontWeight: 600 }}>✓ {success}</div>}
 
-                <div style={{ gridColumn: 'span 2', textAlign: 'right' }}>
-                    <button type="submit" className={styles.logoutBtn} style={{ background: '#451a03' }}>Create Account</button>
+                <div style={{ gridColumn: 'span 2', textAlign: 'right', marginTop: '10px' }}>
+                    <button type="submit" className={styles.logoutBtn} style={{ background: 'var(--accent)', color: '#080d08', border: 'none', padding: '12px 30px' }}>INITIALIZE ACCOUNT</button>
                 </div>
             </form>
           </section>
@@ -233,22 +256,22 @@ export default function StaffManagement() {
 
         <section className={styles.tableSection}>
           <div className={styles.tableHeader}>
-            <h2 className={styles.sectionTitle} style={{ margin: 0 }}>Active Staff Members</h2>
-            <p style={{ color: '#64748b', fontSize: '14px' }}>{staffList.length} Accounts Found</p>
+            <h2 className={styles.sectionTitle} style={{ margin: 0 }}>ACTIVE PERSONNEL</h2>
+            <div style={{ color: 'var(--text-ghost)', fontSize: '12px', fontWeight: 700 }}>{staffList.length} OPERATIVE(S) FOUND</div>
           </div>
 
           <div className={styles.tableContainer}>
             {loading ? (
-              <div style={{ textAlign: 'center', padding: '40px' }}>Loading staff records...</div>
+              <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-ghost)' }}>Retrieving personnel data...</div>
             ) : staffList.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '40px' }}>No staff accounts found. Create one to begin.</div>
+              <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-ghost)' }}>No active personnel found. Register an operative to begin.</div>
             ) : (
               <table>
                 <thead>
                   <tr>
-                    <th>STAFF MEMBER</th>
-                    <th>EMAIL</th>
-                    <th>ASSIGNED PERMISSIONS</th>
+                    <th>OPERATIVE</th>
+                    <th>COMMUNICATION</th>
+                    <th>ACCESS PRIVILEGES</th>
                     <th>STATUS</th>
                   </tr>
                 </thead>
@@ -257,29 +280,29 @@ export default function StaffManagement() {
                     <tr key={s.id}>
                       <td>
                         <div className={styles.userCell}>
-                          <div className={styles.userAvatar} style={{ background: '#f97316' }}>
+                          <div className={styles.userAvatar} style={{ background: 'var(--accent-ultra)', border: '1px solid var(--accent)' }}>
                             {s.name?.charAt(0)?.toUpperCase()}
                           </div>
                           <div>
-                            <div style={{ fontWeight: 700, color: '#0f172a' }}>{s.name}</div>
-                            <div style={{ fontSize: '12px', color: '#64748b' }}>Staff Member</div>
+                            <div style={{ fontWeight: 700, color: 'var(--text-main)' }}>{s.name}</div>
+                            <div style={{ fontSize: '11px', color: 'var(--accent)', textTransform: 'uppercase', fontWeight: 800 }}>Level Staff</div>
                           </div>
                         </div>
                       </td>
-                      <td>{s.email}</td>
+                      <td style={{ color: 'var(--text-dim)', fontSize: '13px' }}>{s.email}</td>
                       <td>
                         <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                           {s.permissions?.map(p => (
-                            <span key={p} className={styles.roleTag} style={{ background: '#f5f2ee', color: '#451a03', fontSize: '10px' }}>
+                            <span key={p} className={styles.roleTag} style={{ background: 'rgba(34, 197, 94, 0.1)', color: 'var(--accent)', border: '1px solid rgba(34, 197, 94, 0.2)' }}>
                               {p}
                             </span>
                           ))}
-                          {(!s.permissions || s.permissions.length === 0) && <span style={{ color: '#94a3b8', fontSize: '12px' }}>No Permissions</span>}
+                          {(!s.permissions || s.permissions.length === 0) && <span style={{ color: 'var(--text-ghost)', fontSize: '12px' }}>NO PRIVILEGES</span>}
                         </div>
                       </td>
                       <td>
-                        <span style={{ fontWeight: 600, color: s.active ? '#15803d' : '#ef4444' }}>
-                          {s.active ? 'Active' : 'Disabled'}
+                        <span style={{ fontWeight: 800, color: s.active ? 'var(--accent)' : '#f87171', fontSize: '12px' }}>
+                          {s.active ? 'OPERATIONAL' : 'DEACTIVATED'}
                         </span>
                       </td>
                     </tr>
@@ -300,4 +323,5 @@ export default function StaffManagement() {
       `}</style>
     </div>
   );
+
 }
